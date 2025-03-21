@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { Apple, Facebook, LucideIcon } from "lucide-react";
 
 interface AuthFormProps {
   setIsLoading: (loading: boolean) => void;
@@ -123,10 +124,10 @@ export default function AuthForm({ setIsLoading }: AuthFormProps) {
         </form>
       </Form>
 
-      <div className="flex items-center">
-        <Separator className="flex-grow" />
-        <span className="px-2 text-xs text-muted-foreground">OR CONTINUE WITH</span>
-        <Separator className="flex-grow" />
+      <div className="flex items-center justify-center">
+        <Separator className="w-1/3" />
+        <span className="px-3 text-xs text-muted-foreground whitespace-nowrap">OR CONTINUE WITH</span>
+        <Separator className="w-1/3" />
       </div>
 
       <div className="grid grid-cols-3 gap-2">
@@ -134,25 +135,34 @@ export default function AuthForm({ setIsLoading }: AuthFormProps) {
           variant="outline" 
           type="button" 
           onClick={() => handleSocialLogin("google")}
-          className="w-full"
+          className="w-full flex items-center justify-center gap-2"
         >
-          Google
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-google">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M21.64 12.24c0-.78-.07-1.53-.2-2.25H12v4.26h5.42c-.23 1.27-.94 2.34-2 3.06v2.54h3.23c1.9-1.74 3-4.3 3-7.34z" fill="#4285F4" stroke="none"/>
+            <path d="M12 21c2.7 0 4.97-.89 6.64-2.39l-3.23-2.54c-.89.6-2.04.95-3.41.95-2.63 0-4.85-1.77-5.64-4.15H3.06v2.63C4.72 18.65 8.09 21 12 21z" fill="#34A853" stroke="none"/>
+            <path d="M6.36 12.87c-.2-.6-.31-1.24-.31-1.89s.11-1.29.31-1.89V6.46H3.06C2.38 8.15 2 10.02 2 12s.38 3.85 1.06 5.54l3.3-2.67z" fill="#FBBC05" stroke="none"/>
+            <path d="M12 5.96c1.48 0 2.81.51 3.85 1.51l2.84-2.85C16.96 2.99 14.7 2 12 2 8.09 2 4.72 4.35 3.06 7.46l3.3 2.67c.79-2.38 3.01-4.17 5.64-4.17z" fill="#EA4335" stroke="none"/>
+          </svg>
+          <span>Google</span>
         </Button>
         <Button 
           variant="outline" 
           type="button" 
           onClick={() => handleSocialLogin("facebook")}
-          className="w-full"
+          className="w-full flex items-center justify-center gap-2"
         >
-          Facebook
+          <Facebook size={16} color="#1877F2" />
+          <span>Facebook</span>
         </Button>
         <Button 
           variant="outline" 
           type="button" 
           onClick={() => handleSocialLogin("apple")}
-          className="w-full"
+          className="w-full flex items-center justify-center gap-2"
         >
-          Apple
+          <Apple size={16} />
+          <span>Apple</span>
         </Button>
       </div>
 
