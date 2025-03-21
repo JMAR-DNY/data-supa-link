@@ -11,42 +11,52 @@ export type Database = {
     Tables: {
       campaigns: {
         Row: {
+          campaign_uuid: string
           content: string | null
           created_at: string | null
-          created_by: string | null
-          id: string
+          created_by_profile_id: number | null
+          id: number
           name: string
-          org_id: string
           scheduled_at: string | null
           status: string | null
+          team_id: number
           updated_at: string | null
         }
         Insert: {
+          campaign_uuid?: string
           content?: string | null
           created_at?: string | null
-          created_by?: string | null
-          id?: string
+          created_by_profile_id?: number | null
+          id?: never
           name: string
-          org_id: string
           scheduled_at?: string | null
           status?: string | null
+          team_id: number
           updated_at?: string | null
         }
         Update: {
+          campaign_uuid?: string
           content?: string | null
           created_at?: string | null
-          created_by?: string | null
-          id?: string
+          created_by_profile_id?: number | null
+          id?: never
           name?: string
-          org_id?: string
           scheduled_at?: string | null
           status?: string | null
+          team_id?: number
           updated_at?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "campaigns_org_id_fkey"
-            columns: ["org_id"]
+            foreignKeyName: "campaigns_created_by_profile_id_fkey"
+            columns: ["created_by_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaigns_team_id_fkey"
+            columns: ["team_id"]
             isOneToOne: false
             referencedRelation: "teams"
             referencedColumns: ["id"]
@@ -56,29 +66,46 @@ export type Database = {
       memberships: {
         Row: {
           created_at: string | null
-          invited_by: string | null
-          org_id: string
+          id: number
+          invited_by_profile_id: number | null
+          profile_id: number
           role: Database["public"]["Enums"]["team_role"]
-          user_id: string
+          team_id: number
         }
         Insert: {
           created_at?: string | null
-          invited_by?: string | null
-          org_id: string
+          id?: never
+          invited_by_profile_id?: number | null
+          profile_id: number
           role: Database["public"]["Enums"]["team_role"]
-          user_id: string
+          team_id: number
         }
         Update: {
           created_at?: string | null
-          invited_by?: string | null
-          org_id?: string
+          id?: never
+          invited_by_profile_id?: number | null
+          profile_id?: number
           role?: Database["public"]["Enums"]["team_role"]
-          user_id?: string
+          team_id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "memberships_org_id_fkey"
-            columns: ["org_id"]
+            foreignKeyName: "memberships_invited_by_profile_id_fkey"
+            columns: ["invited_by_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "memberships_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "memberships_team_id_fkey"
+            columns: ["team_id"]
             isOneToOne: false
             referencedRelation: "teams"
             referencedColumns: ["id"]
@@ -88,15 +115,18 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string | null
-          id: string
+          id: number
+          user_uuid: string
         }
         Insert: {
           created_at?: string | null
-          id: string
+          id?: never
+          user_uuid: string
         }
         Update: {
           created_at?: string | null
-          id?: string
+          id?: never
+          user_uuid?: string
         }
         Relationships: []
       }
@@ -131,31 +161,42 @@ export type Database = {
         Row: {
           created_at: string | null
           credits_balance: number | null
-          id: string
+          id: number
           name: string
-          owner_id: string
+          owner_profile_id: number
           plan_type: string
+          team_uuid: string
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
           credits_balance?: number | null
-          id?: string
+          id?: never
           name: string
-          owner_id: string
+          owner_profile_id: number
           plan_type: string
+          team_uuid?: string
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
           credits_balance?: number | null
-          id?: string
+          id?: never
           name?: string
-          owner_id?: string
+          owner_profile_id?: number
           plan_type?: string
+          team_uuid?: string
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "teams_owner_profile_id_fkey"
+            columns: ["owner_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
