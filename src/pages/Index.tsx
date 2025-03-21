@@ -1,14 +1,28 @@
-// Update this page (the content is just a fallback if you fail to update the page)
 
-const Index = () => {
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+
+export default function Index() {
+  const { user, signOut } = useAuth();
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="flex min-h-screen flex-col items-center justify-center p-4">
+      <div className="w-full max-w-md rounded-lg border bg-card p-8 shadow-sm">
+        <h1 className="text-2xl font-bold">Welcome to Your App</h1>
+        
+        {user && (
+          <div className="mt-4">
+            <p className="text-sm text-muted-foreground">Logged in as: {user.email}</p>
+            <Button 
+              variant="outline" 
+              className="mt-4"
+              onClick={() => signOut()}
+            >
+              Sign Out
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
-};
-
-export default Index;
+}
