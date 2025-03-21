@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Apple, Facebook, LucideIcon } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { InfoIcon } from "lucide-react";
 
 interface AuthFormProps {
   setIsLoading: (loading: boolean) => void;
@@ -33,6 +34,7 @@ type FormData = z.infer<typeof loginSchema>;
 
 export default function AuthForm({ setIsLoading }: AuthFormProps) {
   const [isLogin, setIsLogin] = useState(true);
+  const [emailSent, setEmailSent] = useState(false);
   const { signIn, signUp, signInWithSocial } = useAuth();
   const { toast } = useToast();
 
@@ -54,6 +56,7 @@ export default function AuthForm({ setIsLoading }: AuthFormProps) {
         const { error } = await signUp(data.email, data.password);
         if (error) throw error;
         else {
+          setEmailSent(true);
           toast({
             title: "Account created",
             description: "Please check your email to confirm your account.",
@@ -62,9 +65,19 @@ export default function AuthForm({ setIsLoading }: AuthFormProps) {
       }
     } catch (error: any) {
       console.error("Authentication error:", error);
+      
+      // Provide more specific error messages
+      let errorMessage = error.message || "Failed to authenticate";
+      
+      if (error.message?.includes("Email not confirmed")) {
+        errorMessage = "Please verify your email address before signing in.";
+      } else if (error.message?.includes("Invalid login credentials")) {
+        errorMessage = "Invalid email or password. Please try again.";
+      }
+      
       toast({
         title: "Authentication error",
-        description: error.message || "Failed to authenticate",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -90,6 +103,17 @@ export default function AuthForm({ setIsLoading }: AuthFormProps) {
 
   return (
     <div className="space-y-6">
+      {emailSent && !isLogin && (
+        <Alert className="bg-green-50 border-green-200">
+          <InfoIcon className="h-4 w-4" />
+          <AlertTitle>Verification email sent</AlertTitle>
+          <AlertDescription>
+            Please check your email and click the link to verify your account. 
+            If you don't see it, check your spam folder.
+          </AlertDescription>
+        </Alert>
+      )}
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -172,7 +196,10 @@ export default function AuthForm({ setIsLoading }: AuthFormProps) {
       <div className="mt-4 text-center text-sm">
         <button
           type="button"
-          onClick={() => setIsLogin(!isLogin)}
+          onClick={() => {
+            setIsLogin(!isLogin);
+            setEmailSent(false);
+          }}
           className="text-primary hover:underline"
         >
           {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
