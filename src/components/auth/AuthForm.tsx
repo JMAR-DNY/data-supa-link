@@ -124,6 +124,8 @@ export default function AuthForm({ setIsLoading }: AuthFormProps) {
         </form>
       </Form>
 
+      {/* Social login section hidden as requested */}
+      {/* 
       <div className="flex items-center justify-center">
         <Separator className="w-1/3" />
         <span className="px-3 text-xs text-muted-foreground whitespace-nowrap">OR CONTINUE WITH</span>
@@ -165,6 +167,7 @@ export default function AuthForm({ setIsLoading }: AuthFormProps) {
           <span>Apple</span>
         </Button>
       </div>
+      */}
 
       <div className="mt-4 text-center text-sm">
         <button

@@ -9,6 +9,97 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      campaigns: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          created_by: string | null
+          id: string
+          name: string
+          org_id: string
+          scheduled_at: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          name: string
+          org_id: string
+          scheduled_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          name?: string
+          org_id?: string
+          scheduled_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaigns_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      memberships: {
+        Row: {
+          created_at: string | null
+          invited_by: string | null
+          org_id: string
+          role: Database["public"]["Enums"]["team_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          invited_by?: string | null
+          org_id: string
+          role: Database["public"]["Enums"]["team_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          invited_by?: string | null
+          org_id?: string
+          role?: Database["public"]["Enums"]["team_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memberships_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
       source_data: {
         Row: {
           created_at: string
@@ -36,6 +127,36 @@ export type Database = {
         }
         Relationships: []
       }
+      teams: {
+        Row: {
+          created_at: string | null
+          credits_balance: number | null
+          id: string
+          name: string
+          owner_id: string
+          plan_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          credits_balance?: number | null
+          id?: string
+          name: string
+          owner_id: string
+          plan_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          credits_balance?: number | null
+          id?: string
+          name?: string
+          owner_id?: string
+          plan_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -44,7 +165,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      team_role: "owner" | "full_access" | "send_only" | "view_only"
     }
     CompositeTypes: {
       [_ in never]: never
