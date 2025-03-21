@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
 type ProfileData = {
-  id: string;
+  id: number; // Changed from string to number to match database type
   created_at: string | null;
   user_uuid: string;
 };
