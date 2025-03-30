@@ -1,4 +1,3 @@
-
 import { useNavigate, useLocation } from "react-router-dom";
 import { LayoutDashboard, List, Users, Settings, Mail, LogOut, ChevronRight, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,6 +16,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
+  SidebarRail,
+  SidebarTrigger
 } from "@/components/ui/sidebar";
 
 import { 
@@ -35,7 +36,6 @@ export default function DashboardSidebar() {
   const { state } = useSidebar();
   const { theme, setTheme } = useTheme();
   
-  // Track which menus are expanded
   const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({
     lists: false,
     teams: false
@@ -97,10 +97,7 @@ export default function DashboardSidebar() {
     navigate('/auth');
   };
 
-  // Check if the current path matches a menu item's path
   const isActive = (path: string) => {
-    // Check if current path equals the menu item path exactly
-    // Or if it's a subpath (e.g. /dashboard/lists/123 should highlight the Lists item)
     return location.pathname === path || 
            (path !== '/dashboard' && location.pathname.startsWith(path));
   };
@@ -184,7 +181,6 @@ export default function DashboardSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <div className="p-2 space-y-4">
-          {/* Theme toggle */}
           {state === "expanded" ? (
             <div className="flex items-center justify-between px-4 py-2">
               <div className="flex items-center gap-2">
@@ -209,7 +205,6 @@ export default function DashboardSidebar() {
             </div>
           )}
 
-          {/* User profile */}
           {state === "expanded" ? (
             <div className="p-4 rounded-md bg-secondary">
               <p className="text-sm font-medium mb-1">{user?.email}</p>
