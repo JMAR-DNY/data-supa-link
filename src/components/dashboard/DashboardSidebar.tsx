@@ -1,3 +1,4 @@
+
 import { useNavigate, useLocation } from "react-router-dom";
 import { LayoutDashboard, List, Users, Settings, Mail, LogOut, ChevronRight, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -61,7 +62,6 @@ export default function DashboardSidebar() {
       expandable: true,
       id: "lists",
       subItems: [
-        { title: "All Lists", path: "/dashboard/lists" },
         { title: "Create New", path: "/dashboard/lists/new" }
       ]
     },
@@ -131,6 +131,7 @@ export default function DashboardSidebar() {
                       <CollapsibleTrigger asChild>
                         <SidebarMenuButton 
                           tooltip={item.title}
+                          onClick={() => handleNavigation(item.path)}
                           isActive={isActive(item.path)}
                           className={isActive(item.path) 
                             ? "bg-primary/5 text-primary font-medium rounded-md" 
