@@ -4,26 +4,75 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-
-// Mock data for lists - would be replaced with real data from API
-interface List {
-  id: string;
-  name: string;
-  description?: string;
-  contactCount: number;
-  createdAt: Date;
-}
+import { Skeleton } from "@/components/ui/skeleton";
+import { useLists, List } from "@/hooks/use-lists";
+import { useContactCount } from "@/hooks/use-contact-count";
+import { toast } from "sonner";
 
 export default function Lists() {
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
-  // Mock empty lists state - would be fetched from an API
-  const [lists, setLists] = useState<List[]>([]);
+  const { data: lists = [], isLoading, error } = useLists();
   const hasLists = lists.length > 0;
 
   const handleCreateList = () => {
     // This would open a modal or navigate to create list page
-    console.log("Create new list clicked");
+    toast.info("Create list functionality will be added soon!");
   };
+
+  if (error) {
+    toast.error("Failed to load lists. Please try again.");
+  }
+
+  // Function to format date
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  // Component for a single list item
+  const ListItem = ({ list }: { list: List }) => {
+    const { data: contactCount = 0 } = useContactCount(list.id);
+
+    return (
+      <Card key={list.id} className="cursor-pointer hover:border-primary transition-colors">
+        <CardContent className={viewMode === "card" ? "p-6" : "p-4 flex justify-between items-center"}>
+          {viewMode === "card" ? (
+            <div className="space-y-2">
+              <h3 className="font-semibold text-lg">{list.name}</h3>
+              {list.description && <p className="text-muted-foreground text-sm">{list.description}</p>}
+              <p className="text-sm">{contactCount} contacts</p>
+              <p className="text-xs text-muted-foreground">
+                Created {formatDate(list.created_at)}
+              </p>
+            </div>
+          ) : (
+            <>
+              <div>
+                <h3 className="font-semibold">{list.name}</h3>
+                <p className="text-sm text-muted-foreground">{contactCount} contacts</p>
+              </div>
+              <Button variant="ghost" size="sm">
+                View
+              </Button>
+            </>
+          )}
+        </CardContent>
+      </Card>
+    );
+  };
+
+  // Loading skeleton
+  const ListSkeleton = () => (
+    <Card>
+      <CardContent className={viewMode === "card" ? "p-6" : "p-4"}>
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-24" />
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   return (
     <div className="container p-6">
@@ -41,8 +90,8 @@ export default function Lists() {
           </div>
         </div>
 
-        {/* System message if no lists */}
-        {!hasLists && (
+        {/* System message if no lists and not loading */}
+        {!isLoading && !hasLists && (
           <Alert>
             <AlertTitle>Welcome to Lists!</AlertTitle>
             <AlertDescription>
@@ -70,33 +119,15 @@ export default function Lists() {
             </CardContent>
           </Card>
 
-          {/* Existing lists would be mapped here */}
-          {lists.map((list) => (
-            <Card key={list.id} className="cursor-pointer hover:border-primary transition-colors">
-              <CardContent className={viewMode === "card" ? "p-6" : "p-4 flex justify-between items-center"}>
-                {viewMode === "card" ? (
-                  <div className="space-y-2">
-                    <h3 className="font-semibold text-lg">{list.name}</h3>
-                    {list.description && <p className="text-muted-foreground text-sm">{list.description}</p>}
-                    <p className="text-sm">{list.contactCount} contacts</p>
-                    <p className="text-xs text-muted-foreground">
-                      Created {list.createdAt.toLocaleDateString()}
-                    </p>
-                  </div>
-                ) : (
-                  <>
-                    <div>
-                      <h3 className="font-semibold">{list.name}</h3>
-                      <p className="text-sm text-muted-foreground">{list.contactCount} contacts</p>
-                    </div>
-                    <Button variant="ghost" size="sm">
-                      View
-                    </Button>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          ))}
+          {/* Show loading skeletons when loading */}
+          {isLoading && 
+            Array(3).fill(0).map((_, index) => <ListSkeleton key={index} />)
+          }
+
+          {/* Existing lists mapped */}
+          {!isLoading && 
+            lists.map((list) => <ListItem key={list.id} list={list} />)
+          }
         </div>
       </div>
     </div>
