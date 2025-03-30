@@ -1,6 +1,5 @@
-
 import { useNavigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, List, Users, Settings, Mail, LogOut, ChevronRight, Sun, Moon } from "lucide-react";
+import { LayoutDashboard, List, Users, Settings, Mail, LogOut, ChevronRight, Sun, Moon, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/hooks/use-theme";
 import { useState } from "react";
@@ -62,7 +61,11 @@ export default function DashboardSidebar() {
       expandable: true,
       id: "lists",
       subItems: [
-        { title: "Create New", path: "/dashboard/lists/new" }
+        { 
+          title: "Create New", 
+          path: "/dashboard/lists/new",
+          icon: Sparkles 
+        }
       ]
     },
     {
@@ -77,7 +80,6 @@ export default function DashboardSidebar() {
       expandable: true,
       id: "teams",
       subItems: [
-        { title: "All Teams", path: "/dashboard/teams" },
         { title: "Invitations", path: "/dashboard/teams/invitations" }
       ]
     },
@@ -155,6 +157,7 @@ export default function DashboardSidebar() {
                               : "hover:bg-accent/50"
                             }`}
                           >
+                            {subItem.icon && <subItem.icon className="mr-2 h-4 w-4 text-primary" />}
                             {subItem.title}
                           </Button>
                         ))}
