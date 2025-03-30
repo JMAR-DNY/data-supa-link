@@ -22,6 +22,6 @@ export default function AuthCallback() {
     );
   }
 
-  // Redirect to home once we're no longer loading
-  return <Navigate to="/" replace />;
+  // Redirect to dashboard once we're no longer loading
+  return <Navigate to="/dashboard" replace />;
 }
