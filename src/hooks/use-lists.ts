@@ -25,11 +25,27 @@ export const useLists = () => {
       }
 
       try {
-        // Fetch the teams the user is part of
+        // First we need to get the profile ID from the user UUID
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("user_uuid", user.id)
+          .single();
+
+        if (profileError) {
+          console.error("Error fetching profile:", profileError);
+          throw new Error("Failed to fetch profile");
+        }
+
+        if (!profileData) {
+          return [];
+        }
+
+        // Use profile ID to fetch memberships
         const { data: membershipData, error: membershipError } = await supabase
           .from("memberships")
           .select("team_id")
-          .eq("profile_id", user.id);
+          .eq("profile_id", profileData.id); // Use the numeric profile_id instead of user.id (string)
 
         if (membershipError) {
           console.error("Error fetching team memberships:", membershipError);
