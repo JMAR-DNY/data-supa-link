@@ -1,6 +1,6 @@
 
 import { useNavigate } from "react-router-dom";
-import { LayoutDashboard, List, Users, Settings, Mail } from "lucide-react";
+import { LayoutDashboard, List, Users, Settings, Mail, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 import {
@@ -16,6 +16,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ import { Button } from "@/components/ui/button";
 export default function DashboardSidebar() {
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
+  const { state } = useSidebar();
 
   const menuItems = [
     {
@@ -56,13 +58,18 @@ export default function DashboardSidebar() {
     navigate(path);
   };
 
+  const handleSignOut = () => {
+    signOut();
+    navigate('/auth');
+  };
+
   return (
     <Sidebar collapsible="icon">
       <SidebarRail />
       <SidebarHeader>
         <div className="flex items-center px-2 py-2">
           <SidebarTrigger />
-          <h1 className="text-xl font-bold ml-2">App Dashboard</h1>
+          <h1 className={`text-xl font-bold ml-2 ${state === "collapsed" ? "hidden" : "block"}`}>App Dashboard</h1>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -87,20 +94,27 @@ export default function DashboardSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <div className="p-2">
-          <div className="p-4 rounded-md bg-secondary">
-            <p className="text-sm font-medium mb-1">{user?.email}</p>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="w-full"
-              onClick={() => {
-                signOut();
-                navigate('/auth');
-              }}
+          {state === "expanded" ? (
+            <div className="p-4 rounded-md bg-secondary">
+              <p className="text-sm font-medium mb-1">{user?.email}</p>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full"
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </Button>
+            </div>
+          ) : (
+            <SidebarMenuButton 
+              tooltip="Sign Out"
+              onClick={handleSignOut}
+              className="w-full flex justify-center"
             >
-              Sign Out
-            </Button>
-          </div>
+              <LogOut />
+            </SidebarMenuButton>
+          )}
         </div>
       </SidebarFooter>
     </Sidebar>
