@@ -137,7 +137,7 @@ export default function DashboardSidebar() {
                           onClick={() => handleNavigation(item.path)}
                           isActive={isActive(item.path)}
                           className={isActive(item.path) 
-                            ? "bg-sidebar-primary/10 text-sidebar-primary font-medium rounded-md shadow-[0_0_8px_rgba(0,200,255,0.3)]" 
+                            ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium rounded-md border-l-4 border-sidebar-primary" 
                             : "hover:bg-accent/50"
                           }
                         >
@@ -154,7 +154,7 @@ export default function DashboardSidebar() {
                             size="sm"
                             onClick={() => handleNavigation(subItem.path)}
                             className={`w-full justify-start h-8 ${isActive(subItem.path) 
-                              ? "bg-sidebar-primary/10 text-sidebar-primary font-medium shadow-[0_0_8px_rgba(0,200,255,0.3)]" 
+                              ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium border-l-4 border-sidebar-primary" 
                               : "hover:bg-accent/50"
                             }`}
                           >
@@ -170,7 +170,7 @@ export default function DashboardSidebar() {
                       onClick={() => handleNavigation(item.path)}
                       isActive={isActive(item.path)}
                       className={isActive(item.path) 
-                        ? "bg-sidebar-primary/10 text-sidebar-primary font-medium rounded-md shadow-[0_0_8px_rgba(0,200,255,0.3)]" 
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium rounded-md border-l-4 border-sidebar-primary" 
                         : "hover:bg-accent/50"
                       }
                     >
