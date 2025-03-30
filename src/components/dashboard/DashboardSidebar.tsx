@@ -57,7 +57,7 @@ export default function DashboardSidebar() {
   };
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarRail />
       <SidebarHeader>
         <div className="flex items-center px-2 py-2">
