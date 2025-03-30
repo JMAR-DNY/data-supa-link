@@ -1,5 +1,5 @@
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { LayoutDashboard, List, Users, Settings, Mail, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 export default function DashboardSidebar() {
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { state } = useSidebar();
 
   const menuItems = [
@@ -63,6 +64,14 @@ export default function DashboardSidebar() {
     navigate('/auth');
   };
 
+  // Check if the current path matches a menu item's path
+  const isActive = (path: string) => {
+    // Check if current path equals the menu item path exactly
+    // Or if it's a subpath (e.g. /dashboard/lists/123 should highlight the Lists item)
+    return location.pathname === path || 
+           (path !== '/dashboard' && location.pathname.startsWith(path));
+  };
+
   return (
     <Sidebar collapsible="icon">
       <SidebarRail />
@@ -82,8 +91,10 @@ export default function DashboardSidebar() {
                   <SidebarMenuButton 
                     tooltip={item.title}
                     onClick={() => handleNavigation(item.path)}
+                    isActive={isActive(item.path)}
+                    className={isActive(item.path) ? "bg-primary/10 text-primary font-medium" : ""}
                   >
-                    <item.icon className="mr-2" />
+                    <item.icon className={`mr-2 ${isActive(item.path) ? "text-primary" : ""}`} />
                     <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
