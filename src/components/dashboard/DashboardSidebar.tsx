@@ -1,3 +1,4 @@
+
 import { useNavigate, useLocation } from "react-router-dom";
 import { LayoutDashboard, List, Users, Settings, Mail, LogOut, ChevronRight, Sun, Moon, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -136,11 +137,11 @@ export default function DashboardSidebar() {
                           onClick={() => handleNavigation(item.path)}
                           isActive={isActive(item.path)}
                           className={isActive(item.path) 
-                            ? "bg-primary/5 text-primary font-medium rounded-md" 
+                            ? "bg-sidebar-primary/10 text-sidebar-primary font-medium rounded-md shadow-[0_0_8px_rgba(0,200,255,0.3)]" 
                             : "hover:bg-accent/50"
                           }
                         >
-                          <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-primary" : ""}`} />
+                          <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-sidebar-primary" : ""}`} />
                           <span>{item.title}</span>
                           <ChevronRight className={`ml-auto h-4 w-4 transition-transform ${expandedMenus[item.id] ? 'rotate-90' : ''}`} />
                         </SidebarMenuButton>
@@ -153,11 +154,11 @@ export default function DashboardSidebar() {
                             size="sm"
                             onClick={() => handleNavigation(subItem.path)}
                             className={`w-full justify-start h-8 ${isActive(subItem.path) 
-                              ? "bg-primary/5 text-primary font-medium" 
+                              ? "bg-sidebar-primary/10 text-sidebar-primary font-medium shadow-[0_0_8px_rgba(0,200,255,0.3)]" 
                               : "hover:bg-accent/50"
                             }`}
                           >
-                            {subItem.icon && <subItem.icon className="mr-2 h-4 w-4 text-primary" />}
+                            {subItem.icon && <subItem.icon className="mr-2 h-4 w-4 text-sidebar-primary" />}
                             {subItem.title}
                           </Button>
                         ))}
@@ -169,11 +170,11 @@ export default function DashboardSidebar() {
                       onClick={() => handleNavigation(item.path)}
                       isActive={isActive(item.path)}
                       className={isActive(item.path) 
-                        ? "bg-primary/5 text-primary font-medium rounded-md" 
+                        ? "bg-sidebar-primary/10 text-sidebar-primary font-medium rounded-md shadow-[0_0_8px_rgba(0,200,255,0.3)]" 
                         : "hover:bg-accent/50"
                       }
                     >
-                      <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-primary" : ""}`} />
+                      <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-sidebar-primary" : ""}`} />
                       <span>{item.title}</span>
                     </SidebarMenuButton>
                   )}
