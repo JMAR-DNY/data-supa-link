@@ -1,7 +1,9 @@
 
 import { useNavigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, List, Users, Settings, Mail, LogOut } from "lucide-react";
+import { LayoutDashboard, List, Users, Settings, Mail, LogOut, ChevronRight, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/hooks/use-theme";
+import { useState } from "react";
 
 import {
   Sidebar,
@@ -14,18 +16,37 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 
+import { 
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger 
+} from "@/components/ui/collapsible";
+
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 export default function DashboardSidebar() {
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = useSidebar();
+  const { theme, setTheme } = useTheme();
+  
+  // Track which menus are expanded
+  const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({
+    lists: false,
+    teams: false
+  });
+
+  const toggleMenu = (menuId: string) => {
+    setExpandedMenus(prev => ({
+      ...prev,
+      [menuId]: !prev[menuId]
+    }));
+  };
 
   const menuItems = [
     {
@@ -36,7 +57,13 @@ export default function DashboardSidebar() {
     {
       title: "Lists",
       icon: List,
-      path: "/dashboard/lists"
+      path: "/dashboard/lists",
+      expandable: true,
+      id: "lists",
+      subItems: [
+        { title: "All Lists", path: "/dashboard/lists" },
+        { title: "Create New", path: "/dashboard/lists/new" }
+      ]
     },
     {
       title: "Campaigns",
@@ -46,7 +73,13 @@ export default function DashboardSidebar() {
     {
       title: "Teams",
       icon: Users,
-      path: "/dashboard/teams"
+      path: "/dashboard/teams",
+      expandable: true,
+      id: "teams",
+      subItems: [
+        { title: "All Teams", path: "/dashboard/teams" },
+        { title: "Invitations", path: "/dashboard/teams/invitations" }
+      ]
     },
     {
       title: "Settings",
@@ -72,6 +105,10 @@ export default function DashboardSidebar() {
            (path !== '/dashboard' && location.pathname.startsWith(path));
   };
 
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
   return (
     <Sidebar collapsible="icon">
       <SidebarRail />
@@ -88,15 +125,57 @@ export default function DashboardSidebar() {
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    tooltip={item.title}
-                    onClick={() => handleNavigation(item.path)}
-                    isActive={isActive(item.path)}
-                    className={isActive(item.path) ? "bg-primary/10 text-primary font-medium" : ""}
-                  >
-                    <item.icon className={`mr-2 ${isActive(item.path) ? "text-primary" : ""}`} />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
+                  {item.expandable ? (
+                    <Collapsible 
+                      open={expandedMenus[item.id]} 
+                      onOpenChange={() => toggleMenu(item.id)}
+                      className="w-full"
+                    >
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuButton 
+                          tooltip={item.title}
+                          isActive={isActive(item.path)}
+                          className={isActive(item.path) 
+                            ? "bg-primary/5 text-primary font-medium rounded-md" 
+                            : "hover:bg-accent/50"
+                          }
+                        >
+                          <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-primary" : ""}`} />
+                          <span>{item.title}</span>
+                          <ChevronRight className={`ml-auto h-4 w-4 transition-transform ${expandedMenus[item.id] ? 'rotate-90' : ''}`} />
+                        </SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="pl-8 space-y-1 mt-1">
+                        {item.subItems?.map(subItem => (
+                          <Button
+                            key={subItem.title}
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleNavigation(subItem.path)}
+                            className={`w-full justify-start h-8 ${isActive(subItem.path) 
+                              ? "bg-primary/5 text-primary font-medium" 
+                              : "hover:bg-accent/50"
+                            }`}
+                          >
+                            {subItem.title}
+                          </Button>
+                        ))}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    <SidebarMenuButton 
+                      tooltip={item.title}
+                      onClick={() => handleNavigation(item.path)}
+                      isActive={isActive(item.path)}
+                      className={isActive(item.path) 
+                        ? "bg-primary/5 text-primary font-medium rounded-md" 
+                        : "hover:bg-accent/50"
+                      }
+                    >
+                      <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-primary" : ""}`} />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -104,7 +183,33 @@ export default function DashboardSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <div className="p-2">
+        <div className="p-2 space-y-4">
+          {/* Theme toggle */}
+          {state === "expanded" ? (
+            <div className="flex items-center justify-between px-4 py-2">
+              <div className="flex items-center gap-2">
+                {theme === 'dark' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                <span className="text-sm">{theme === 'dark' ? 'Dark' : 'Light'} Mode</span>
+              </div>
+              <Switch 
+                checked={theme === 'dark'}
+                onCheckedChange={toggleTheme}
+              />
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={toggleTheme} 
+                className="rounded-full"
+              >
+                {theme === 'dark' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              </Button>
+            </div>
+          )}
+
+          {/* User profile */}
           {state === "expanded" ? (
             <div className="p-4 rounded-md bg-secondary">
               <p className="text-sm font-medium mb-1">{user?.email}</p>
