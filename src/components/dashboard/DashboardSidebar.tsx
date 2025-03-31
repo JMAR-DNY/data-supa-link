@@ -113,7 +113,6 @@ export default function DashboardSidebar() {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
-  // Mobile hamburger menu - repositioned with fixed positioning
   const MobileMenuButton = () => {
     return (
       <Button 
