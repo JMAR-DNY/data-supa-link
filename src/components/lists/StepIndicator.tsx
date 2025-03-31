@@ -18,7 +18,7 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
       <div className="flex items-center justify-between">
         {steps.map((step, index) => (
           <div key={step.id} className="flex flex-col items-center relative">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               {step.id < currentStep ? (
                 <CheckCircle2 className="h-6 w-6 text-primary" />
               ) : step.id === currentStep ? (
@@ -34,7 +34,7 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
             </div>
             
             {index < steps.length - 1 && (
-              <div className="absolute top-3 left-[calc(50%+0.75rem)] w-[calc(100%-1.5rem)] h-[2px] bg-muted">
+              <div className="absolute top-3 left-[calc(100%+0.25rem)] w-[calc(100%-3rem)] h-[2px] bg-muted">
                 <div 
                   className="h-full bg-primary transition-all duration-300" 
                   style={{ width: currentStep > step.id ? "100%" : "0%" }}
