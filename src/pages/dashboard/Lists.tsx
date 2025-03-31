@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useLists, List } from "@/hooks/use-lists";
 import { useContactCount } from "@/hooks/use-contact-count";
 import { toast } from "sonner";
+import PageHeader from "@/components/dashboard/PageHeader";
 
 export default function Lists() {
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
@@ -15,7 +16,6 @@ export default function Lists() {
   const hasLists = lists.length > 0;
 
   const handleCreateList = () => {
-    // This would open a modal or navigate to create list page
     toast.info("Create list functionality will be added soon!");
   };
 
@@ -23,13 +23,11 @@ export default function Lists() {
     toast.error("Failed to load lists. Please try again.");
   }
 
-  // Function to format date
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString();
   };
 
-  // Component for a single list item
   const ListItem = ({ list }: { list: List }) => {
     const { data: contactCount = 0 } = useContactCount(list.id);
 
@@ -61,7 +59,6 @@ export default function Lists() {
     );
   };
 
-  // Loading skeleton
   const ListSkeleton = () => (
     <Card>
       <CardContent className={viewMode === "card" ? "p-6" : "p-4"}>
@@ -77,9 +74,8 @@ export default function Lists() {
   return (
     <div className="container p-6">
       <div className="flex flex-col gap-6">
-        {/* Header with toggle */}
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Lists</h1>
+          <PageHeader title="Lists" />
           <div className="flex items-center gap-2">
             <LayoutList className={`h-5 w-5 ${viewMode === "list" ? "text-primary" : "text-muted-foreground"}`} />
             <Switch
@@ -90,7 +86,6 @@ export default function Lists() {
           </div>
         </div>
 
-        {/* System message if no lists and not loading */}
         {!isLoading && !hasLists && (
           <Alert>
             <AlertTitle>Welcome to Lists!</AlertTitle>
@@ -100,9 +95,7 @@ export default function Lists() {
           </Alert>
         )}
 
-        {/* Lists grid or list view */}
         <div className={viewMode === "card" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" : "flex flex-col gap-3"}>
-          {/* Create new list card - always shown regardless of view mode */}
           <Card 
             className={`border-dashed cursor-pointer hover:border-primary hover:bg-accent/50 transition-colors ${
               viewMode === "card" 
@@ -119,12 +112,10 @@ export default function Lists() {
             </CardContent>
           </Card>
 
-          {/* Show loading skeletons when loading */}
           {isLoading && 
             Array(3).fill(0).map((_, index) => <ListSkeleton key={index} />)
           }
 
-          {/* Existing lists mapped */}
           {!isLoading && 
             lists.map((list) => <ListItem key={list.id} list={list} />)
           }
