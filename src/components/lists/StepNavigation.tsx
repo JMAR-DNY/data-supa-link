@@ -27,7 +27,8 @@ export default function StepNavigation({
           Previous
         </Button>
       ) : (
-        <div /> {/* Empty div to maintain spacing with flex justify-between */}
+        // Empty div to maintain spacing with flex justify-between
+        <div />
       )}
       
       <Button onClick={onNext} disabled={isNextDisabled}>
