@@ -63,6 +63,36 @@ export type Database = {
           },
         ]
       }
+      list_tags: {
+        Row: {
+          list_id: number
+          tag_id: number
+        }
+        Insert: {
+          list_id: number
+          tag_id: number
+        }
+        Update: {
+          list_id?: number
+          tag_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "list_tags_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "lists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "list_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lists: {
         Row: {
           created_at: string | null
@@ -243,6 +273,51 @@ export type Database = {
             columns: ["list_id"]
             isOneToOne: false
             referencedRelation: "lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tags: {
+        Row: {
+          active: boolean
+          color: string | null
+          created_at: string | null
+          created_by_profile_id: number | null
+          id: number
+          name: string
+          team_id: number
+        }
+        Insert: {
+          active?: boolean
+          color?: string | null
+          created_at?: string | null
+          created_by_profile_id?: number | null
+          id?: never
+          name: string
+          team_id: number
+        }
+        Update: {
+          active?: boolean
+          color?: string | null
+          created_at?: string | null
+          created_by_profile_id?: number | null
+          id?: never
+          name?: string
+          team_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tags_created_by_profile_id_fkey"
+            columns: ["created_by_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tags_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
             referencedColumns: ["id"]
           },
         ]

@@ -1,10 +1,17 @@
 
 import { createContext, useContext, useState, ReactNode } from "react";
 
+export type Tag = {
+  id: number;
+  name: string;
+  color?: string;
+};
+
 export type ListData = {
   name: string;
   description: string;
   team_id?: number;
+  tags?: Tag[];
 };
 
 export type DataSourceOption = "csv" | "manual" | "api";
@@ -28,7 +35,7 @@ const ListCreationContext = createContext<ListCreationContextType | undefined>(u
 
 export const ListCreationProvider = ({ children }: { children: ReactNode }) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [listData, setListData] = useState<ListData>({ name: "", description: "" });
+  const [listData, setListData] = useState<ListData>({ name: "", description: "", tags: [] });
   const [dataSource, setDataSource] = useState<DataSourceOption | null>(null);
   const [contactData, setContactData] = useState<any[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
