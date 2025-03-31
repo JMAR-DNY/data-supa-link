@@ -13,7 +13,7 @@ export default function DashboardLayout() {
       <SidebarProvider defaultOpen={!isMobile}>
         <div className="flex min-h-screen w-full">
           <DashboardSidebar />
-          <SidebarInset>
+          <SidebarInset className="pt-4 md:pt-0">
             <Outlet />
           </SidebarInset>
         </div>

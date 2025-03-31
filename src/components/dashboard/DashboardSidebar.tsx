@@ -1,4 +1,3 @@
-
 import { useNavigate, useLocation } from "react-router-dom";
 import { LayoutDashboard, List, Users, Settings, Mail, LogOut, ChevronRight, Sun, Moon, Sparkles, Menu } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -114,13 +113,13 @@ export default function DashboardSidebar() {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
-  // Mobile hamburger menu
+  // Mobile hamburger menu - repositioned with fixed positioning
   const MobileMenuButton = () => {
     return (
       <Button 
         variant="ghost" 
         size="icon" 
-        className="md:hidden fixed top-4 left-4 z-50"
+        className="md:hidden fixed top-4 left-4 z-50 bg-background/80 backdrop-blur-sm"
         onClick={() => setOpenMobile(true)}
       >
         <Menu className="h-6 w-6" />
