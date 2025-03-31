@@ -1,5 +1,5 @@
 
-import { CheckCircle2, Circle } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 
 interface StepIndicatorProps {
   currentStep: number;
@@ -14,44 +14,50 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
   ];
 
   return (
-    <div className="w-full my-6">
-      <div className="flex items-center justify-between">
-        {steps.map((step, index) => (
-          <div key={step.id} className="flex flex-col items-center relative">
-            <div className="flex items-center gap-2">
-              {step.id < currentStep ? (
-                <CheckCircle2 className="h-6 w-6 text-primary" />
-              ) : step.id === currentStep ? (
-                <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-medium">
-                  {step.id}
-                </div>
-              ) : (
-                <Circle className="h-6 w-6 text-muted-foreground" />
-              )}
-              <span className={`text-sm hidden sm:block ${step.id === currentStep ? "font-medium" : "text-muted-foreground"}`}>
-                {step.label}
-              </span>
-            </div>
-            
-            {index < steps.length - 1 && (
-              <div className="absolute top-3 left-[calc(100%+0.5rem)] w-[calc(100%-1rem)] h-[2px] bg-muted">
-                <div 
-                  className="h-full bg-primary transition-all duration-300" 
-                  style={{ width: currentStep > step.id ? "100%" : "0%" }}
-                />
+    <div className="w-full my-8">
+      <div className="relative flex justify-between">
+        {/* Connector Lines */}
+        <div className="absolute top-4 left-0 right-0 h-0.5 bg-muted z-0" />
+        
+        {/* Progress Line */}
+        <div 
+          className="absolute top-4 left-0 h-0.5 bg-primary z-0 transition-all duration-500" 
+          style={{ 
+            width: `${(Math.max(0, currentStep - 1) / (steps.length - 1)) * 100}%` 
+          }} 
+        />
+        
+        {/* Steps */}
+        {steps.map((step) => (
+          <div key={step.id} className="z-10 flex flex-col items-center">
+            {/* Step Circle */}
+            {step.id < currentStep ? (
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center mb-2">
+                <CheckCircle2 className="h-5 w-5 text-primary-foreground" />
+              </div>
+            ) : step.id === currentStep ? (
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium mb-2">
+                {step.id}
+              </div>
+            ) : (
+              <div className="w-8 h-8 rounded-full border-2 border-muted bg-background flex items-center justify-center text-muted-foreground font-medium mb-2">
+                {step.id}
               </div>
             )}
+            
+            {/* Step Label */}
+            <span 
+              className={`text-sm ${
+                step.id === currentStep 
+                  ? "font-medium text-foreground" 
+                  : step.id < currentStep 
+                    ? "text-primary" 
+                    : "text-muted-foreground"
+              }`}
+            >
+              {step.label}
+            </span>
           </div>
-        ))}
-      </div>
-      <div className="flex justify-between mt-2 sm:hidden">
-        {steps.map((step) => (
-          <span 
-            key={step.id}
-            className={`text-xs ${step.id === currentStep ? "font-medium" : "text-muted-foreground"}`}
-          >
-            {step.label}
-          </span>
         ))}
       </div>
     </div>
