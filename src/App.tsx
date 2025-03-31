@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import Lists from "./pages/dashboard/Lists";
+import CreateList from "./pages/dashboard/CreateList";
 import Campaigns from "./pages/dashboard/Campaigns";
 import Teams from "./pages/dashboard/Teams";
 import Settings from "./pages/dashboard/Settings";
@@ -49,6 +50,7 @@ const App = () => (
             >
               <Route index element={<Dashboard />} />
               <Route path="lists" element={<Lists />} />
+              <Route path="lists/new" element={<CreateList />} />
               <Route path="campaigns" element={<Campaigns />} />
               <Route path="teams" element={<Teams />} />
               <Route path="settings" element={<Settings />} />

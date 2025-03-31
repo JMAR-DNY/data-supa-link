@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Plus, LayoutGrid, LayoutList } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -14,9 +15,10 @@ export default function Lists() {
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
   const { data: lists = [], isLoading, error } = useLists();
   const hasLists = lists.length > 0;
+  const navigate = useNavigate();
 
   const handleCreateList = () => {
-    toast.info("Create list functionality will be added soon!");
+    navigate("/dashboard/lists/new");
   };
 
   if (error) {
