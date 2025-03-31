@@ -16,20 +16,24 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
   return (
     <div className="w-full my-8 flex justify-center">
       <div className="relative flex justify-between w-full md:w-[70%]">
-        {/* Connector Lines - adjusted to start and end at the centers of first and last elements */}
+        {/* Connector Lines - adjusted to start at first element and end at last element */}
         <div 
           className="absolute top-4 h-0.5 bg-muted z-0" 
           style={{ 
-            left: '16px', // Half of the circle width (32px / 2)
-            right: '16px'  // Half of the circle width (32px / 2)
+            left: '50%', // Center of first circle
+            right: '50%',  // Center of last circle
+            transform: 'translateX(16px)',
+            width: 'calc(100% - 32px)' // Total width minus the width of one circle
           }} 
         />
         
         {/* Progress Line - adjusted to match connector line positioning */}
         <div 
-          className="absolute top-4 left-[16px] h-0.5 bg-primary z-0 transition-all duration-500" 
+          className="absolute top-4 h-0.5 bg-primary z-0 transition-all duration-500" 
           style={{ 
-            width: `${(Math.max(0, currentStep - 1) / (steps.length - 1)) * (100 - (32 / (steps.length - 1)))}%` 
+            left: '50%', // Center of first circle
+            transform: 'translateX(16px)',
+            width: `${(Math.max(0, currentStep - 1) / (steps.length - 1)) * (100 - 32)}%` 
           }} 
         />
         
