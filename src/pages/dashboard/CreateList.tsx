@@ -21,6 +21,14 @@ function CreateListContent() {
   
   const TOTAL_STEPS = 3;
   
+  // Determine the header title based on the current step and list name
+  const getHeaderTitle = () => {
+    if (currentStep === 1 || !listData.name.trim()) {
+      return "Create New List";
+    }
+    return listData.name;
+  }
+  
   const handleNext = () => {
     if (currentStep === 1) {
       // Validate first step
@@ -64,7 +72,7 @@ function CreateListContent() {
   
   return (
     <div className="container p-6">
-      <PageHeader title="Create New List" />
+      <PageHeader title={getHeaderTitle()} />
       
       <StepIndicator currentStep={currentStep} totalSteps={TOTAL_STEPS} />
       
