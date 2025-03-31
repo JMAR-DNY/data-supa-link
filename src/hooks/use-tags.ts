@@ -16,6 +16,7 @@ export const useTags = () => {
   return useQuery({
     queryKey: ["tags"],
     queryFn: async () => {
+      // Use a more type-safe approach with explicit casting
       const { data, error } = await supabase
         .from("tags")
         .select("*")
@@ -26,7 +27,8 @@ export const useTags = () => {
         throw new Error(`Error fetching tags: ${error.message}`);
       }
 
-      return data as Tag[];
+      // Explicitly cast the response to the Tag type
+      return (data || []) as Tag[];
     },
   });
 };
