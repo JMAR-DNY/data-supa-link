@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { 
   LayoutDashboard, List, Users, Settings, Mail, LogOut, 
   ChevronRight, Sun, Moon, Sparkles, Menu, Shield, 
-  BarChart, Key, Database
+  Database, ChevronDown, BarChart, Key
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/hooks/use-theme";
@@ -45,7 +45,8 @@ export default function DashboardSidebar() {
   
   const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({
     lists: false,
-    teams: false
+    teams: false,
+    api: false
   });
 
   const toggleMenu = (menuId: string) => {
@@ -105,14 +106,23 @@ export default function DashboardSidebar() {
       path: "/dashboard/admin"
     },
     {
-      title: "API Usage",
+      title: "API",
       icon: BarChart,
-      path: "/dashboard/admin/api-usage"
-    },
-    {
-      title: "API Key Config",
-      icon: Key,
-      path: "/dashboard/admin/api-keys"
+      path: "/dashboard/admin/api-usage",
+      expandable: true,
+      id: "api",
+      subItems: [
+        { 
+          title: "Usage", 
+          path: "/dashboard/admin/api-usage",
+          icon: BarChart 
+        },
+        { 
+          title: "Key Config", 
+          path: "/dashboard/admin/api-keys",
+          icon: Key 
+        }
+      ]
     },
     {
       title: "Prompt Config",
