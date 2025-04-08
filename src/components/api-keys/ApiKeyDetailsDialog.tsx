@@ -9,19 +9,19 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { ApiKey } from '@/types/api-keys';
 
-interface EditApiKeyDialogProps {
+interface ApiKeyDetailsDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   apiKey: ApiKey | null;
   onActivate: (active: boolean) => void;
 }
 
-const EditApiKeyDialog: React.FC<EditApiKeyDialogProps> = ({
+export function ApiKeyDetailsDialog({
   isOpen,
   onOpenChange,
   apiKey,
   onActivate
-}) => {
+}: ApiKeyDetailsDialogProps) {
   if (!apiKey) return null;
 
   return (
@@ -83,6 +83,4 @@ const EditApiKeyDialog: React.FC<EditApiKeyDialogProps> = ({
       </DialogContent>
     </Dialog>
   );
-};
-
-export default EditApiKeyDialog;
+}
