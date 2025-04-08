@@ -37,16 +37,10 @@ const ApiUsage = () => (
   </div>
 );
 
-const ApiKeys = () => (
-  <div className="container p-4 md:p-6">
-    <h1 className="text-2xl font-bold mb-6">API Key Configuration</h1>
-    <div className="rounded-lg border bg-card p-4 md:p-8 shadow-sm">
-      <p className="text-muted-foreground">API key management interface will be implemented here</p>
-    </div>
-  </div>
-);
+// Import the ApiKeys page
+import ApiKeys from "./pages/dashboard/ApiKeys";
 
-// Import the new ApiProviders page
+// Import the ApiProviders page
 import ApiProviders from "./pages/dashboard/ApiProviders";
 
 const Prompts = () => (

@@ -65,6 +65,7 @@ export type Database = {
           id: number
           module_id: number | null
           name: string | null
+          rotate_on: string | null
           vault_key: string
         }
         Insert: {
@@ -78,6 +79,7 @@ export type Database = {
           id?: never
           module_id?: number | null
           name?: string | null
+          rotate_on?: string | null
           vault_key: string
         }
         Update: {
@@ -91,6 +93,7 @@ export type Database = {
           id?: never
           module_id?: number | null
           name?: string | null
+          rotate_on?: string | null
           vault_key?: string
         }
         Relationships: [
