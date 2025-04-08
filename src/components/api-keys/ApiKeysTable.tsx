@@ -57,14 +57,13 @@ const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
                 <ArrowUpDown className="ml-2 h-4 w-4" />
               </div>
             </TableHead>
-            <TableHead>Description</TableHead>
+            <TableHead className="w-1/3">Description</TableHead>
             <TableHead>Provider</TableHead>
             <TableHead>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="h-8 px-2 font-medium text-muted-foreground">
-                    Status: {activeFilter === 'active' ? 'Active' : activeFilter === 'inactive' ? 'Inactive' : 'All'}
-                    <ChevronDown className="ml-2 h-4 w-4" />
+                    Active {activeFilter !== 'all' && <ChevronDown className="ml-2 h-4 w-4" />}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
@@ -96,7 +95,7 @@ const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
             filteredApiKeys?.map((apiKey) => (
               <TableRow key={apiKey.id}>
                 <TableCell className="font-medium">{apiKey.name}</TableCell>
-                <TableCell className="max-w-xs truncate">{apiKey.description}</TableCell>
+                <TableCell className="max-w-xs truncate w-1/3">{apiKey.description}</TableCell>
                 <TableCell>
                   {apiKey.api_providers?.website ? (
                     <a 
