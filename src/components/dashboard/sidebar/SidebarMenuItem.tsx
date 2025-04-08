@@ -41,40 +41,42 @@ export default function SidebarMenuItemComponent({
   onNavigate 
 }: MenuItemProps) {
   const location = useLocation();
-
+  
+  // Improved isActive function to prevent multiple highlighting
   const isActive = (path: string) => {
-    // For exact matches
+    // Exact match for current path
     if (location.pathname === path) {
       return true;
     }
     
-    // Special case for dashboard root to prevent highlighting when on sub-routes
+    // For the root dashboard path
     if (path === '/dashboard' && location.pathname !== '/dashboard') {
       return false;
     }
     
-    // For expandable items, check if we're on a direct child route,
-    // but avoid matching paths that could be part of another section
-    if (path !== '/dashboard' && location.pathname.startsWith(path)) {
-      // Extract the next path segment after the current path to ensure we're
-      // only matching direct children
-      const remainingPath = location.pathname.substring(path.length);
-      
-      // If there's nothing more or it starts with a slash followed by characters,
-      // it's a direct child or the exact path
-      if (remainingPath === '' || remainingPath.startsWith('/')) {
-        return true;
+    // For expandable items with subitems
+    if (item.expandable && item.subItems) {
+      // If we're checking the parent item itself
+      if (path === item.path) {
+        // Only highlight parent if we're on the exact parent path
+        return location.pathname === path;
       }
+      
+      // For subitems, do exact matching only
+      return location.pathname === path;
     }
     
     return false;
   };
 
+  // Check if any subitem is active
+  const hasActiveSubItem = item.subItems?.some(subItem => location.pathname === subItem.path) || false;
+
   return (
     <SidebarMenuItem key={item.title}>
       {item.expandable ? (
         <Collapsible 
-          open={expanded} 
+          open={expanded || hasActiveSubItem} 
           onOpenChange={onToggle}
           className="w-full"
         >
@@ -83,14 +85,14 @@ export default function SidebarMenuItemComponent({
               tooltip={item.title}
               onClick={() => onNavigate(item.path)}
               isActive={isActive(item.path)}
-              className={isActive(item.path) && !item.subItems?.some((sub) => isActive(sub.path))
+              className={isActive(item.path)
                 ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium rounded-md border-l-4 border-sidebar-primary" 
                 : "hover:bg-accent/50"
               }
             >
-              <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) && !item.subItems?.some((sub) => isActive(sub.path)) ? "text-sidebar-primary" : ""}`} />
+              <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-sidebar-primary" : ""}`} />
               <span>{item.title}</span>
-              <ChevronRight className={`ml-auto h-4 w-4 transition-transform ${expanded ? 'rotate-90' : ''}`} />
+              <ChevronRight className={`ml-auto h-4 w-4 transition-transform ${expanded || hasActiveSubItem ? 'rotate-90' : ''}`} />
             </SidebarMenuButton>
           </CollapsibleTrigger>
           <CollapsibleContent className="pl-8 space-y-1 mt-1">

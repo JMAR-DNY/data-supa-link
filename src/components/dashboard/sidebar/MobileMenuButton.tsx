@@ -12,6 +12,7 @@ export default function MobileMenuButton() {
       size="icon" 
       className="md:hidden fixed top-4 left-4 z-50 bg-background/80 backdrop-blur-sm"
       onClick={() => setOpenMobile(true)}
+      aria-label="Open mobile menu"
     >
       <Menu className="h-6 w-6" />
       <span className="sr-only">Open menu</span>
