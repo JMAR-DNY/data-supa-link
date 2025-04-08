@@ -18,7 +18,7 @@ import Campaigns from "./pages/dashboard/Campaigns";
 import Teams from "./pages/dashboard/Teams";
 import Settings from "./pages/dashboard/Settings";
 
-// Placeholder admin pages - these will be implemented later
+// Admin pages
 const AdminDashboard = () => (
   <div className="container p-4 md:p-6">
     <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
@@ -46,14 +46,8 @@ const ApiKeys = () => (
   </div>
 );
 
-const ApiProviders = () => (
-  <div className="container p-4 md:p-6">
-    <h1 className="text-2xl font-bold mb-6">API Provider Configuration</h1>
-    <div className="rounded-lg border bg-card p-4 md:p-8 shadow-sm">
-      <p className="text-muted-foreground">API provider management interface will be implemented here</p>
-    </div>
-  </div>
-);
+// Import the new ApiProviders page
+import ApiProviders from "./pages/dashboard/ApiProviders";
 
 const Prompts = () => (
   <div className="container p-4 md:p-6">
