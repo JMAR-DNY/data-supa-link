@@ -20,6 +20,7 @@ interface ApiKeysTableProps {
   openEditDialog: (apiKey: ApiKey) => void;
   activeFilter: ActiveFilter;
   setActiveFilter: (filter: ActiveFilter) => void;
+  searchQuery: string;
 }
 
 const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
@@ -30,10 +31,20 @@ const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
   openEditDialog,
   activeFilter,
   setActiveFilter,
+  searchQuery,
 }) => {
   if (apiKeysLoading) {
     return <div className="p-8 text-center">Loading API keys...</div>;
   }
+
+  // Filter API keys based on search query
+  const filteredApiKeys = searchQuery
+    ? apiKeys?.filter(key => 
+        key.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        key.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        key.api_providers?.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : apiKeys;
 
   return (
     <div className="overflow-x-auto">
@@ -75,14 +86,14 @@ const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {apiKeys?.length === 0 ? (
+          {filteredApiKeys?.length === 0 ? (
             <TableRow>
               <TableCell colSpan={7} className="text-center p-4">
                 No API keys found
               </TableCell>
             </TableRow>
           ) : (
-            apiKeys?.map((apiKey) => (
+            filteredApiKeys?.map((apiKey) => (
               <TableRow key={apiKey.id}>
                 <TableCell className="font-medium">{apiKey.name}</TableCell>
                 <TableCell className="max-w-xs truncate">{apiKey.description}</TableCell>

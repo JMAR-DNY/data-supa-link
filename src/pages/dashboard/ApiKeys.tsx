@@ -1,7 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Plus } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import PageHeader from '@/components/dashboard/PageHeader';
@@ -14,6 +17,7 @@ const ApiKeys = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [currentApiKey, setCurrentApiKey] = useState<ApiKey | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   
   // Form state
   const [selectedModuleId, setSelectedModuleId] = useState<number | null>(null);
@@ -140,24 +144,42 @@ const ApiKeys = () => {
   
   return (
     <div className="container p-4 md:p-6">
-      <div className="flex justify-between items-center mb-6">
-        <PageHeader title="API Keys" />
-        <Button onClick={() => setIsAddDialogOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" /> Add API Key
-        </Button>
-      </div>
+      <PageHeader title="API Keys" />
       
-      <div className="rounded-lg border bg-card shadow-sm">
-        <ApiKeysTable 
-          apiKeys={apiKeys}
-          apiKeysLoading={apiKeysLoading}
-          nameSort={nameSort}
-          toggleNameSort={toggleNameSort}
-          openEditDialog={openEditDialog}
-          activeFilter={activeFilter}
-          setActiveFilter={setActiveFilter}
-        />
-      </div>
+      <Card className="mb-6">
+        <CardContent className="p-4 md:p-6">
+          <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
+            <div className="relative w-full md:w-72">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search API keys..."
+                className="pl-8"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            
+            <div className="flex gap-2 items-center">              
+              <Button onClick={() => setIsAddDialogOpen(true)} className="whitespace-nowrap">
+                <Plus className="mr-2 h-4 w-4" />
+                Add API Key
+              </Button>
+            </div>
+          </div>
+          
+          <ApiKeysTable 
+            apiKeys={apiKeys}
+            apiKeysLoading={apiKeysLoading}
+            nameSort={nameSort}
+            toggleNameSort={toggleNameSort}
+            openEditDialog={openEditDialog}
+            activeFilter={activeFilter}
+            setActiveFilter={setActiveFilter}
+            searchQuery={searchQuery}
+          />
+        </CardContent>
+      </Card>
       
       {/* Add API Key Dialog */}
       <AddApiKeyDialog 
