@@ -80,6 +80,22 @@ export default function SidebarMenuItemComponent({
     }
   }, [location.pathname]);
 
+  // Handle the parent menu item click
+  const handleMenuItemClick = () => {
+    if (item.expandable) {
+      onToggle(); // Toggle the expandable menu
+      
+      // For expandable items, also navigate to the main path if it's not already expanded
+      // This ensures clicking on "Lists" will navigate to the lists page while also expanding the submenu
+      if (!expanded) {
+        onNavigate(item.path);
+      }
+    } else {
+      // For non-expandable items, just navigate
+      onNavigate(item.path);
+    }
+  };
+
   return (
     <SidebarMenuItem key={item.title}>
       {item.expandable ? (
@@ -91,6 +107,7 @@ export default function SidebarMenuItemComponent({
           <CollapsibleTrigger asChild>
             <SidebarMenuButton 
               tooltip={item.title}
+              onClick={handleMenuItemClick}
               isActive={isActive(item.path)}
               className={isActive(item.path)
                 ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium rounded-md border-l-4 border-sidebar-primary" 
