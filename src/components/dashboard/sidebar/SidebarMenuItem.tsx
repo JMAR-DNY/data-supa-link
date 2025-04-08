@@ -72,10 +72,10 @@ export default function SidebarMenuItemComponent({
   // Check if any subitem is active
   const hasActiveSubItem = item.subItems?.some(subItem => location.pathname === subItem.path) || false;
   
-  // This effect will handle proper expansion when navigating directly to a subitem
+  // This effect will handle expansion when navigating
   useEffect(() => {
     // Auto-expand if we're on a page that's part of this menu's subitems
-    if (item.expandable && !expanded && hasActiveSubItem) {
+    if (item.expandable && !expanded && (hasActiveSubItem || isActive(item.path))) {
       onToggle(); // Open this section
     }
     
@@ -86,7 +86,7 @@ export default function SidebarMenuItemComponent({
     }
   }, [location.pathname]);
 
-  // Handle clicks on the parent menu item (Lists)
+  // Handle clicks on the parent menu item
   const handleParentClick = (e: React.MouseEvent) => {
     // Navigate to the main path
     onNavigate(item.path);
