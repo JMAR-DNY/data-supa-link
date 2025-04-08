@@ -376,60 +376,69 @@ const ApiKeys = () => {
           </DialogHeader>
           
           <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="module">Module</Label>
-              <Select 
-                onValueChange={(value) => {
-                  setSelectedModuleId(Number(value));
-                  setSelectedFunctionId(null);
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a module" />
-                </SelectTrigger>
-                <SelectContent>
-                  {modules?.map((module) => (
-                    <SelectItem key={module.id} value={module.id.toString()}>
-                      {module.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            {/* Module, Function, Environment row */}
+            <div className="grid grid-cols-3 gap-2">
+              <div>
+                <Label htmlFor="module" className="text-xs mb-1 block">Module</Label>
+                <Select 
+                  onValueChange={(value) => {
+                    setSelectedModuleId(Number(value));
+                    setSelectedFunctionId(null);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Module" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {modules?.map((module) => (
+                      <SelectItem key={module.id} value={module.id.toString()}>
+                        {module.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label htmlFor="function" className="text-xs mb-1 block">Function</Label>
+                <Select 
+                  onValueChange={(value) => setSelectedFunctionId(Number(value))}
+                  disabled={!selectedModuleId}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Function" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {functions?.map((func) => (
+                      <SelectItem key={func.id} value={func.id.toString()}>
+                        {func.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label htmlFor="environment" className="text-xs mb-1 block">Environment</Label>
+                <Select onValueChange={(value) => setSelectedEnvironmentId(Number(value))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Environment" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {environments?.map((env) => (
+                      <SelectItem key={env.id} value={env.id.toString()}>
+                        {env.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             
+            {/* Generated name */}
             <div className="space-y-2">
-              <Label htmlFor="function">Function</Label>
-              <Select 
-                onValueChange={(value) => setSelectedFunctionId(Number(value))}
-                disabled={!selectedModuleId}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={selectedModuleId ? "Select a function" : "Select a module first"} />
-                </SelectTrigger>
-                <SelectContent>
-                  {functions?.map((func) => (
-                    <SelectItem key={func.id} value={func.id.toString()}>
-                      {func.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="environment">Environment</Label>
-              <Select onValueChange={(value) => setSelectedEnvironmentId(Number(value))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select an environment" />
-                </SelectTrigger>
-                <SelectContent>
-                  {environments?.map((env) => (
-                    <SelectItem key={env.id} value={env.id.toString()}>
-                      {env.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor="name">Generated Name</Label>
+              <Input id="name" value={generatedName} disabled className="bg-gray-50" />
             </div>
             
             <div className="space-y-2">
@@ -446,11 +455,6 @@ const ApiKeys = () => {
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="name">Generated Name</Label>
-              <Input id="name" value={generatedName} disabled />
             </div>
             
             <div className="space-y-2">
@@ -552,3 +556,4 @@ const ApiKeys = () => {
 };
 
 export default ApiKeys;
+
