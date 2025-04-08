@@ -202,12 +202,12 @@ export default function DashboardSidebar() {
               tooltip={item.title}
               onClick={() => handleNavigation(item.path)}
               isActive={isActive(item.path)}
-              className={isActive(item.path) 
+              className={isActive(item.path) && !item.subItems?.some((sub: any) => isActive(sub.path))
                 ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium rounded-md border-l-4 border-sidebar-primary" 
                 : "hover:bg-accent/50"
               }
             >
-              <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-sidebar-primary" : ""}`} />
+              <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) && !item.subItems?.some((sub: any) => isActive(sub.path)) ? "text-sidebar-primary" : ""}`} />
               <span>{item.title}</span>
               <ChevronRight className={`ml-auto h-4 w-4 transition-transform ${expandedMenus[item.id] ? 'rotate-90' : ''}`} />
             </SidebarMenuButton>
