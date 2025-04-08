@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Edit, Plus, ArrowUpDown, Check, X } from 'lucide-react';
@@ -102,7 +101,7 @@ const ApiKeys = () => {
         .select(`
           *,
           modules (id, name, description),
-          functions:function_id (id, name, description),
+          functions:function_id (id, name, description, module_id),
           environments (id, name, description),
           api_providers (id, name, description, website)
         `)
@@ -115,7 +114,7 @@ const ApiKeys = () => {
       const { data, error } = await query;
       
       if (error) throw error;
-      return data as ApiKey[];
+      return data as unknown as ApiKey[];
     }
   });
   
@@ -556,4 +555,3 @@ const ApiKeys = () => {
 };
 
 export default ApiKeys;
-
