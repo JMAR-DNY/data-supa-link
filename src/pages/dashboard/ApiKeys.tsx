@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Plus, Check } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import PageHeader from '@/components/dashboard/PageHeader';
@@ -154,33 +148,14 @@ const ApiKeys = () => {
       </div>
       
       <div className="rounded-lg border bg-card shadow-sm">
-        <div className="flex items-center p-4 border-b">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                {activeFilter === 'active' ? 'Active' : activeFilter === 'inactive' ? 'Inactive' : 'All'} <span className="ml-2">▼</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setActiveFilter('active')}>
-                Active {activeFilter === 'active' && <Check className="ml-2 h-4 w-4" />}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setActiveFilter('inactive')}>
-                Inactive {activeFilter === 'inactive' && <Check className="ml-2 h-4 w-4" />}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setActiveFilter('all')}>
-                All {activeFilter === 'all' && <Check className="ml-2 h-4 w-4" />}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        
         <ApiKeysTable 
           apiKeys={apiKeys}
           apiKeysLoading={apiKeysLoading}
           nameSort={nameSort}
           toggleNameSort={toggleNameSort}
           openEditDialog={openEditDialog}
+          activeFilter={activeFilter}
+          setActiveFilter={setActiveFilter}
         />
       </div>
       

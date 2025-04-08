@@ -1,10 +1,16 @@
 
 import React from 'react';
 import { format } from 'date-fns';
-import { ArrowUpDown, Edit } from 'lucide-react';
+import { ArrowUpDown, Edit, Check, ChevronDown } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { ApiKey, SortOrder } from '@/types/api-keys';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { ApiKey, SortOrder, ActiveFilter } from '@/types/api-keys';
 
 interface ApiKeysTableProps {
   apiKeys: ApiKey[] | undefined;
@@ -12,6 +18,8 @@ interface ApiKeysTableProps {
   nameSort: SortOrder;
   toggleNameSort: () => void;
   openEditDialog: (apiKey: ApiKey) => void;
+  activeFilter: ActiveFilter;
+  setActiveFilter: (filter: ActiveFilter) => void;
 }
 
 const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
@@ -20,6 +28,8 @@ const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
   nameSort,
   toggleNameSort,
   openEditDialog,
+  activeFilter,
+  setActiveFilter,
 }) => {
   if (apiKeysLoading) {
     return <div className="p-8 text-center">Loading API keys...</div>;
@@ -38,7 +48,27 @@ const ApiKeysTable: React.FC<ApiKeysTableProps> = ({
             </TableHead>
             <TableHead>Description</TableHead>
             <TableHead>Provider</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 px-2 font-medium text-muted-foreground">
+                    Status: {activeFilter === 'active' ? 'Active' : activeFilter === 'inactive' ? 'Inactive' : 'All'}
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  <DropdownMenuItem onClick={() => setActiveFilter('active')} className="flex items-center justify-between">
+                    Active {activeFilter === 'active' && <Check className="ml-2 h-4 w-4" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setActiveFilter('inactive')} className="flex items-center justify-between">
+                    Inactive {activeFilter === 'inactive' && <Check className="ml-2 h-4 w-4" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setActiveFilter('all')} className="flex items-center justify-between">
+                    All {activeFilter === 'all' && <Check className="ml-2 h-4 w-4" />}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableHead>
             <TableHead>Created On</TableHead>
             <TableHead>Rotate On</TableHead>
             <TableHead>Actions</TableHead>
