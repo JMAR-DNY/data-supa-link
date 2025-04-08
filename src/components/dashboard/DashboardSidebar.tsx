@@ -144,8 +144,31 @@ export default function DashboardSidebar() {
   };
 
   const isActive = (path: string) => {
-    return location.pathname === path || 
-           (path !== '/dashboard' && location.pathname.startsWith(path));
+    // For exact matches
+    if (location.pathname === path) {
+      return true;
+    }
+    
+    // Special case for dashboard root to prevent highlighting when on sub-routes
+    if (path === '/dashboard' && location.pathname !== '/dashboard') {
+      return false;
+    }
+    
+    // For expandable items, check if we're on a direct child route,
+    // but avoid matching paths that could be part of another section
+    if (path !== '/dashboard' && location.pathname.startsWith(path)) {
+      // Extract the next path segment after the current path to ensure we're
+      // only matching direct children
+      const remainingPath = location.pathname.substring(path.length);
+      
+      // If there's nothing more or it starts with a slash followed by characters,
+      // it's a direct child or the exact path
+      if (remainingPath === '' || remainingPath.startsWith('/')) {
+        return true;
+      }
+    }
+    
+    return false;
   };
 
   const toggleTheme = () => {
