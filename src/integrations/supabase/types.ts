@@ -9,6 +9,151 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      ai_prompts: {
+        Row: {
+          content: string
+          created_at: string | null
+          created_by_profile_id: number | null
+          id: number
+          name: string
+          purpose: string | null
+          team_editable: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          created_by_profile_id?: number | null
+          id?: never
+          name: string
+          purpose?: string | null
+          team_editable?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          created_by_profile_id?: number | null
+          id?: never
+          name?: string
+          purpose?: string | null
+          team_editable?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_prompts_created_by_profile_id_fkey"
+            columns: ["created_by_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      api_keys: {
+        Row: {
+          api_provider_id: number | null
+          created_at: string | null
+          created_by_profile_id: number | null
+          id: number
+          name: string | null
+          vault_key: string
+        }
+        Insert: {
+          api_provider_id?: number | null
+          created_at?: string | null
+          created_by_profile_id?: number | null
+          id?: never
+          name?: string | null
+          vault_key: string
+        }
+        Update: {
+          api_provider_id?: number | null
+          created_at?: string | null
+          created_by_profile_id?: number | null
+          id?: never
+          name?: string | null
+          vault_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_keys_api_provider_id_fkey"
+            columns: ["api_provider_id"]
+            isOneToOne: true
+            referencedRelation: "api_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_keys_created_by_profile_id_fkey"
+            columns: ["created_by_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      api_providers: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: number
+          name: string
+          website: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: never
+          name: string
+          website?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: never
+          name?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      api_usage: {
+        Row: {
+          action: string
+          api_provider_id: number | null
+          cost_usd: number | null
+          created_at: string | null
+          id: number
+          metadata: Json | null
+          usage_units: number | null
+        }
+        Insert: {
+          action: string
+          api_provider_id?: number | null
+          cost_usd?: number | null
+          created_at?: string | null
+          id?: never
+          metadata?: Json | null
+          usage_units?: number | null
+        }
+        Update: {
+          action?: string
+          api_provider_id?: number | null
+          cost_usd?: number | null
+          created_at?: string | null
+          id?: never
+          metadata?: Json | null
+          usage_units?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_usage_api_provider_id_fkey"
+            columns: ["api_provider_id"]
+            isOneToOne: false
+            referencedRelation: "api_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       campaigns: {
         Row: {
           campaign_uuid: string
@@ -59,6 +204,511 @@ export type Database = {
             columns: ["team_id"]
             isOneToOne: false
             referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      companies: {
+        Row: {
+          active: boolean | null
+          awards: string | null
+          created_at: string | null
+          employee_count: number | null
+          founded: number | null
+          id: number
+          industry: string | null
+          keywords: string | null
+          leadership: string | null
+          modified_at: string | null
+          name: string | null
+          products_services: string | null
+          raw_source_id: number | null
+          revenue_range: string | null
+          summary: string | null
+          target_market: string | null
+          team_id: number
+          usp: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          awards?: string | null
+          created_at?: string | null
+          employee_count?: number | null
+          founded?: number | null
+          id?: never
+          industry?: string | null
+          keywords?: string | null
+          leadership?: string | null
+          modified_at?: string | null
+          name?: string | null
+          products_services?: string | null
+          raw_source_id?: number | null
+          revenue_range?: string | null
+          summary?: string | null
+          target_market?: string | null
+          team_id: number
+          usp?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          awards?: string | null
+          created_at?: string | null
+          employee_count?: number | null
+          founded?: number | null
+          id?: never
+          industry?: string | null
+          keywords?: string | null
+          leadership?: string | null
+          modified_at?: string | null
+          name?: string | null
+          products_services?: string | null
+          raw_source_id?: number | null
+          revenue_range?: string | null
+          summary?: string | null
+          target_market?: string | null
+          team_id?: number
+          usp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "companies_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_addresses: {
+        Row: {
+          active: boolean | null
+          address_line_1: string | null
+          address_line_2: string | null
+          city: string | null
+          company_id: number | null
+          created_at: string | null
+          id: number
+          modified_at: string | null
+          postal: string | null
+          raw_source_id: number | null
+          state: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          address_line_1?: string | null
+          address_line_2?: string | null
+          city?: string | null
+          company_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          postal?: string | null
+          raw_source_id?: number | null
+          state?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          address_line_1?: string | null
+          address_line_2?: string | null
+          city?: string | null
+          company_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          postal?: string | null
+          raw_source_id?: number | null
+          state?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_addresses_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_email_addresses: {
+        Row: {
+          active: boolean | null
+          address: string | null
+          company_id: number | null
+          created_at: string | null
+          id: number
+          modified_at: string | null
+          raw_source_id: number | null
+          status_id: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          address?: string | null
+          company_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          raw_source_id?: number | null
+          status_id?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          address?: string | null
+          company_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          raw_source_id?: number | null
+          status_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_email_addresses_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_company_email_status"
+            columns: ["status_id"]
+            isOneToOne: false
+            referencedRelation: "statuses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_phone_numbers: {
+        Row: {
+          active: boolean | null
+          company_id: number | null
+          created_at: string | null
+          id: number
+          modified_at: string | null
+          phone_number: string | null
+          raw_source_id: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          company_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          phone_number?: string | null
+          raw_source_id?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          company_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          phone_number?: string | null
+          raw_source_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_phone_numbers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_urls: {
+        Row: {
+          active: boolean | null
+          company_id: number | null
+          created_at: string | null
+          id: number
+          modified_at: string | null
+          raw_source_id: number | null
+          url: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          company_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          raw_source_id?: number | null
+          url?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          company_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          raw_source_id?: number | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_urls_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_addresses: {
+        Row: {
+          active: boolean | null
+          address_line_1: string | null
+          address_line_2: string | null
+          city: string | null
+          contact_id: number | null
+          created_at: string | null
+          id: number
+          modified_at: string | null
+          postal: string | null
+          raw_source_id: number | null
+          state: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          address_line_1?: string | null
+          address_line_2?: string | null
+          city?: string | null
+          contact_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          postal?: string | null
+          raw_source_id?: number | null
+          state?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          address_line_1?: string | null
+          address_line_2?: string | null
+          city?: string | null
+          contact_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          postal?: string | null
+          raw_source_id?: number | null
+          state?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_addresses_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_email_addresses: {
+        Row: {
+          active: boolean | null
+          address: string | null
+          contact_id: number | null
+          created_at: string | null
+          id: number
+          modified_at: string | null
+          raw_source_id: number | null
+          status_id: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          address?: string | null
+          contact_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          raw_source_id?: number | null
+          status_id?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          address?: string | null
+          contact_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          raw_source_id?: number | null
+          status_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_email_addresses_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_contact_email_status"
+            columns: ["status_id"]
+            isOneToOne: false
+            referencedRelation: "statuses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_phone_numbers: {
+        Row: {
+          active: boolean | null
+          contact_id: number | null
+          created_at: string | null
+          id: number
+          modified_at: string | null
+          phone_number: string | null
+          raw_source_id: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          contact_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          phone_number?: string | null
+          raw_source_id?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          contact_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          phone_number?: string | null
+          raw_source_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_phone_numbers_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_urls: {
+        Row: {
+          active: boolean | null
+          contact_id: number | null
+          created_at: string | null
+          id: number
+          modified_at: string | null
+          raw_source_id: number | null
+          url: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          contact_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          raw_source_id?: number | null
+          url?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          contact_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          raw_source_id?: number | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_urls_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contacts: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          first_name: string | null
+          id: number
+          last_name: string | null
+          modified_at: string | null
+          raw_source_id: number | null
+          team_id: number
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          first_name?: string | null
+          id?: never
+          last_name?: string | null
+          modified_at?: string | null
+          raw_source_id?: number | null
+          team_id: number
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          first_name?: string | null
+          id?: never
+          last_name?: string | null
+          modified_at?: string | null
+          raw_source_id?: number | null
+          team_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contacts_companies: {
+        Row: {
+          active: boolean | null
+          company_id: number | null
+          contact_id: number | null
+          created_at: string | null
+          id: number
+          modified_at: string | null
+          raw_source_id: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          company_id?: number | null
+          contact_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          raw_source_id?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          company_id?: number | null
+          contact_id?: number | null
+          created_at?: string | null
+          id?: never
+          modified_at?: string | null
+          raw_source_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_companies_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contacts_companies_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
             referencedColumns: ["id"]
           },
         ]
@@ -277,6 +927,122 @@ export type Database = {
           },
         ]
       }
+      source_types: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: never
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: never
+          name?: string
+        }
+        Relationships: []
+      }
+      sources: {
+        Row: {
+          created_at: string | null
+          created_by_profile_id: number | null
+          description: string | null
+          file_name: string | null
+          id: number
+          metadata: Json | null
+          name: string | null
+          origin_url: string | null
+          record_count: number | null
+          source_type_id: number | null
+          status_id: number | null
+          team_id: number
+        }
+        Insert: {
+          created_at?: string | null
+          created_by_profile_id?: number | null
+          description?: string | null
+          file_name?: string | null
+          id?: never
+          metadata?: Json | null
+          name?: string | null
+          origin_url?: string | null
+          record_count?: number | null
+          source_type_id?: number | null
+          status_id?: number | null
+          team_id: number
+        }
+        Update: {
+          created_at?: string | null
+          created_by_profile_id?: number | null
+          description?: string | null
+          file_name?: string | null
+          id?: never
+          metadata?: Json | null
+          name?: string | null
+          origin_url?: string | null
+          record_count?: number | null
+          source_type_id?: number | null
+          status_id?: number | null
+          team_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sources_created_by_profile_id_fkey"
+            columns: ["created_by_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sources_source_type_id_fkey"
+            columns: ["source_type_id"]
+            isOneToOne: false
+            referencedRelation: "source_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sources_status_id_fkey"
+            columns: ["status_id"]
+            isOneToOne: false
+            referencedRelation: "statuses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sources_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      statuses: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: never
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: never
+          name?: string
+        }
+        Relationships: []
+      }
       tags: {
         Row: {
           active: boolean
@@ -422,27 +1188,29 @@ export type Database = {
   }
 }
 
-type PublicSchema = Database[Extract<keyof Database, "public">]
+type DefaultSchema = Database[Extract<keyof Database, "public">]
 
 export type Tables<
-  PublicTableNameOrOptions extends
-    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-        Database[PublicTableNameOrOptions["schema"]]["Views"])
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
-        PublicSchema["Views"])
-    ? (PublicSchema["Tables"] &
-        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -450,20 +1218,22 @@ export type Tables<
     : never
 
 export type TablesInsert<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema["Tables"]
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -471,20 +1241,22 @@ export type TablesInsert<
     : never
 
 export type TablesUpdate<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema["Tables"]
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -492,21 +1264,23 @@ export type TablesUpdate<
     : never
 
 export type Enums<
-  PublicEnumNameOrOptions extends
-    | keyof PublicSchema["Enums"]
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
     | { schema: keyof Database },
-  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = PublicEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
-    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof PublicSchema["CompositeTypes"]
+    | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof Database },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof Database
@@ -515,6 +1289,12 @@ export type CompositeTypes<
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
   ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
-    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const
