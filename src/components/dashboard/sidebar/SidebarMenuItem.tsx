@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { 
@@ -71,6 +71,14 @@ export default function SidebarMenuItemComponent({
 
   // Check if any subitem is active
   const hasActiveSubItem = item.subItems?.some(subItem => location.pathname === subItem.path) || false;
+  
+  // This effect will close any expanded sections when navigating away
+  useEffect(() => {
+    // If this item is not active and none of its subitems are active, but it's expanded
+    if (!isActive(item.path) && !hasActiveSubItem && expanded) {
+      onToggle(); // Close this section
+    }
+  }, [location.pathname]);
 
   return (
     <SidebarMenuItem key={item.title}>
@@ -83,7 +91,6 @@ export default function SidebarMenuItemComponent({
           <CollapsibleTrigger asChild>
             <SidebarMenuButton 
               tooltip={item.title}
-              onClick={() => onNavigate(item.path)}
               isActive={isActive(item.path)}
               className={isActive(item.path)
                 ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium rounded-md border-l-4 border-sidebar-primary" 

@@ -1,4 +1,5 @@
-
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { 
   SidebarGroup, 
   SidebarGroupContent, 
@@ -6,7 +7,6 @@ import {
   SidebarMenu 
 } from "@/components/ui/sidebar";
 import SidebarMenuItemComponent from "./SidebarMenuItem";
-import { useState } from "react";
 
 interface MenuSectionProps {
   title: string;
@@ -16,6 +16,27 @@ interface MenuSectionProps {
 
 export default function MenuSection({ title, items, onNavigate }: MenuSectionProps) {
   const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({});
+  const location = useLocation();
+
+  useEffect(() => {
+    const newExpandedState: Record<string, boolean> = {};
+    
+    items.forEach(item => {
+      if (item.expandable && item.id) {
+        const shouldBeExpanded = item.subItems?.some(
+          (subItem: { path: string }) => location.pathname === subItem.path
+        ) || false;
+        
+        if (shouldBeExpanded) {
+          newExpandedState[item.id] = true;
+        } else {
+          newExpandedState[item.id] = expandedMenus[item.id] || false;
+        }
+      }
+    });
+    
+    setExpandedMenus(newExpandedState);
+  }, [location.pathname]);
 
   const toggleMenu = (menuId: string) => {
     setExpandedMenus(prev => ({
