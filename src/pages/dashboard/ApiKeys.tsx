@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Plus, Check } from 'lucide-react';
@@ -12,9 +11,7 @@ import {
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import PageHeader from '@/components/dashboard/PageHeader';
-import ApiKeysTable from '@/components/api-keys/ApiKeysTable';
-import AddApiKeyDialog from '@/components/api-keys/AddApiKeyDialog';
-import EditApiKeyDialog from '@/components/api-keys/EditApiKeyDialog';
+import { ApiKeysTable, AddApiKeyDialog, ApiKeyDetailsDialog } from '@/components/api-keys';
 import { useApiKeys } from '@/hooks/use-api-keys';
 import { ApiKey, Function } from '@/types/api-keys';
 
@@ -213,7 +210,7 @@ const ApiKeys = () => {
       />
       
       {/* Edit API Key Dialog */}
-      <EditApiKeyDialog 
+      <ApiKeyDetailsDialog 
         isOpen={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
         apiKey={currentApiKey}
