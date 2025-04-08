@@ -35,9 +35,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Pencil, Plus, Search } from "lucide-react";
+import { ArrowDownAZ, ArrowUpAZ, ChevronDown, Pencil, Plus, Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Types for API Providers
 interface ApiProvider {
@@ -122,7 +129,6 @@ export default function ApiProviders() {
         totalCount: count || 0,
       };
     },
-    keepPreviousData: true,
   });
 
   // Total number of pages
@@ -202,10 +208,21 @@ export default function ApiProviders() {
     }
   };
 
+  // Handle status filter change
+  const handleStatusFilterChange = (value: string) => {
+    setShowActiveOnly(value === "all" ? null : value === "active");
+    setPageIndex(0); // Reset to first page when filter changes
+  };
+
+  // Handle sort order toggle
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    setPageIndex(0); // Reset to first page when sort changes
+  };
+
   // Generate pagination items
   const generatePaginationItems = () => {
     const items = [];
-    const maxVisiblePages = 5;
     
     // Always show the first page
     items.push(
@@ -291,30 +308,7 @@ export default function ApiProviders() {
               />
             </div>
             
-            <div className="flex gap-2 items-center">
-              <Label htmlFor="status-filter" className="text-sm whitespace-nowrap">Status:</Label>
-              <select
-                id="status-filter"
-                className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={showActiveOnly === null ? "all" : showActiveOnly ? "active" : "inactive"}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setShowActiveOnly(val === "all" ? null : val === "active");
-                }}
-              >
-                <option value="all">All</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-              
-              <Button
-                variant="outline"
-                onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-                className="whitespace-nowrap"
-              >
-                Sort {sortOrder === "asc" ? "A-Z" : "Z-A"}
-              </Button>
-              
+            <div className="flex gap-2 items-center">              
               <Button onClick={handleAddProvider} className="whitespace-nowrap">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Provider
@@ -326,10 +320,36 @@ export default function ApiProviders() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[250px]">Name</TableHead>
+                  <TableHead 
+                    className="w-[250px] cursor-pointer"
+                    onClick={toggleSortOrder}
+                  >
+                    <div className="flex items-center space-x-1">
+                      <span>Name</span>
+                      {sortOrder === "asc" ? (
+                        <ArrowDownAZ className="h-4 w-4" />
+                      ) : (
+                        <ArrowUpAZ className="h-4 w-4" />
+                      )}
+                    </div>
+                  </TableHead>
                   <TableHead className="hidden md:table-cell">Description</TableHead>
                   <TableHead className="hidden md:table-cell">Website</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>
+                    <Select
+                      value={showActiveOnly === null ? "all" : showActiveOnly ? "active" : "inactive"}
+                      onValueChange={handleStatusFilterChange}
+                    >
+                      <SelectTrigger className="h-8 w-[110px] border-none bg-transparent">
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="inactive">Inactive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableHead>
                   <TableHead className="w-[100px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
