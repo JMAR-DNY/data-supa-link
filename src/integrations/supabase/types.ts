@@ -801,21 +801,32 @@ export type Database = {
           active: boolean | null
           description: string | null
           id: number
+          module_id: number | null
           name: string
         }
         Insert: {
           active?: boolean | null
           description?: string | null
           id?: number
+          module_id?: number | null
           name: string
         }
         Update: {
           active?: boolean | null
           description?: string | null
           id?: number
+          module_id?: number | null
           name?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "functions_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       list_tags: {
         Row: {

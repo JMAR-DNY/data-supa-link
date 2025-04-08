@@ -16,3 +16,18 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     storageKey: 'supabase.auth.token'
   }
 });
+
+// Helper function to fetch functions with their module information
+export async function getFunctionsWithModules() {
+  return supabase
+    .from('functions')
+    .select(`
+      *,
+      modules (
+        id,
+        name,
+        description
+      )
+    `);
+}
+
