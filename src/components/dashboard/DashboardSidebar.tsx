@@ -1,135 +1,30 @@
 
-import { useNavigate, useLocation } from "react-router-dom";
-import { 
-  LayoutDashboard, List, Users, Settings, Mail, LogOut, 
-  ChevronRight, Sun, Moon, Sparkles, Menu, Shield, 
-  Database, ChevronDown, BarChart, Key
-} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useTheme } from "@/hooks/use-theme";
-import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useSidebar } from "@/components/ui/sidebar";
 
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
   SidebarRail,
   SidebarTrigger
 } from "@/components/ui/sidebar";
 
-import { 
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger 
-} from "@/components/ui/collapsible";
-
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
+// Import refactored components
+import MobileMenuButton from "./sidebar/MobileMenuButton";
+import MenuSection from "./sidebar/MenuSection";
+import ThemeToggle from "./sidebar/ThemeToggle";
+import UserProfile from "./sidebar/UserProfile";
+import { menuItems, adminMenuItems } from "./sidebar/menuData";
 
 export default function DashboardSidebar() {
   const { signOut, user, isSysAdmin } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const { state, setOpen, setOpenMobile } = useSidebar();
-  const { theme, setTheme } = useTheme();
+  const { state, setOpenMobile } = useSidebar();
   const isMobile = useIsMobile();
-  
-  const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({
-    lists: false,
-    teams: false,
-    api: false
-  });
-
-  const toggleMenu = (menuId: string) => {
-    setExpandedMenus(prev => ({
-      ...prev,
-      [menuId]: !prev[menuId]
-    }));
-  };
-
-  const menuItems = [
-    {
-      title: "Dashboard",
-      icon: LayoutDashboard,
-      path: "/dashboard"
-    },
-    {
-      title: "Lists",
-      icon: List,
-      path: "/dashboard/lists",
-      expandable: true,
-      id: "lists",
-      subItems: [
-        { 
-          title: "Create New", 
-          path: "/dashboard/lists/new",
-          icon: Sparkles 
-        }
-      ]
-    },
-    {
-      title: "Campaigns",
-      icon: Mail,
-      path: "/dashboard/campaigns"
-    },
-    {
-      title: "Teams",
-      icon: Users,
-      path: "/dashboard/teams",
-      expandable: true,
-      id: "teams",
-      subItems: [
-        { title: "Invitations", path: "/dashboard/teams/invitations" }
-      ]
-    },
-    {
-      title: "Settings",
-      icon: Settings,
-      path: "/dashboard/settings"
-    }
-  ];
-
-  // Admin menu items - only shown to sysadmins
-  const adminMenuItems = [
-    {
-      title: "Admin Dashboard",
-      icon: Shield,
-      path: "/dashboard/admin"
-    },
-    {
-      title: "API",
-      icon: BarChart,
-      path: "/dashboard/admin/api-usage",
-      expandable: true,
-      id: "api",
-      subItems: [
-        { 
-          title: "Usage", 
-          path: "/dashboard/admin/api-usage",
-          icon: BarChart 
-        },
-        { 
-          title: "Key Config", 
-          path: "/dashboard/admin/api-keys",
-          icon: Key 
-        }
-      ]
-    },
-    {
-      title: "Prompt Config",
-      icon: Database,
-      path: "/dashboard/admin/prompts"
-    }
-  ];
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -142,110 +37,6 @@ export default function DashboardSidebar() {
     signOut();
     navigate('/auth');
   };
-
-  const isActive = (path: string) => {
-    // For exact matches
-    if (location.pathname === path) {
-      return true;
-    }
-    
-    // Special case for dashboard root to prevent highlighting when on sub-routes
-    if (path === '/dashboard' && location.pathname !== '/dashboard') {
-      return false;
-    }
-    
-    // For expandable items, check if we're on a direct child route,
-    // but avoid matching paths that could be part of another section
-    if (path !== '/dashboard' && location.pathname.startsWith(path)) {
-      // Extract the next path segment after the current path to ensure we're
-      // only matching direct children
-      const remainingPath = location.pathname.substring(path.length);
-      
-      // If there's nothing more or it starts with a slash followed by characters,
-      // it's a direct child or the exact path
-      if (remainingPath === '' || remainingPath.startsWith('/')) {
-        return true;
-      }
-    }
-    
-    return false;
-  };
-
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
-
-  const MobileMenuButton = () => {
-    return (
-      <Button 
-        variant="ghost" 
-        size="icon" 
-        className="md:hidden fixed top-4 left-4 z-50 bg-background/80 backdrop-blur-sm"
-        onClick={() => setOpenMobile(true)}
-      >
-        <Menu className="h-6 w-6" />
-        <span className="sr-only">Open menu</span>
-      </Button>
-    );
-  };
-
-  const renderMenuItem = (item: any) => (
-    <SidebarMenuItem key={item.title}>
-      {item.expandable ? (
-        <Collapsible 
-          open={expandedMenus[item.id]} 
-          onOpenChange={() => toggleMenu(item.id)}
-          className="w-full"
-        >
-          <CollapsibleTrigger asChild>
-            <SidebarMenuButton 
-              tooltip={item.title}
-              onClick={() => handleNavigation(item.path)}
-              isActive={isActive(item.path)}
-              className={isActive(item.path) && !item.subItems?.some((sub: any) => isActive(sub.path))
-                ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium rounded-md border-l-4 border-sidebar-primary" 
-                : "hover:bg-accent/50"
-              }
-            >
-              <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) && !item.subItems?.some((sub: any) => isActive(sub.path)) ? "text-sidebar-primary" : ""}`} />
-              <span>{item.title}</span>
-              <ChevronRight className={`ml-auto h-4 w-4 transition-transform ${expandedMenus[item.id] ? 'rotate-90' : ''}`} />
-            </SidebarMenuButton>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="pl-8 space-y-1 mt-1">
-            {item.subItems?.map((subItem: any) => (
-              <Button
-                key={subItem.title}
-                variant="ghost"
-                size="sm"
-                onClick={() => handleNavigation(subItem.path)}
-                className={`w-full justify-start h-8 ${isActive(subItem.path) 
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium border-l-4 border-sidebar-primary" 
-                  : "hover:bg-accent/50"
-                }`}
-              >
-                {subItem.icon && <subItem.icon className="mr-2 h-4 w-4 text-sidebar-primary" />}
-                {subItem.title}
-              </Button>
-            ))}
-          </CollapsibleContent>
-        </Collapsible>
-      ) : (
-        <SidebarMenuButton 
-          tooltip={item.title}
-          onClick={() => handleNavigation(item.path)}
-          isActive={isActive(item.path)}
-          className={isActive(item.path) 
-            ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium rounded-md border-l-4 border-sidebar-primary" 
-            : "hover:bg-accent/50"
-          }
-        >
-          <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-sidebar-primary" : ""}`} />
-          <span>{item.title}</span>
-        </SidebarMenuButton>
-      )}
-    </SidebarMenuItem>
-  );
 
   return (
     <>
@@ -260,74 +51,28 @@ export default function DashboardSidebar() {
         </SidebarHeader>
         <SidebarContent>
           {/* Regular Menu */}
-          <SidebarGroup>
-            <SidebarGroupLabel>Menu</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {menuItems.map(renderMenuItem)}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+          <MenuSection 
+            title="Menu"
+            items={menuItems}
+            onNavigate={handleNavigation}
+          />
 
           {/* Admin Menu - only visible to sysadmins */}
           {isSysAdmin && (
-            <SidebarGroup>
-              <SidebarGroupLabel>Admin</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {adminMenuItems.map(renderMenuItem)}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
+            <MenuSection 
+              title="Admin"
+              items={adminMenuItems}
+              onNavigate={handleNavigation}
+            />
           )}
         </SidebarContent>
         <SidebarFooter>
           <div className="p-2 space-y-4">
-            {state === "expanded" ? (
-              <div className="flex items-center justify-between px-4 py-2">
-                <div className="flex items-center gap-2">
-                  {theme === 'dark' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-                  <span className="text-sm">{theme === 'dark' ? 'Dark' : 'Light'} Mode</span>
-                </div>
-                <Switch 
-                  checked={theme === 'dark'}
-                  onCheckedChange={toggleTheme}
-                />
-              </div>
-            ) : (
-              <div className="flex justify-center">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={toggleTheme} 
-                  className="rounded-full"
-                >
-                  {theme === 'dark' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-                </Button>
-              </div>
-            )}
-
-            {state === "expanded" ? (
-              <div className="p-4 rounded-md bg-secondary">
-                <p className="text-sm font-medium mb-1">{user?.email}</p>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full"
-                  onClick={handleSignOut}
-                >
-                  Sign Out
-                </Button>
-              </div>
-            ) : (
-              <SidebarMenuButton 
-                tooltip="Sign Out"
-                onClick={handleSignOut}
-                className="w-full flex justify-center"
-              >
-                <LogOut />
-              </SidebarMenuButton>
-            )}
+            <ThemeToggle isExpanded={state === "expanded"} />
+            <UserProfile 
+              isExpanded={state === "expanded"} 
+              onSignOut={handleSignOut} 
+            />
           </div>
         </SidebarFooter>
       </Sidebar>
