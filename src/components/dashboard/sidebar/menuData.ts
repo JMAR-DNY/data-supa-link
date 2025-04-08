@@ -1,7 +1,7 @@
 
 import { 
   LayoutDashboard, List, Users, Settings, Mail, 
-  Sparkles, Shield, Database, BarChart, Key
+  Sparkles, Shield, Database, BarChart, Key, FileText
 } from "lucide-react";
 
 export const menuItems = [
@@ -55,7 +55,7 @@ export const adminMenuItems = [
   },
   {
     title: "API",
-    icon: BarChart,
+    icon: Key,
     path: "/dashboard/admin/api-usage",
     expandable: true,
     id: "api",
@@ -69,12 +69,17 @@ export const adminMenuItems = [
         title: "Key Config", 
         path: "/dashboard/admin/api-keys",
         icon: Key 
+      },
+      { 
+        title: "Provider Config", 
+        path: "/dashboard/admin/api-providers",
+        icon: Database 
       }
     ]
   },
   {
     title: "Prompt Config",
-    icon: Database,
+    icon: FileText,
     path: "/dashboard/admin/prompts"
   }
 ];

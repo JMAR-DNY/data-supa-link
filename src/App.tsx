@@ -46,6 +46,15 @@ const ApiKeys = () => (
   </div>
 );
 
+const ApiProviders = () => (
+  <div className="container p-4 md:p-6">
+    <h1 className="text-2xl font-bold mb-6">API Provider Configuration</h1>
+    <div className="rounded-lg border bg-card p-4 md:p-8 shadow-sm">
+      <p className="text-muted-foreground">API provider management interface will be implemented here</p>
+    </div>
+  </div>
+);
+
 const Prompts = () => (
   <div className="container p-4 md:p-6">
     <h1 className="text-2xl font-bold mb-6">Prompt Configuration</h1>
@@ -114,6 +123,14 @@ const App = () => (
                 element={
                   <ProtectedRoute adminOnly>
                     <ApiKeys />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="admin/api-providers" 
+                element={
+                  <ProtectedRoute adminOnly>
+                    <ApiProviders />
                   </ProtectedRoute>
                 } 
               />

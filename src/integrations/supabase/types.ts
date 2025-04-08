@@ -11,6 +11,7 @@ export type Database = {
     Tables: {
       ai_prompts: {
         Row: {
+          active: boolean | null
           content: string
           created_at: string | null
           created_by_profile_id: number | null
@@ -21,6 +22,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          active?: boolean | null
           content: string
           created_at?: string | null
           created_by_profile_id?: number | null
@@ -31,6 +33,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          active?: boolean | null
           content?: string
           created_at?: string | null
           created_by_profile_id?: number | null
@@ -52,26 +55,41 @@ export type Database = {
       }
       api_keys: {
         Row: {
+          active: boolean | null
           api_provider_id: number | null
           created_at: string | null
           created_by_profile_id: number | null
+          description: string | null
+          environment_id: number | null
+          function_id: number | null
           id: number
+          module_id: number | null
           name: string | null
           vault_key: string
         }
         Insert: {
+          active?: boolean | null
           api_provider_id?: number | null
           created_at?: string | null
           created_by_profile_id?: number | null
+          description?: string | null
+          environment_id?: number | null
+          function_id?: number | null
           id?: never
+          module_id?: number | null
           name?: string | null
           vault_key: string
         }
         Update: {
+          active?: boolean | null
           api_provider_id?: number | null
           created_at?: string | null
           created_by_profile_id?: number | null
+          description?: string | null
+          environment_id?: number | null
+          function_id?: number | null
           id?: never
+          module_id?: number | null
           name?: string | null
           vault_key?: string
         }
@@ -90,10 +108,32 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "api_keys_environment_id_fkey"
+            columns: ["environment_id"]
+            isOneToOne: false
+            referencedRelation: "environments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_keys_function_id_fkey"
+            columns: ["function_id"]
+            isOneToOne: false
+            referencedRelation: "functions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_keys_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
         ]
       }
       api_providers: {
         Row: {
+          active: boolean | null
           created_at: string | null
           description: string | null
           id: number
@@ -101,6 +141,7 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          active?: boolean | null
           created_at?: string | null
           description?: string | null
           id?: never
@@ -108,6 +149,7 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          active?: boolean | null
           created_at?: string | null
           description?: string | null
           id?: never
@@ -124,6 +166,8 @@ export type Database = {
           created_at: string | null
           id: number
           metadata: Json | null
+          profile_id: number | null
+          status_id: number | null
           usage_units: number | null
         }
         Insert: {
@@ -133,6 +177,8 @@ export type Database = {
           created_at?: string | null
           id?: never
           metadata?: Json | null
+          profile_id?: number | null
+          status_id?: number | null
           usage_units?: number | null
         }
         Update: {
@@ -142,6 +188,8 @@ export type Database = {
           created_at?: string | null
           id?: never
           metadata?: Json | null
+          profile_id?: number | null
+          status_id?: number | null
           usage_units?: number | null
         }
         Relationships: [
@@ -150,6 +198,20 @@ export type Database = {
             columns: ["api_provider_id"]
             isOneToOne: false
             referencedRelation: "api_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_usage_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_usage_status_id_fkey"
+            columns: ["status_id"]
+            isOneToOne: false
+            referencedRelation: "statuses"
             referencedColumns: ["id"]
           },
         ]
@@ -713,6 +775,48 @@ export type Database = {
           },
         ]
       }
+      environments: {
+        Row: {
+          active: boolean | null
+          description: string | null
+          id: number
+          name: string
+        }
+        Insert: {
+          active?: boolean | null
+          description?: string | null
+          id?: number
+          name: string
+        }
+        Update: {
+          active?: boolean | null
+          description?: string | null
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
+      functions: {
+        Row: {
+          active: boolean | null
+          description: string | null
+          id: number
+          name: string
+        }
+        Insert: {
+          active?: boolean | null
+          description?: string | null
+          id?: number
+          name: string
+        }
+        Update: {
+          active?: boolean | null
+          description?: string | null
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
       list_tags: {
         Row: {
           list_id: number
@@ -843,6 +947,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      modules: {
+        Row: {
+          active: boolean | null
+          description: string | null
+          id: number
+          name: string
+        }
+        Insert: {
+          active?: boolean | null
+          description?: string | null
+          id?: number
+          name: string
+        }
+        Update: {
+          active?: boolean | null
+          description?: string | null
+          id?: number
+          name?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
