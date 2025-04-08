@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -46,7 +45,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// Types for API Providers
 interface ApiProvider {
   id: number;
   name: string;
@@ -56,7 +54,6 @@ interface ApiProvider {
   created_at: string;
 }
 
-// Form schema for API Provider
 const apiProviderSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(1, { message: "Name is required" }),
@@ -72,12 +69,11 @@ export default function ApiProviders() {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showActiveOnly, setShowActiveOnly] = useState<boolean | null>(null);
+  const [showActiveOnly, setShowActiveOnly] = useState<boolean | null>(true);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentProvider, setCurrentProvider] = useState<ApiProvider | null>(null);
 
-  // Form setup
   const form = useForm<ApiProviderFormValues>({
     resolver: zodResolver(apiProviderSchema),
     defaultValues: {
@@ -88,7 +84,6 @@ export default function ApiProviders() {
     },
   });
 
-  // Fetch API Providers with pagination, filtering, and sorting
   const {
     data: apiProvidersData,
     isLoading,
@@ -100,20 +95,16 @@ export default function ApiProviders() {
         .from("api_providers")
         .select("*", { count: "exact" });
 
-      // Apply search filter if provided
       if (searchQuery) {
         query = query.ilike("name", `%${searchQuery}%`);
       }
 
-      // Apply active filter if selected
       if (showActiveOnly !== null) {
         query = query.eq("active", showActiveOnly);
       }
 
-      // Apply sorting
       query = query.order("name", { ascending: sortOrder === "asc" });
 
-      // Apply pagination
       const from = pageIndex * pageSize;
       const to = from + pageSize - 1;
       query = query.range(from, to);
@@ -131,10 +122,8 @@ export default function ApiProviders() {
     },
   });
 
-  // Total number of pages
   const pageCount = Math.ceil((apiProvidersData?.totalCount || 0) / pageSize);
 
-  // Handle opening the form dialog for creating a new provider
   const handleAddProvider = () => {
     form.reset({
       name: "",
@@ -146,7 +135,6 @@ export default function ApiProviders() {
     setIsDialogOpen(true);
   };
 
-  // Handle opening the form dialog for editing an existing provider
   const handleEditProvider = (provider: ApiProvider) => {
     form.reset({
       id: provider.id,
@@ -159,11 +147,9 @@ export default function ApiProviders() {
     setIsDialogOpen(true);
   };
 
-  // Handle form submission for creating/updating a provider
   const onSubmit = async (values: ApiProviderFormValues) => {
     try {
       if (values.id) {
-        // Update existing provider
         const { error } = await supabase
           .from("api_providers")
           .update({
@@ -180,7 +166,6 @@ export default function ApiProviders() {
           description: `${values.name} has been updated successfully.`,
         });
       } else {
-        // Create new provider
         const { error } = await supabase
           .from("api_providers")
           .insert({
@@ -208,23 +193,19 @@ export default function ApiProviders() {
     }
   };
 
-  // Handle status filter change
   const handleStatusFilterChange = (value: string) => {
     setShowActiveOnly(value === "all" ? null : value === "active");
-    setPageIndex(0); // Reset to first page when filter changes
+    setPageIndex(0);
   };
 
-  // Handle sort order toggle
   const toggleSortOrder = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    setPageIndex(0); // Reset to first page when sort changes
+    setPageIndex(0);
   };
 
-  // Generate pagination items
   const generatePaginationItems = () => {
     const items = [];
     
-    // Always show the first page
     items.push(
       <PaginationItem key="first">
         <PaginationLink
@@ -236,7 +217,6 @@ export default function ApiProviders() {
       </PaginationItem>
     );
     
-    // Add ellipsis if needed
     if (pageIndex > 2) {
       items.push(
         <PaginationItem key="ellipsis-start">
@@ -245,7 +225,6 @@ export default function ApiProviders() {
       );
     }
     
-    // Add pages around the current page
     const startPage = Math.max(1, pageIndex - 1);
     const endPage = Math.min(pageCount - 2, pageIndex + 1);
     
@@ -264,7 +243,6 @@ export default function ApiProviders() {
       }
     }
     
-    // Add ellipsis if needed
     if (pageIndex < pageCount - 3) {
       items.push(
         <PaginationItem key="ellipsis-end">
@@ -273,7 +251,6 @@ export default function ApiProviders() {
       );
     }
     
-    // Always show the last page if there's more than one page
     if (pageCount > 1) {
       items.push(
         <PaginationItem key="last">
