@@ -1,5 +1,10 @@
+
 import { useNavigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, List, Users, Settings, Mail, LogOut, ChevronRight, Sun, Moon, Sparkles, Menu } from "lucide-react";
+import { 
+  LayoutDashboard, List, Users, Settings, Mail, LogOut, 
+  ChevronRight, Sun, Moon, Sparkles, Menu, Shield, 
+  BarChart, Key, Database
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/hooks/use-theme";
 import { useState } from "react";
@@ -31,7 +36,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
 export default function DashboardSidebar() {
-  const { signOut, user } = useAuth();
+  const { signOut, user, isSysAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { state, setOpen, setOpenMobile } = useSidebar();
@@ -92,6 +97,30 @@ export default function DashboardSidebar() {
     }
   ];
 
+  // Admin menu items - only shown to sysadmins
+  const adminMenuItems = [
+    {
+      title: "Admin Dashboard",
+      icon: Shield,
+      path: "/dashboard/admin"
+    },
+    {
+      title: "API Usage",
+      icon: BarChart,
+      path: "/dashboard/admin/api-usage"
+    },
+    {
+      title: "API Key Config",
+      icon: Key,
+      path: "/dashboard/admin/api-keys"
+    },
+    {
+      title: "Prompt Config",
+      icon: Database,
+      path: "/dashboard/admin/prompts"
+    }
+  ];
+
   const handleNavigation = (path: string) => {
     navigate(path);
     if (isMobile) {
@@ -127,6 +156,64 @@ export default function DashboardSidebar() {
     );
   };
 
+  const renderMenuItem = (item: any) => (
+    <SidebarMenuItem key={item.title}>
+      {item.expandable ? (
+        <Collapsible 
+          open={expandedMenus[item.id]} 
+          onOpenChange={() => toggleMenu(item.id)}
+          className="w-full"
+        >
+          <CollapsibleTrigger asChild>
+            <SidebarMenuButton 
+              tooltip={item.title}
+              onClick={() => handleNavigation(item.path)}
+              isActive={isActive(item.path)}
+              className={isActive(item.path) 
+                ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium rounded-md border-l-4 border-sidebar-primary" 
+                : "hover:bg-accent/50"
+              }
+            >
+              <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-sidebar-primary" : ""}`} />
+              <span>{item.title}</span>
+              <ChevronRight className={`ml-auto h-4 w-4 transition-transform ${expandedMenus[item.id] ? 'rotate-90' : ''}`} />
+            </SidebarMenuButton>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="pl-8 space-y-1 mt-1">
+            {item.subItems?.map((subItem: any) => (
+              <Button
+                key={subItem.title}
+                variant="ghost"
+                size="sm"
+                onClick={() => handleNavigation(subItem.path)}
+                className={`w-full justify-start h-8 ${isActive(subItem.path) 
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium border-l-4 border-sidebar-primary" 
+                  : "hover:bg-accent/50"
+                }`}
+              >
+                {subItem.icon && <subItem.icon className="mr-2 h-4 w-4 text-sidebar-primary" />}
+                {subItem.title}
+              </Button>
+            ))}
+          </CollapsibleContent>
+        </Collapsible>
+      ) : (
+        <SidebarMenuButton 
+          tooltip={item.title}
+          onClick={() => handleNavigation(item.path)}
+          isActive={isActive(item.path)}
+          className={isActive(item.path) 
+            ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium rounded-md border-l-4 border-sidebar-primary" 
+            : "hover:bg-accent/50"
+          }
+        >
+          <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-sidebar-primary" : ""}`} />
+          <span>{item.title}</span>
+        </SidebarMenuButton>
+      )}
+    </SidebarMenuItem>
+  );
+
   return (
     <>
       {isMobile && <MobileMenuButton />}
@@ -139,70 +226,27 @@ export default function DashboardSidebar() {
           </div>
         </SidebarHeader>
         <SidebarContent>
+          {/* Regular Menu */}
           <SidebarGroup>
             <SidebarGroupLabel>Menu</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {menuItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    {item.expandable ? (
-                      <Collapsible 
-                        open={expandedMenus[item.id]} 
-                        onOpenChange={() => toggleMenu(item.id)}
-                        className="w-full"
-                      >
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuButton 
-                            tooltip={item.title}
-                            onClick={() => handleNavigation(item.path)}
-                            isActive={isActive(item.path)}
-                            className={isActive(item.path) 
-                              ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium rounded-md border-l-4 border-sidebar-primary" 
-                              : "hover:bg-accent/50"
-                            }
-                          >
-                            <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-sidebar-primary" : ""}`} />
-                            <span>{item.title}</span>
-                            <ChevronRight className={`ml-auto h-4 w-4 transition-transform ${expandedMenus[item.id] ? 'rotate-90' : ''}`} />
-                          </SidebarMenuButton>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="pl-8 space-y-1 mt-1">
-                          {item.subItems?.map(subItem => (
-                            <Button
-                              key={subItem.title}
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleNavigation(subItem.path)}
-                              className={`w-full justify-start h-8 ${isActive(subItem.path) 
-                                ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium border-l-4 border-sidebar-primary" 
-                                : "hover:bg-accent/50"
-                              }`}
-                            >
-                              {subItem.icon && <subItem.icon className="mr-2 h-4 w-4 text-sidebar-primary" />}
-                              {subItem.title}
-                            </Button>
-                          ))}
-                        </CollapsibleContent>
-                      </Collapsible>
-                    ) : (
-                      <SidebarMenuButton 
-                        tooltip={item.title}
-                        onClick={() => handleNavigation(item.path)}
-                        isActive={isActive(item.path)}
-                        className={isActive(item.path) 
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium rounded-md border-l-4 border-sidebar-primary" 
-                          : "hover:bg-accent/50"
-                        }
-                      >
-                        <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-sidebar-primary" : ""}`} />
-                        <span>{item.title}</span>
-                      </SidebarMenuButton>
-                    )}
-                  </SidebarMenuItem>
-                ))}
+                {menuItems.map(renderMenuItem)}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
+
+          {/* Admin Menu - only visible to sysadmins */}
+          {isSysAdmin && (
+            <SidebarGroup>
+              <SidebarGroupLabel>Admin</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {adminMenuItems.map(renderMenuItem)}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          )}
         </SidebarContent>
         <SidebarFooter>
           <div className="p-2 space-y-4">

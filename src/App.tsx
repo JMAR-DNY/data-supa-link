@@ -18,6 +18,43 @@ import Campaigns from "./pages/dashboard/Campaigns";
 import Teams from "./pages/dashboard/Teams";
 import Settings from "./pages/dashboard/Settings";
 
+// Placeholder admin pages - these will be implemented later
+const AdminDashboard = () => (
+  <div className="container p-4 md:p-6">
+    <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
+    <div className="rounded-lg border bg-card p-4 md:p-8 shadow-sm">
+      <p className="text-muted-foreground">Admin dashboard content will be implemented here</p>
+    </div>
+  </div>
+);
+
+const ApiUsage = () => (
+  <div className="container p-4 md:p-6">
+    <h1 className="text-2xl font-bold mb-6">API Usage</h1>
+    <div className="rounded-lg border bg-card p-4 md:p-8 shadow-sm">
+      <p className="text-muted-foreground">API usage statistics will be displayed here</p>
+    </div>
+  </div>
+);
+
+const ApiKeys = () => (
+  <div className="container p-4 md:p-6">
+    <h1 className="text-2xl font-bold mb-6">API Key Configuration</h1>
+    <div className="rounded-lg border bg-card p-4 md:p-8 shadow-sm">
+      <p className="text-muted-foreground">API key management interface will be implemented here</p>
+    </div>
+  </div>
+);
+
+const Prompts = () => (
+  <div className="container p-4 md:p-6">
+    <h1 className="text-2xl font-bold mb-6">Prompt Configuration</h1>
+    <div className="rounded-lg border bg-card p-4 md:p-8 shadow-sm">
+      <p className="text-muted-foreground">Prompt management interface will be implemented here</p>
+    </div>
+  </div>
+);
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -54,6 +91,40 @@ const App = () => (
               <Route path="campaigns" element={<Campaigns />} />
               <Route path="teams" element={<Teams />} />
               <Route path="settings" element={<Settings />} />
+              
+              {/* Admin Routes */}
+              <Route 
+                path="admin" 
+                element={
+                  <ProtectedRoute adminOnly>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="admin/api-usage" 
+                element={
+                  <ProtectedRoute adminOnly>
+                    <ApiUsage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="admin/api-keys" 
+                element={
+                  <ProtectedRoute adminOnly>
+                    <ApiKeys />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="admin/prompts" 
+                element={
+                  <ProtectedRoute adminOnly>
+                    <Prompts />
+                  </ProtectedRoute>
+                } 
+              />
             </Route>
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

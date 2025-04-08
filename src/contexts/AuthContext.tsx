@@ -7,6 +7,7 @@ type AuthContextType = {
   session: Session | null;
   user: User | null;
   loading: boolean;
+  isSysAdmin: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string) => Promise<{ error: any }>;
   signInWithSocial: (provider: "google" | "facebook" | "apple") => Promise<{ error: any }>;
@@ -19,6 +20,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSysAdmin, setIsSysAdmin] = useState(false);
+
+  // Function to check if user is a sysadmin
+  const checkSysAdminStatus = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('*')
+        .eq('role_id', 100)
+        .single();
+      
+      if (error) {
+        console.error("Error checking sysadmin status:", error);
+        setIsSysAdmin(false);
+        return;
+      }
+
+      setIsSysAdmin(!!data);
+    } catch (error) {
+      console.error("Unexpected error checking admin status:", error);
+      setIsSysAdmin(false);
+    }
+  };
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -27,6 +51,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log("Auth state changed:", event);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
+        
+        if (currentSession?.user) {
+          checkSysAdminStatus(currentSession.user.id);
+        } else {
+          setIsSysAdmin(false);
+        }
+        
         setLoading(false);
       }
     );
@@ -35,6 +66,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
+      
+      if (currentSession?.user) {
+        checkSysAdminStatus(currentSession.user.id);
+      }
+      
       setLoading(false);
     });
 
@@ -81,6 +117,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     session,
     user,
     loading,
+    isSysAdmin,
     signIn,
     signUp,
     signInWithSocial,
