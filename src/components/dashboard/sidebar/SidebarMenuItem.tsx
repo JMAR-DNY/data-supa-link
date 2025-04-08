@@ -72,28 +72,33 @@ export default function SidebarMenuItemComponent({
   // Check if any subitem is active
   const hasActiveSubItem = item.subItems?.some(subItem => location.pathname === subItem.path) || false;
   
-  // This effect will close any expanded sections when navigating away
+  // This effect will handle proper expansion when navigating directly to a subitem
   useEffect(() => {
-    // If this item is not active and none of its subitems are active, but it's expanded
-    if (!isActive(item.path) && !hasActiveSubItem && expanded) {
+    // Auto-expand if we're on a page that's part of this menu's subitems
+    if (item.expandable && !expanded && hasActiveSubItem) {
+      onToggle(); // Open this section
+    }
+    
+    // If we navigate outside this menu's items while it's expanded, close it
+    if (item.expandable && expanded && !isActive(item.path) && !hasActiveSubItem) {
+      // Only close menus that aren't active
       onToggle(); // Close this section
     }
   }, [location.pathname]);
 
-  // Handle the parent menu item click
-  const handleMenuItemClick = () => {
-    if (item.expandable) {
-      onToggle(); // Toggle the expandable menu
-      
-      // For expandable items, also navigate to the main path if it's not already expanded
-      // This ensures clicking on "Lists" will navigate to the lists page while also expanding the submenu
-      if (!expanded) {
-        onNavigate(item.path);
-      }
-    } else {
-      // For non-expandable items, just navigate
-      onNavigate(item.path);
-    }
+  // Handle clicks on the parent menu item (Lists)
+  const handleParentClick = (e: React.MouseEvent) => {
+    // Navigate to the main path
+    onNavigate(item.path);
+    
+    // Don't toggle if we're clicking directly on the parent item
+    // Let the collapsible trigger handle the toggle instead
+    e.stopPropagation();
+  };
+
+  // Handle the toggle action (clicking on the chevron)
+  const handleToggle = () => {
+    onToggle();
   };
 
   return (
@@ -101,13 +106,13 @@ export default function SidebarMenuItemComponent({
       {item.expandable ? (
         <Collapsible 
           open={expanded || hasActiveSubItem} 
-          onOpenChange={onToggle}
+          onOpenChange={handleToggle}
           className="w-full"
         >
           <CollapsibleTrigger asChild>
             <SidebarMenuButton 
               tooltip={item.title}
-              onClick={handleMenuItemClick}
+              onClick={handleParentClick}
               isActive={isActive(item.path)}
               className={isActive(item.path)
                 ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium rounded-md border-l-4 border-sidebar-primary" 
