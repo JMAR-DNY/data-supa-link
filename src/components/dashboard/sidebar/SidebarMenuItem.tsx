@@ -78,12 +78,6 @@ export default function SidebarMenuItemComponent({
     if (item.expandable && !expanded && (hasActiveSubItem || isActive(item.path))) {
       onToggle(); // Open this section
     }
-    
-    // If we navigate outside this menu's items while it's expanded, close it
-    if (item.expandable && expanded && !isActive(item.path) && !hasActiveSubItem) {
-      // Only close menus that aren't active
-      onToggle(); // Close this section
-    }
   }, [location.pathname]);
 
   // Handle clicks on the parent menu item
@@ -105,7 +99,7 @@ export default function SidebarMenuItemComponent({
     <SidebarMenuItem key={item.title}>
       {item.expandable ? (
         <Collapsible 
-          open={expanded || hasActiveSubItem} 
+          open={expanded} 
           onOpenChange={handleToggle}
           className="w-full"
         >
@@ -121,7 +115,7 @@ export default function SidebarMenuItemComponent({
             >
               <item.icon className={`mr-2 h-4 w-4 ${isActive(item.path) ? "text-sidebar-primary" : ""}`} />
               <span>{item.title}</span>
-              <ChevronRight className={`ml-auto h-4 w-4 transition-transform ${expanded || hasActiveSubItem ? 'rotate-90' : ''}`} />
+              <ChevronRight className={`ml-auto h-4 w-4 transition-transform ${expanded ? 'rotate-90' : ''}`} />
             </SidebarMenuButton>
           </CollapsibleTrigger>
           <CollapsibleContent className="pl-8 space-y-1 mt-1">
