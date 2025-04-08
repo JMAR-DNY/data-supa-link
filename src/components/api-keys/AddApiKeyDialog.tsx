@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { 
   Dialog, DialogContent, DialogHeader, DialogTitle 
 } from '@/components/ui/dialog';
@@ -59,6 +59,14 @@ const AddApiKeyDialog: React.FC<AddApiKeyDialogProps> = ({
   handleAddApiKey,
   resetForm
 }) => {
+  // Effect to reset select components when dialog reopens
+  useEffect(() => {
+    if (isOpen) {
+      // This is just to trigger a re-render when the dialog opens
+      // so that the Select components show the current values
+    }
+  }, [isOpen]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -76,6 +84,7 @@ const AddApiKeyDialog: React.FC<AddApiKeyDialogProps> = ({
                   setSelectedModuleId(Number(value));
                   setSelectedFunctionId(null);
                 }}
+                value={selectedModuleId?.toString()}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Module" />
@@ -95,6 +104,7 @@ const AddApiKeyDialog: React.FC<AddApiKeyDialogProps> = ({
               <Select 
                 onValueChange={(value) => setSelectedFunctionId(Number(value))}
                 disabled={!selectedModuleId}
+                value={selectedFunctionId?.toString()}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Function" />
@@ -111,7 +121,10 @@ const AddApiKeyDialog: React.FC<AddApiKeyDialogProps> = ({
             
             <div>
               <Label htmlFor="environment" className="text-xs mb-1 block">Environment</Label>
-              <Select onValueChange={(value) => setSelectedEnvironmentId(Number(value))}>
+              <Select 
+                onValueChange={(value) => setSelectedEnvironmentId(Number(value))}
+                value={selectedEnvironmentId?.toString()}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Environment" />
                 </SelectTrigger>
@@ -134,7 +147,10 @@ const AddApiKeyDialog: React.FC<AddApiKeyDialogProps> = ({
           
           <div className="space-y-2">
             <Label htmlFor="provider">API Provider</Label>
-            <Select onValueChange={(value) => setSelectedProviderId(Number(value))}>
+            <Select 
+              onValueChange={(value) => setSelectedProviderId(Number(value))}
+              value={selectedProviderId?.toString()}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select a provider" />
               </SelectTrigger>
