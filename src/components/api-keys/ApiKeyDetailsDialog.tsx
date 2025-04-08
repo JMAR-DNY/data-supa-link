@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { format } from 'date-fns';
-import { Check, X } from 'lucide-react';
+import { Check, X, Copy } from 'lucide-react';
 import { 
   Dialog, DialogContent, DialogHeader, DialogTitle 
 } from '@/components/ui/dialog';
@@ -14,13 +14,15 @@ interface ApiKeyDetailsDialogProps {
   onOpenChange: (open: boolean) => void;
   apiKey: ApiKey | null;
   onActivate: (active: boolean) => void;
+  onClone: (apiKey: ApiKey) => void;
 }
 
 export function ApiKeyDetailsDialog({
   isOpen,
   onOpenChange,
   apiKey,
-  onActivate
+  onActivate,
+  onClone
 }: ApiKeyDetailsDialogProps) {
   if (!apiKey) return null;
 
@@ -67,6 +69,13 @@ export function ApiKeyDetailsDialog({
         </div>
         
         <div className="flex justify-end space-x-2">
+          <Button 
+            variant="outline" 
+            onClick={() => apiKey && onClone(apiKey)}
+            className="mr-auto"
+          >
+            <Copy className="mr-2 h-4 w-4" /> Clone
+          </Button>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>

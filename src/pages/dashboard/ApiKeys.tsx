@@ -142,6 +142,25 @@ const ApiKeys = () => {
     setIsEditDialogOpen(true);
   };
   
+  const handleCloneApiKey = (apiKey: ApiKey) => {
+    // Pre-populate form with the current API key's data
+    setSelectedModuleId(apiKey.module_id || null);
+    setSelectedFunctionId(apiKey.function_id || null);
+    setSelectedEnvironmentId(apiKey.environment_id || null);
+    setSelectedProviderId(apiKey.api_provider_id || null);
+    setKeyDescription(apiKey.description || '');
+    setApiKeyValue(''); // Clear the API key value
+    
+    // Close the edit dialog and open the add dialog
+    setIsEditDialogOpen(false);
+    setIsAddDialogOpen(true);
+    
+    // If needed, refetch the functions for the selected module
+    if (apiKey.module_id) {
+      refetchFunctions();
+    }
+  };
+  
   return (
     <div className="container p-4 md:p-6">
       <PageHeader title="API Keys" />
@@ -212,6 +231,7 @@ const ApiKeys = () => {
         onOpenChange={setIsEditDialogOpen}
         apiKey={currentApiKey}
         onActivate={handleEditApiKey}
+        onClone={handleCloneApiKey}
       />
     </div>
   );
