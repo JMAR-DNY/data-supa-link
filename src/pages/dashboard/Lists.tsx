@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, LayoutGrid, LayoutList } from "lucide-react";
@@ -77,7 +78,9 @@ export default function Lists() {
     <div className="container p-6">
       <div className="flex flex-col gap-6">
         <div className="flex justify-between items-center">
-          <PageHeader title="Lists" />
+          <div className="w-full">
+            <PageHeader title="Lists" />
+          </div>
           <div className="flex items-center gap-2">
             <LayoutList className={`h-5 w-5 ${viewMode === "list" ? "text-primary" : "text-muted-foreground"}`} />
             <Switch
