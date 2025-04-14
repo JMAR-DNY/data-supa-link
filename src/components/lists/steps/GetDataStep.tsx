@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +18,13 @@ export default function GetDataStep() {
     // Update the processing state based on file upload status
     setIsProcessing(isUploading);
   }, [isUploading, setIsProcessing]);
+
+  // Set default data source to "csv" on component mount
+  useEffect(() => {
+    if (!dataSource) {
+      setDataSource("csv");
+    }
+  }, [dataSource, setDataSource]);
 
   const handleSourceSelect = (source: "csv" | "manual" | "api") => {
     setDataSource(source);
@@ -49,6 +55,8 @@ export default function GetDataStep() {
       return;
     }
 
+    // Ensure dataSource is set to "csv" when a file is selected
+    setDataSource("csv");
     setFile(selectedFile);
     simulateUpload(selectedFile);
   };

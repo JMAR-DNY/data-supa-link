@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { useListCreation, ListCreationProvider } from "@/contexts/ListCreationContext";
 import StepIndicator from "@/components/lists/StepIndicator";
@@ -39,11 +38,8 @@ function CreateListContent() {
       }
       setCurrentStep(currentStep + 1);
     } else if (currentStep === 2) {
-      // Validate second step
-      if (!dataSource) {
-        toast.error("Please select a data source");
-        return;
-      }
+      // Validate second step - we only need to check if contact data exists
+      // since dataSource is automatically set when a file is uploaded
       if (contactData.length === 0) {
         toast.error("Please upload a valid CSV file");
         return;
