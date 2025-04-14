@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,11 +9,19 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 export default function GetDataStep() {
-  const { dataSource, setDataSource, setContactData, setIsProcessing } = useListCreation();
+  const { dataSource, setDataSource, contactData, setContactData, setIsProcessing } = useListCreation();
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
+
+  // Initialize state based on existing data when component mounts
+  useEffect(() => {
+    // If we already have contact data, we should show the file as uploaded
+    if (contactData.length > 0 && !isUploaded && !file) {
+      setIsUploaded(true);
+    }
+  }, [contactData, isUploaded, file]);
 
   useEffect(() => {
     // Update the processing state based on file upload status
@@ -99,6 +108,14 @@ export default function GetDataStep() {
     e.stopPropagation();
   };
 
+  // Determine the file name to display when showing an uploaded file without having the File object
+  const getDisplayFileName = () => {
+    if (file) {
+      return file.name;
+    }
+    return "uploaded-file.csv"; // Fallback name when we have contact data but no file object
+  };
+
   return (
     <Tabs 
       defaultValue={dataSource || "csv"} 
@@ -123,7 +140,7 @@ export default function GetDataStep() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {!file && !isUploaded ? (
+            {!isUploaded && !isUploading ? (
               <div 
                 className="border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors hover:bg-accent/50"
                 onDrop={handleFileDrop}
@@ -163,9 +180,9 @@ export default function GetDataStep() {
                     <div className="flex items-center gap-2">
                       <File className="h-8 w-8 text-primary" />
                       <div>
-                        <p className="font-medium">{file?.name}</p>
+                        <p className="font-medium">{getDisplayFileName()}</p>
                         <p className="text-xs text-muted-foreground">
-                          {file && (file.size / 1024).toFixed(1)} KB
+                          {file ? `${(file.size / 1024).toFixed(1)} KB` : 'File uploaded'}
                         </p>
                       </div>
                     </div>
@@ -181,7 +198,7 @@ export default function GetDataStep() {
                   </div>
                 )}
                 
-                {isUploaded && (
+                {isUploaded && !isUploading && (
                   <div>
                     <p className="text-sm text-green-600">File ready for processing</p>
                   </div>
