@@ -1,19 +1,24 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileUp, Edit, Link, File, X, Upload } from "lucide-react";
+import { FileUp, Edit, Link, File, Upload, Trash2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 export default function GetDataStep() {
-  const { dataSource, setDataSource, setContactData } = useListCreation();
+  const { dataSource, setDataSource, setContactData, setIsProcessing } = useListCreation();
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
+
+  useEffect(() => {
+    // Update the processing state based on file upload status
+    setIsProcessing(isUploading);
+  }, [isUploading, setIsProcessing]);
 
   const handleSourceSelect = (source: "csv" | "manual" | "api") => {
     setDataSource(source);
@@ -160,22 +165,16 @@ export default function GetDataStep() {
                       variant="ghost" 
                       size="icon"
                       onClick={resetFileUpload}
+                      className="text-red-500 hover:text-red-700 hover:bg-red-100"
                     >
-                      <X className="h-5 w-5" />
+                      <Trash2 className="h-5 w-5" />
                     </Button>
                   </div>
                 )}
                 
                 {isUploaded && (
-                  <div className="flex justify-between">
+                  <div>
                     <p className="text-sm text-green-600">File ready for processing</p>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => document.getElementById('file-upload')?.click()}
-                    >
-                      Replace File
-                    </Button>
                   </div>
                 )}
               </div>

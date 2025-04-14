@@ -16,7 +16,8 @@ function CreateListContent() {
     setCurrentStep, 
     listData, 
     dataSource, 
-    isComplete 
+    isComplete,
+    contactData
   } = useListCreation();
   
   const TOTAL_STEPS = 3;
@@ -62,7 +63,8 @@ function CreateListContent() {
       return !listData.name.trim();
     }
     if (currentStep === 2) {
-      return !dataSource;
+      // Enable next button if there's contact data (file is uploaded)
+      return !dataSource || contactData.length === 0;
     }
     if (currentStep === 3) {
       return !isComplete;
