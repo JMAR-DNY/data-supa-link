@@ -25,6 +25,12 @@ export type ContactDataItem = {
   [key: string]: any;
 };
 
+// New type for file metadata
+export type FileMetadata = {
+  name: string;
+  size: number;
+};
+
 type ListCreationContextType = {
   currentStep: number;
   setCurrentStep: (step: number) => void;
@@ -38,6 +44,8 @@ type ListCreationContextType = {
   setIsProcessing: (processing: boolean) => void;
   isComplete: boolean;
   setIsComplete: (complete: boolean) => void;
+  fileMetadata: FileMetadata | null;
+  setFileMetadata: (metadata: FileMetadata | null) => void;
 };
 
 const ListCreationContext = createContext<ListCreationContextType | undefined>(undefined);
@@ -49,6 +57,7 @@ export const ListCreationProvider = ({ children }: { children: ReactNode }) => {
   const [contactData, setContactData] = useState<ContactDataItem[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const [fileMetadata, setFileMetadata] = useState<FileMetadata | null>(null);
 
   const updateListData = (data: Partial<ListData>) => {
     setListData((prev) => ({ ...prev, ...data }));
@@ -69,6 +78,8 @@ export const ListCreationProvider = ({ children }: { children: ReactNode }) => {
         setIsProcessing,
         isComplete,
         setIsComplete,
+        fileMetadata,
+        setFileMetadata,
       }}
     >
       {children}

@@ -9,7 +9,15 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 export default function GetDataStep() {
-  const { dataSource, setDataSource, contactData, setContactData, setIsProcessing } = useListCreation();
+  const { 
+    dataSource, 
+    setDataSource, 
+    contactData, 
+    setContactData, 
+    setIsProcessing, 
+    fileMetadata,
+    setFileMetadata
+  } = useListCreation();
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
@@ -18,13 +26,13 @@ export default function GetDataStep() {
   // Initialize state based on existing data when component mounts
   useEffect(() => {
     // If we already have contact data, we should show the file as uploaded
-    if (contactData.length > 0 && !isUploaded && !file) {
+    if ((contactData.length > 0 || fileMetadata) && !isUploaded && !file) {
       setIsUploaded(true);
     }
-  }, [contactData, isUploaded, file]);
+  }, [contactData, fileMetadata, isUploaded, file]);
 
+  // Update the processing state based on file upload status
   useEffect(() => {
-    // Update the processing state based on file upload status
     setIsProcessing(isUploading);
   }, [isUploading, setIsProcessing]);
 
@@ -67,6 +75,13 @@ export default function GetDataStep() {
     // Ensure dataSource is set to "csv" when a file is selected
     setDataSource("csv");
     setFile(selectedFile);
+    
+    // Save file metadata to context
+    setFileMetadata({
+      name: selectedFile.name,
+      size: selectedFile.size
+    });
+    
     simulateUpload(selectedFile);
   };
   
@@ -101,6 +116,7 @@ export default function GetDataStep() {
     setIsUploading(false);
     setIsUploaded(false);
     setContactData([]);
+    setFileMetadata(null);
   };
 
   const preventDefaultDrag = (e: React.DragEvent<HTMLDivElement>) => {
@@ -108,12 +124,26 @@ export default function GetDataStep() {
     e.stopPropagation();
   };
 
-  // Determine the file name to display when showing an uploaded file without having the File object
+  // Get the file name to display from either the file object or the stored metadata
   const getDisplayFileName = () => {
     if (file) {
       return file.name;
     }
-    return "uploaded-file.csv"; // Fallback name when we have contact data but no file object
+    if (fileMetadata) {
+      return fileMetadata.name;
+    }
+    return "uploaded-file.csv"; // Fallback name only if nothing else is available
+  };
+
+  // Get the file size to display
+  const getDisplayFileSize = () => {
+    if (file) {
+      return `${(file.size / 1024).toFixed(1)} KB`;
+    }
+    if (fileMetadata) {
+      return `${(fileMetadata.size / 1024).toFixed(1)} KB`;
+    }
+    return 'File uploaded'; // Fallback text
   };
 
   return (
@@ -182,7 +212,7 @@ export default function GetDataStep() {
                       <div>
                         <p className="font-medium">{getDisplayFileName()}</p>
                         <p className="text-xs text-muted-foreground">
-                          {file ? `${(file.size / 1024).toFixed(1)} KB` : 'File uploaded'}
+                          {getDisplayFileSize()}
                         </p>
                       </div>
                     </div>
