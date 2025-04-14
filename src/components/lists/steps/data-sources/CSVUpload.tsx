@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { File, FileUp, Upload, Trash2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import Papa from 'papaparse';
 
 export function CSVUpload() {
   const { setDataSource, setContactData, setIsProcessing, fileMetadata, setFileMetadata } = useListCreation();
@@ -54,15 +55,29 @@ export function CSVUpload() {
       size: selectedFile.size
     });
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target?.result) {
-        localStorage.setItem('uploadedCsv', e.target.result as string);
+    Papa.parse(selectedFile, {
+      header: true,
+      complete: (results) => {
+        if (results.errors.length > 0) {
+          toast({
+            title: "Error parsing CSV",
+            description: results.errors[0].message,
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        setContactData(results.data);
+        simulateUpload(selectedFile);
+      },
+      error: (error) => {
+        toast({
+          title: "Error reading file",
+          description: error.message,
+          variant: "destructive"
+        });
       }
-    };
-    reader.readAsText(selectedFile);
-    
-    simulateUpload(selectedFile);
+    });
   };
 
   const simulateUpload = (selectedFile: File) => {
@@ -76,7 +91,6 @@ export function CSVUpload() {
           clearInterval(interval);
           setIsUploading(false);
           setIsUploaded(true);
-          setContactData([{ id: 1, email: "example@example.com", firstName: "John", lastName: "Doe" }]);
           return 100;
         }
         return prev + 5;
