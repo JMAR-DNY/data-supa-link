@@ -19,10 +19,6 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
         {/* Connector Lines - positioned between step circles */}
         <div 
           className="absolute top-4 h-0.5 bg-muted z-0 w-full" 
-          style={{
-            left: 'calc(50% / (3 - 1))', 
-            right: 'calc(50% / (3 - 1))'
-          }}
         />
         
         {/* Progress Line - adjusted to match steps */}
@@ -30,7 +26,6 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
           className="absolute top-4 h-0.5 bg-primary z-0 transition-all duration-500" 
           style={{ 
             width: `${(Math.max(0, currentStep - 1) / (steps.length - 1)) * 100}%`,
-            left: 'calc(50% / (3 - 1))'
           }} 
         />
         
