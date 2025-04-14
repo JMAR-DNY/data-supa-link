@@ -34,8 +34,8 @@ export default function StepNavigation({
       <Button 
         onClick={onNext} 
         disabled={isNextDisabled}
-        variant={isNextDisabled ? "default" : "default"}
-        className={!isNextDisabled ? "animate-pulse bg-primary/90 hover:bg-primary" : ""}
+        variant="default"
+        className={!isNextDisabled ? "bg-primary hover:bg-primary/90 animate-pulse" : ""}
       >
         {nextLabel}
         {currentStep < totalSteps && <ChevronRight className="ml-2 h-4 w-4" />}

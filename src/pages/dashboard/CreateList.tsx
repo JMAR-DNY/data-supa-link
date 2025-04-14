@@ -44,6 +44,10 @@ function CreateListContent() {
         toast.error("Please select a data source");
         return;
       }
+      if (contactData.length === 0) {
+        toast.error("Please upload a valid CSV file");
+        return;
+      }
       setCurrentStep(currentStep + 1);
     } else if (currentStep === 3 && isComplete) {
       // Go back to lists page
@@ -63,8 +67,8 @@ function CreateListContent() {
       return !listData.name.trim();
     }
     if (currentStep === 2) {
-      // Enable next button if there's contact data (file is uploaded)
-      return !dataSource || contactData.length === 0;
+      // Enable next button only if there's contact data (file is uploaded)
+      return contactData.length === 0;
     }
     if (currentStep === 3) {
       return !isComplete;

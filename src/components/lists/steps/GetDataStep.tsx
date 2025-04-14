@@ -55,6 +55,7 @@ export default function GetDataStep() {
   
   const simulateUpload = (selectedFile: File) => {
     setIsUploading(true);
+    setIsUploaded(false);
     setUploadProgress(0);
     
     // Simulate file upload progress
