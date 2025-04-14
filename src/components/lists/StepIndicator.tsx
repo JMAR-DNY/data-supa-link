@@ -10,7 +10,7 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
   const steps = [
     { id: 1, label: "Configure List" },
     { id: 2, label: "Get Data" },
-    { id: 3, label: "Process" },
+    { id: 3, label: "Review" },
   ];
 
   return (

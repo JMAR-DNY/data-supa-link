@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,20 +22,16 @@ export default function GetDataStep() {
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
 
-  // Initialize state based on existing data when component mounts
   useEffect(() => {
-    // If we already have contact data, we should show the file as uploaded
     if ((contactData.length > 0 || fileMetadata) && !isUploaded && !file) {
       setIsUploaded(true);
     }
   }, [contactData, fileMetadata, isUploaded, file]);
 
-  // Update the processing state based on file upload status
   useEffect(() => {
     setIsProcessing(isUploading);
   }, [isUploading, setIsProcessing]);
 
-  // Set default data source to "csv" on component mount
   useEffect(() => {
     if (!dataSource) {
       setDataSource("csv");
@@ -45,7 +40,6 @@ export default function GetDataStep() {
 
   const handleSourceSelect = (source: "csv" | "manual" | "api") => {
     setDataSource(source);
-    // Reset file upload state when changing sources
     if (source !== "csv") {
       resetFileUpload();
     }
@@ -72,36 +66,38 @@ export default function GetDataStep() {
       return;
     }
 
-    // Ensure dataSource is set to "csv" when a file is selected
     setDataSource("csv");
     setFile(selectedFile);
     
-    // Save file metadata to context
     setFileMetadata({
       name: selectedFile.name,
       size: selectedFile.size
     });
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        localStorage.setItem('uploadedCsv', e.target.result as string);
+      }
+    };
+    reader.readAsText(selectedFile);
     
     simulateUpload(selectedFile);
   };
-  
+
   const simulateUpload = (selectedFile: File) => {
     setIsUploading(true);
     setIsUploaded(false);
     setUploadProgress(0);
     
-    // Simulate file upload progress
     const interval = setInterval(() => {
       setUploadProgress(prev => {
         if (prev >= 100) {
           clearInterval(interval);
           setIsUploading(false);
           setIsUploaded(true);
-          // In a real implementation, we would parse the CSV here
-          // and set the contact data in the context
           setContactData([
             { id: 1, email: "example@example.com", firstName: "John", lastName: "Doe" }
-            // Real data would come from parsing the CSV
           ]);
           return 100;
         }
@@ -124,7 +120,6 @@ export default function GetDataStep() {
     e.stopPropagation();
   };
 
-  // Get the file name to display from either the file object or the stored metadata
   const getDisplayFileName = () => {
     if (file) {
       return file.name;
@@ -132,10 +127,9 @@ export default function GetDataStep() {
     if (fileMetadata) {
       return fileMetadata.name;
     }
-    return "uploaded-file.csv"; // Fallback name only if nothing else is available
+    return "uploaded-file.csv";
   };
 
-  // Get the file size to display
   const getDisplayFileSize = () => {
     if (file) {
       return `${(file.size / 1024).toFixed(1)} KB`;
@@ -143,7 +137,7 @@ export default function GetDataStep() {
     if (fileMetadata) {
       return `${(fileMetadata.size / 1024).toFixed(1)} KB`;
     }
-    return 'File uploaded'; // Fallback text
+    return 'File uploaded';
   };
 
   return (

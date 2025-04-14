@@ -5,6 +5,7 @@ import StepNavigation from "@/components/lists/StepNavigation";
 import ConfigureListStep from "@/components/lists/steps/ConfigureListStep";
 import GetDataStep from "@/components/lists/steps/GetDataStep";
 import ProcessStep from "@/components/lists/steps/ProcessStep";
+import ReviewStep from "@/components/lists/steps/ReviewStep";
 import PageHeader from "@/components/dashboard/PageHeader";
 import { toast } from "sonner";
 
@@ -21,7 +22,6 @@ function CreateListContent() {
   
   const TOTAL_STEPS = 3;
   
-  // Determine the header title based on the current step and list name
   const getHeaderTitle = () => {
     if (currentStep === 1 || !listData.name.trim()) {
       return "Create New List";
@@ -31,22 +31,18 @@ function CreateListContent() {
   
   const handleNext = () => {
     if (currentStep === 1) {
-      // Validate first step
       if (!listData.name.trim()) {
         toast.error("Please enter a list name");
         return;
       }
       setCurrentStep(currentStep + 1);
     } else if (currentStep === 2) {
-      // Validate second step - we only need to check if contact data exists
-      // since dataSource is automatically set when a file is uploaded
       if (contactData.length === 0) {
         toast.error("Please upload a valid CSV file");
         return;
       }
       setCurrentStep(currentStep + 1);
     } else if (currentStep === 3 && isComplete) {
-      // Go back to lists page
       navigate("/dashboard/lists");
       toast.success(`List "${listData.name}" created successfully!`);
     }
@@ -63,7 +59,6 @@ function CreateListContent() {
       return !listData.name.trim();
     }
     if (currentStep === 2) {
-      // Enable next button only if there's contact data (file is uploaded)
       return contactData.length === 0;
     }
     if (currentStep === 3) {
@@ -81,7 +76,7 @@ function CreateListContent() {
       <div className="py-4">
         {currentStep === 1 && <ConfigureListStep />}
         {currentStep === 2 && <GetDataStep />}
-        {currentStep === 3 && <ProcessStep />}
+        {currentStep === 3 && <ReviewStep />}
       </div>
       
       <StepNavigation 
