@@ -16,6 +16,15 @@ export type ListData = {
 
 export type DataSourceOption = "csv" | "manual" | "api";
 
+export type ContactDataItem = {
+  id?: number;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  [key: string]: any;
+};
+
 type ListCreationContextType = {
   currentStep: number;
   setCurrentStep: (step: number) => void;
@@ -23,8 +32,8 @@ type ListCreationContextType = {
   updateListData: (data: Partial<ListData>) => void;
   dataSource: DataSourceOption | null;
   setDataSource: (source: DataSourceOption | null) => void;
-  contactData: any[];
-  setContactData: (data: any[]) => void;
+  contactData: ContactDataItem[];
+  setContactData: (data: ContactDataItem[]) => void;
   isProcessing: boolean;
   setIsProcessing: (processing: boolean) => void;
   isComplete: boolean;
@@ -37,7 +46,7 @@ export const ListCreationProvider = ({ children }: { children: ReactNode }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [listData, setListData] = useState<ListData>({ name: "", description: "", tags: [] });
   const [dataSource, setDataSource] = useState<DataSourceOption | null>(null);
-  const [contactData, setContactData] = useState<any[]>([]);
+  const [contactData, setContactData] = useState<ContactDataItem[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
 
