@@ -1,13 +1,14 @@
-
 import { useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { File, FileUp, Upload, Trash2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
 
 export function CSVUpload() {
   const { setDataSource, setContactData, setIsProcessing, fileMetadata, setFileMetadata } = useListCreation();
+  const { toast } = useToast();
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
@@ -38,7 +39,11 @@ export function CSVUpload() {
 
   const handleFileSelect = (selectedFile: File) => {
     if (selectedFile.type !== "text/csv" && !selectedFile.name.endsWith('.csv')) {
-      toast.error("Please select a CSV file");
+      toast({
+        title: "Invalid file type",
+        description: "Please select a CSV file",
+        variant: "destructive"
+      });
       return;
     }
 
