@@ -15,22 +15,35 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
 
   return (
     <div className="w-full my-8 flex justify-center">
-      <ol className="flex items-center w-full md:w-[70%]">
+      <ol className="flex items-center w-full md:w-[70%] relative">
+        {/* Background Line */}
+        <div className="absolute top-4 left-0 right-0 h-0.5 bg-muted z-0" />
+        
+        {/* Progress Line */}
+        <div 
+          className="absolute top-4 h-0.5 bg-primary z-0 transition-all duration-500" 
+          style={{ 
+            width: `${(Math.max(0, currentStep - 1) / (steps.length - 1)) * 100}%`,
+            left: 0 
+          }} 
+        />
+        
         {steps.map((step, index) => (
-          <li key={step.id} className={`relative flex flex-col items-center ${
-            index < steps.length - 1 ? "flex-1" : ""
-          }`}>
+          <li 
+            key={step.id} 
+            className="flex-1 flex flex-col items-center relative z-10"
+          >
             {/* Step Circle */}
             {step.id < currentStep ? (
-              <div className="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-primary mb-2">
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center mb-2">
                 <CheckCircle2 className="h-5 w-5 text-primary-foreground" />
               </div>
             ) : step.id === currentStep ? (
-              <div className="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-medium mb-2">
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium mb-2">
                 {step.id}
               </div>
             ) : (
-              <div className="z-10 flex items-center justify-center w-8 h-8 rounded-full border-2 border-muted bg-background text-muted-foreground font-medium mb-2">
+              <div className="w-8 h-8 rounded-full border-2 border-muted bg-background flex items-center justify-center text-muted-foreground font-medium mb-2">
                 {step.id}
               </div>
             )}
@@ -47,16 +60,6 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
             >
               {step.label}
             </span>
-            
-            {/* Line connecting to next step */}
-            {index < steps.length - 1 && (
-              <div 
-                className={`absolute top-4 -right-1/2 w-full h-0.5 ${
-                  currentStep > index + 1 ? "bg-primary" : "bg-muted"
-                }`} 
-                style={{ left: '50%' }}
-              />
-            )}
           </li>
         ))}
       </ol>
