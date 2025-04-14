@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -55,22 +56,29 @@ export function CSVUpload() {
       size: selectedFile.size
     });
 
+    // Use more flexible parsing options
     Papa.parse(selectedFile, {
       header: true,
+      skipEmptyLines: true,
+      delimiter: "",  // Auto-detect delimiter
+      dynamicTyping: true,
       complete: (results) => {
         if (results.errors.length > 0) {
+          console.error("CSV parsing errors:", results.errors);
           toast({
             title: "Error parsing CSV",
-            description: results.errors[0].message,
+            description: "There was a problem reading the CSV file. Please check the format and try again.",
             variant: "destructive"
           });
           return;
         }
         
+        // Successfully parsed data
         setContactData(results.data);
         simulateUpload(selectedFile);
       },
       error: (error) => {
+        console.error("CSV parsing error:", error);
         toast({
           title: "Error reading file",
           description: error.message,

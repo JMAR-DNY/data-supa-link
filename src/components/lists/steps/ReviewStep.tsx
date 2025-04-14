@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,12 +6,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { FileText, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import Papa from "papaparse";
 
 const PAGE_SIZE = 10;
 
 export default function ReviewStep() {
-  const { fileMetadata, contactData, setContactData } = useListCreation();
+  const { fileMetadata, contactData, setIsComplete } = useListCreation();
   const [headers, setHeaders] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -18,56 +18,38 @@ export default function ReviewStep() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // If we already have parsed data, use it
+    // Mark this step as complete if we have data
     if (contactData.length > 0) {
-      setHeaders(Object.keys(contactData[0]));
+      setIsComplete(true);
+    } else {
+      setIsComplete(false);
+    }
+  }, [contactData, setIsComplete]);
+
+  useEffect(() => {
+    // If we have data, extract headers and calculate pages
+    if (contactData.length > 0) {
+      // Get all unique headers from all rows in case they're inconsistent
+      const allHeaders = new Set<string>();
+      contactData.forEach(item => {
+        Object.keys(item).forEach(key => allHeaders.add(key));
+      });
+      
+      setHeaders(Array.from(allHeaders));
       setTotalPages(Math.ceil(contactData.length / PAGE_SIZE));
       setIsLoading(false);
-      return;
-    }
-
-    // Otherwise, parse the CSV file if we have metadata (which means file was uploaded)
-    if (fileMetadata) {
+    } else {
       setIsLoading(true);
-      setError(null);
-
-      // Get the file from local storage (in a real app, this would come from your backend)
-      const storedFile = localStorage.getItem('uploadedCsv');
-      if (!storedFile) {
-        setError("Could not find the uploaded file data");
-        setIsLoading(false);
-        return;
-      }
-
-      Papa.parse(storedFile, {
-        header: true,
-        complete: (results) => {
-          if (results.errors.length > 0) {
-            setError("Error parsing CSV file: " + results.errors[0].message);
-            setIsLoading(false);
-            return;
-          }
-
-          const parsedData = results.data as any[];
-          setContactData(parsedData);
-          setHeaders(results.meta.fields || []);
-          setTotalPages(Math.ceil(parsedData.length / PAGE_SIZE));
-          setIsLoading(false);
-        },
-        error: (error) => {
-          setError("Failed to parse CSV file: " + error.message);
-          setIsLoading(false);
-        }
-      });
+      setError("No data available to review");
     }
-  }, [fileMetadata, contactData, setContactData]);
+  }, [contactData]);
 
   const getCurrentPageData = () => {
     const start = (currentPage - 1) * PAGE_SIZE;
     return contactData.slice(start, start + PAGE_SIZE);
   };
 
-  if (error) {
+  if (error && contactData.length === 0) {
     return (
       <Alert variant="destructive">
         <AlertCircle className="h-4 w-4" />
@@ -87,71 +69,76 @@ export default function ReviewStep() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {isLoading ? (
+          {isLoading && contactData.length === 0 ? (
             <div className="text-center py-8">Loading data...</div>
           ) : (
             <>
-              <div className="rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      {headers.map((header) => (
-                        <TableHead key={header}>{header}</TableHead>
-                      ))}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {getCurrentPageData().map((row, index) => (
-                      <TableRow key={index}>
-                        {headers.map((header) => (
-                          <TableCell key={`${index}-${header}`}>
-                            {row[header]}
-                          </TableCell>
+              {contactData.length > 0 ? (
+                <>
+                  <div className="rounded-md border overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          {headers.map((header) => (
+                            <TableHead key={header}>{header}</TableHead>
+                          ))}
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {getCurrentPageData().map((row, index) => (
+                          <TableRow key={index}>
+                            {headers.map((header) => (
+                              <TableCell key={`${index}-${header}`}>
+                                {row[header] !== undefined ? String(row[header]) : ''}
+                              </TableCell>
+                            ))}
+                          </TableRow>
                         ))}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                      </TableBody>
+                    </Table>
+                  </div>
 
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    {/* Fixed: Removed the disabled prop and conditionally render based on current page */}
-                    {currentPage > 1 ? (
-                      <PaginationPrevious 
-                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                      />
-                    ) : (
-                      <PaginationPrevious 
-                        onClick={() => {}} 
-                        className="pointer-events-none opacity-50"
-                      />
-                    )}
-                  </PaginationItem>
-                  
-                  {/* Show current page and total */}
-                  <PaginationItem>
-                    <PaginationLink>
-                      Page {currentPage} of {totalPages}
-                    </PaginationLink>
-                  </PaginationItem>
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        {currentPage > 1 ? (
+                          <PaginationPrevious 
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                          />
+                        ) : (
+                          <PaginationPrevious 
+                            onClick={() => {}} 
+                            className="pointer-events-none opacity-50"
+                          />
+                        )}
+                      </PaginationItem>
+                      
+                      <PaginationItem>
+                        <PaginationLink>
+                          Page {currentPage} of {totalPages}
+                        </PaginationLink>
+                      </PaginationItem>
 
-                  <PaginationItem>
-                    {/* Fixed: Removed the disabled prop and conditionally render based on current page */}
-                    {currentPage < totalPages ? (
-                      <PaginationNext 
-                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                      />
-                    ) : (
-                      <PaginationNext 
-                        onClick={() => {}} 
-                        className="pointer-events-none opacity-50"
-                      />
-                    )}
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+                      <PaginationItem>
+                        {currentPage < totalPages ? (
+                          <PaginationNext 
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                          />
+                        ) : (
+                          <PaginationNext 
+                            onClick={() => {}} 
+                            className="pointer-events-none opacity-50"
+                          />
+                        )}
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  No data available. Please go back and upload a CSV file.
+                </div>
+              )}
             </>
           )}
         </div>
