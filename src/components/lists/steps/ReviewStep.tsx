@@ -117,10 +117,17 @@ export default function ReviewStep() {
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
-                    <PaginationPrevious 
-                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                      disabled={currentPage === 1}
-                    />
+                    {/* Fixed: Removed the disabled prop and conditionally render based on current page */}
+                    {currentPage > 1 ? (
+                      <PaginationPrevious 
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      />
+                    ) : (
+                      <PaginationPrevious 
+                        onClick={() => {}} 
+                        className="pointer-events-none opacity-50"
+                      />
+                    )}
                   </PaginationItem>
                   
                   {/* Show current page and total */}
@@ -131,10 +138,17 @@ export default function ReviewStep() {
                   </PaginationItem>
 
                   <PaginationItem>
-                    <PaginationNext 
-                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                      disabled={currentPage === totalPages}
-                    />
+                    {/* Fixed: Removed the disabled prop and conditionally render based on current page */}
+                    {currentPage < totalPages ? (
+                      <PaginationNext 
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      />
+                    ) : (
+                      <PaginationNext 
+                        onClick={() => {}} 
+                        className="pointer-events-none opacity-50"
+                      />
+                    )}
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
