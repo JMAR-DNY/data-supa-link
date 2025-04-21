@@ -2,17 +2,19 @@
 import { useEffect, useState } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableCaption } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { FileText, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import clsx from "clsx";
+import { useTheme } from "@/hooks/use-theme";
 
 const PAGE_SIZE = 10;
-const TABLE_MAX_WIDTH = 780; // px
-const TABLE_MAX_HEIGHT = 350; // px (matching CSVUpload window)
+const TABLE_MAX_WIDTH = 1200; // px, larger than original
+const TABLE_MAX_HEIGHT = 350; // px (CSVUpload window constraint)
+const CONTAINER_PADDING = 16; // px
 
 export default function ReviewStep() {
   const { fileMetadata, contactData, setIsComplete } = useListCreation();
@@ -24,7 +26,7 @@ export default function ReviewStep() {
 
   // Selection state for checkboxes:
   const [checkedRows, setCheckedRows] = useState<number[]>([]);
-  const allRowIndexes = getCurrentPageData().map((_, idx) => idx);
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (contactData.length > 0) {
@@ -72,6 +74,25 @@ export default function ReviewStep() {
     });
   };
 
+  // Color schemes for light/dark themes
+  const colors = {
+    dark: {
+      container: "bg-[#181D29] border border-[#23293D]",
+      rowEven: "bg-[#181D29]",
+      rowOdd: "bg-[#23293D]",
+      head: "bg-[#23293D] text-white",
+      cell: "text-white"
+    },
+    light: {
+      container: "bg-white border border-gray-200",
+      rowEven: "bg-white",
+      rowOdd: "bg-gray-50",
+      head: "bg-gray-100 text-gray-800",
+      cell: "text-gray-900"
+    }
+  };
+  const scheme = theme === "dark" ? colors.dark : colors.light;
+
   if (error && contactData.length === 0) {
     return (
       <Alert variant="destructive">
@@ -98,29 +119,41 @@ export default function ReviewStep() {
             <>
               {contactData.length > 0 ? (
                 <div
-                  className="rounded-md border bg-[#181D29] px-1 py-0"
+                  className={clsx(
+                    "rounded-md mx-auto",
+                    scheme.container
+                  )}
                   style={{
                     maxWidth: TABLE_MAX_WIDTH,
-                    margin: "0 auto",
+                    paddingLeft: CONTAINER_PADDING,
+                    paddingRight: CONTAINER_PADDING,
                   }}
                 >
-                  <ScrollArea
+                  {/* Table Scroll: native scrollbars for both directions, header and checkbox sticky */}
+                  <div
                     className="w-full"
                     style={{
                       maxHeight: TABLE_MAX_HEIGHT,
-                      background: "#181D29",
+                      overflow: "auto",
                       borderRadius: "0.5rem"
                     }}
                   >
                     <Table>
                       <TableHeader>
                         <TableRow
-                          className="bg-[#23293D] sticky top-0 z-20 text-white select-none"
-                          style={{ boxShadow: "0 2px 4px #16192390" }}
+                          className={clsx(
+                            scheme.head,
+                            "sticky top-0 z-20 select-none"
+                          )}
+                          style={{
+                            boxShadow: theme === "dark"
+                              ? "0 2px 4px #16192390"
+                              : "0 2px 4px #d1d5db90"
+                          }}
                         >
                           <TableHead
                             style={{
-                              background: "#23293D",
+                              background: theme === "dark" ? "#23293D" : "#f3f4f6",
                               left: 0,
                               zIndex: 30,
                               position: "sticky",
@@ -128,7 +161,7 @@ export default function ReviewStep() {
                               maxWidth: 48,
                               width: 48,
                             }}
-                            className="!bg-[#23293D]"
+                            className={clsx(scheme.head)}
                           >
                             <Checkbox
                               checked={checkedRows.length === getCurrentPageData().length && checkedRows.length > 0}
@@ -141,14 +174,15 @@ export default function ReviewStep() {
                             <TableHead
                               key={header}
                               style={{
-                                background: "#23293D",
-                                color: "#fff",
-                                fontWeight: 600,
+                                background: theme === "dark" ? "#23293D" : "#f3f4f6",
                                 minWidth: 120,
                                 textAlign: "left",
                                 position: "sticky",
+                                top: 0,
                                 zIndex: 10,
-                                left: undefined, // Non-sticky except checkbox
+                                left: undefined,
+                                color: theme === "dark" ? "#fff" : "#2d3748",
+                                fontWeight: 600
                               }}
                               className="truncate"
                             >
@@ -162,19 +196,22 @@ export default function ReviewStep() {
                           <TableRow
                             key={index}
                             className={clsx(
-                              "text-white",
-                              index % 2 === 0 ? "bg-[#181D29]" : "bg-[#23293D]",
-                              "hover:bg-[#262C44] transition-colors"
+                              index % 2 === 0 ? scheme.rowEven : scheme.rowOdd,
+                              "hover:bg-accent transition-colors"
                             )}
                             style={{
-                              borderBottom: "1px solid #23273A"
+                              borderBottom: theme === "dark"
+                                ? "1px solid #23273A"
+                                : "1px solid #e5e7eb"
                             }}
                           >
                             <TableCell
                               style={{
                                 position: "sticky",
                                 left: 0,
-                                background: index % 2 === 0 ? "#181D29" : "#23293D",
+                                background: index % 2 === 0
+                                  ? (theme === "dark" ? "#181D29" : "#fff")
+                                  : (theme === "dark" ? "#23293D" : "#f9fafb"),
                                 zIndex: 25,
                                 minWidth: 48,
                                 maxWidth: 48,
@@ -194,9 +231,11 @@ export default function ReviewStep() {
                                 key={`${index}-${header}`}
                                 style={{
                                   minWidth: 120,
-                                  color: "#fff",
+                                  color: scheme.cell,
                                   background: "inherit",
-                                  borderRight: "1px solid #23273A"
+                                  borderRight: theme === "dark"
+                                    ? "1px solid #23273A"
+                                    : "1px solid #e5e7eb"
                                 }}
                                 className="truncate"
                               >
@@ -207,8 +246,8 @@ export default function ReviewStep() {
                         ))}
                       </TableBody>
                     </Table>
-                  </ScrollArea>
-                  <div className="flex justify-between items-center pt-2 text-xs text-white/80 px-2">
+                  </div>
+                  <div className="flex justify-between items-center pt-2 text-xs text-muted-foreground px-2">
                     <span>
                       Showing {getCurrentPageData().length} of {contactData.length} rows
                     </span>
@@ -226,13 +265,11 @@ export default function ReviewStep() {
                             />
                           )}
                         </PaginationItem>
-
                         <PaginationItem>
                           <PaginationLink>
                             Page {currentPage} of {totalPages}
                           </PaginationLink>
                         </PaginationItem>
-
                         <PaginationItem>
                           {currentPage < totalPages ? (
                             <PaginationNext
@@ -261,3 +298,5 @@ export default function ReviewStep() {
     </Card>
   );
 }
+
+// This file is getting long. You should consider refactoring it into smaller focused components!
