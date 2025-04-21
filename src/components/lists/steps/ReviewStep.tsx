@@ -1,3 +1,4 @@
+
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -28,18 +29,22 @@ export default function ReviewStep() {
   }, [contactData, setIsComplete]);
 
   const columns = useMemo(() => {
-    if (contactData.length === 0) return [];
+    if (!contactData || contactData.length === 0) return [];
     
     const allKeys = new Set<string>();
     contactData.forEach(item => {
-      Object.keys(item).forEach(key => allKeys.add(key));
+      if (item) {
+        Object.keys(item).forEach(key => allKeys.add(key));
+      }
     });
     
+    // Generate columns with explicit IDs
     return Array.from(allKeys).map((key) => ({
       accessorKey: key,
       header: key,
+      id: key, // Explicitly set ID to match accessorKey
       size: 150,
-      Cell: ({ cell }) => (
+      Cell: ({ cell }: { cell: any }) => (
         <span style={{ color: theme === "dark" ? "white" : "inherit" }}>
           {cell.getValue()}
         </span>
@@ -47,9 +52,10 @@ export default function ReviewStep() {
     }));
   }, [contactData, theme]);
 
+  // Only create the table if we have valid columns
   const table = useMaterialReactTable({
-    columns,
-    data: contactData,
+    columns: columns.length > 0 ? columns : [{ accessorKey: 'placeholder', header: 'No Data', id: 'placeholder' }],
+    data: contactData.length > 0 ? contactData : [],
     enableRowSelection: true,
     enableColumnOrdering: false,
     enableGlobalFilter: true,
@@ -244,6 +250,11 @@ export default function ReviewStep() {
         No data available. Please go back and upload a CSV file.
       </div>
     );
+  }
+
+  // Make sure we have columns before rendering the table
+  if (columns.length === 0) {
+    return <div className="text-center py-8">Processing data...</div>;
   }
 
   return (
