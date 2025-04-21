@@ -1,4 +1,3 @@
-
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -28,7 +27,6 @@ export default function ReviewStep() {
     }
   }, [contactData, setIsComplete]);
 
-  // Create columns definition from contact data
   const columns = useMemo(() => {
     if (contactData.length === 0) return [];
     
@@ -64,12 +62,16 @@ export default function ReviewStep() {
       globalFilter,
     },
     onGlobalFilterChange: setGlobalFilter,
-    positionGlobalFilter: "left",
+    positionGlobalFilter: "right",
     muiSearchTextFieldProps: {
       variant: 'outlined',
       placeholder: 'Search contacts',
       size: 'small',
-      sx: { width: '300px', marginBlock: '0.5rem' },
+      sx: { 
+        width: '300px', 
+        marginBlock: '0.5rem',
+        marginLeft: 'auto'
+      },
     },
     muiTablePaperProps: {
       sx: {
@@ -77,7 +79,6 @@ export default function ReviewStep() {
       },
     },
     enableRowVirtualization: true,
-    // Style the table based on the current theme
     muiTableProps: {
       sx: {
         tableLayout: 'fixed',
