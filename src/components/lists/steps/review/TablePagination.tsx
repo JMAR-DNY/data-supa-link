@@ -5,6 +5,7 @@ interface TablePaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  onPageSizeChange: (size: number) => void;
   totalRows: number;
   currentPageSize: number;
 }
@@ -14,7 +15,8 @@ export function TablePagination({
   totalPages,
   onPageChange,
   totalRows,
-  currentPageSize
+  currentPageSize,
+  onPageSizeChange
 }: TablePaginationProps) {
   return (
     <div className="flex justify-between items-center p-2 border-t bg-background">

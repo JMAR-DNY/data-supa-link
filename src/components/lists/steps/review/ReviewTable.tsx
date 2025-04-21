@@ -3,8 +3,8 @@ import { useState, useMemo } from "react";
 import { Table } from "@/components/ui/table";
 import { useTheme } from "@/hooks/use-theme";
 import { ContactDataItem } from "@/contexts/ListCreationContext";
-import { TableHeader } from "./TableHeader";
-import { TableBody } from "./TableBody";
+import { ReviewTableHeader } from "./TableHeader";
+import { ReviewTableBody } from "./TableBody";
 import { TablePagination } from "./TablePagination";
 
 interface ReviewTableProps {
@@ -75,14 +75,14 @@ export function ReviewTable({ contactData }: ReviewTableProps) {
     <div className="flex flex-col border rounded-md overflow-hidden">
       <div className="overflow-x-auto">
         <Table>
-          <TableHeader 
+          <ReviewTableHeader 
             headers={headers}
             onSelectAll={handleSelectAll}
             hasCheckedRows={allCurrentPageRowsChecked}
             hasRows={currentPageData.length > 0}
             theme={theme}
           />
-          <TableBody 
+          <ReviewTableBody 
             currentPageData={currentPageData}
             headers={headers}
             checkedRows={checkedRows}
@@ -94,13 +94,10 @@ export function ReviewTable({ contactData }: ReviewTableProps) {
       <TablePagination
         currentPage={page}
         totalPages={totalPages}
-        pageSize={pageSize}
+        totalRows={contactData.length}
+        currentPageSize={pageSize}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
-        totalItems={contactData.length}
-        startIndex={startIndex}
-        endIndex={endIndex}
-        theme={theme}
       />
     </div>
   );
