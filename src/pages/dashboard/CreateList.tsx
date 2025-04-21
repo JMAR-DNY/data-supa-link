@@ -69,7 +69,7 @@ function CreateListContent() {
   };
   
   return (
-    <div className="container p-6">
+    <div className="container p-6 flex flex-col min-h-[calc(100vh-64px)]">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 items-center">
         <div className="flex justify-center md:justify-center items-center">
           <PageHeader title={getHeaderTitle()} className="mb-0" />
@@ -79,20 +79,22 @@ function CreateListContent() {
         </div>
       </div>
       
-      <div className="py-4">
+      <div className="py-4 flex-grow">
         {currentStep === 1 && <ConfigureListStep />}
         {currentStep === 2 && <GetDataStep />}
         {currentStep === 3 && <ReviewStep />}
       </div>
       
-      <StepNavigation 
-        currentStep={currentStep} 
-        totalSteps={TOTAL_STEPS} 
-        onNext={handleNext} 
-        onPrevious={handlePrevious}
-        isNextDisabled={isNextDisabled()}
-        nextLabel={currentStep === 3 && isComplete ? "Finish" : "Next"}
-      />
+      <div className="mt-auto pt-4">
+        <StepNavigation 
+          currentStep={currentStep} 
+          totalSteps={TOTAL_STEPS} 
+          onNext={handleNext} 
+          onPrevious={handlePrevious}
+          isNextDisabled={isNextDisabled()}
+          nextLabel={currentStep === 3 && isComplete ? "Finish" : "Next"}
+        />
+      </div>
     </div>
   );
 }

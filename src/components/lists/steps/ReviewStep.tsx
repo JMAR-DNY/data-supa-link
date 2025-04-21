@@ -1,3 +1,4 @@
+
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -129,8 +130,10 @@ export default function ReviewStep() {
   }
 
   return (
-    <Box sx={{ height: "calc(100vh - 300px)", width: '100%' }}>
-      <MaterialReactTable table={table} />
-    </Box>
+    <div className="flex flex-col h-full">
+      <Box sx={{ height: "calc(100vh - 350px)", width: '100%', mb: 3 }}>
+        <MaterialReactTable table={table} />
+      </Box>
+    </div>
   );
 }
