@@ -1,3 +1,4 @@
+
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -71,7 +72,7 @@ export default function ReviewStep() {
         width: '300px', 
         marginBlock: '0.5rem',
         marginLeft: 'auto',
-        backgroundColor: theme === "dark" ? "#2A3041" : "white",
+        backgroundColor: theme === "dark" ? "#1A1F2C" : "white",
         "& .MuiOutlinedInput-notchedOutline": {
           borderColor: theme === "dark" ? "#3F4458" : undefined,
         },
@@ -86,7 +87,7 @@ export default function ReviewStep() {
     muiTablePaperProps: {
       sx: {
         boxShadow: '0 0 2px rgba(0,0,0,0.1)',
-        backgroundColor: theme === "dark" ? "#1A1F2C" : undefined,
+        backgroundColor: theme === "dark" ? "#1A1F2C" : "white",
         border: theme === "dark" ? "1px solid #2A3041" : undefined,
       },
     },
@@ -129,6 +130,7 @@ export default function ReviewStep() {
     muiTableFooterProps: {
       sx: {
         backgroundColor: theme === "dark" ? "#23293D" : undefined,
+        color: theme === "dark" ? "#FFFFFF" : undefined,
       }
     },
     muiPaginationProps: {
@@ -175,7 +177,39 @@ export default function ReviewStep() {
         },
       },
     },
-    
+    // Apply styles to all table cells to ensure text is visible in dark mode
+    muiTableBodyCellProps: {
+      sx: {
+        backgroundColor: theme === "dark" ? "inherit" : undefined,
+        color: theme === "dark" ? "#FFFFFF !important" : undefined,
+        "& .MuiTypography-root": {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
+        "& .MuiButtonBase-root": {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
+        "& .MuiCheckbox-root": {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
+      },
+    },
+    // Style for the checkbox column in dark mode
+    muiSelectAllCheckboxProps: {
+      sx: {
+        color: theme === "dark" ? "#C8C8C9" : undefined,
+        '&.Mui-checked': {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
+      },
+    },
+    muiSelectCheckboxProps: {
+      sx: {
+        color: theme === "dark" ? "#C8C8C9" : undefined,
+        '&.Mui-checked': {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
+      },
+    },
   });
 
   if (error && contactData.length === 0) {
@@ -201,7 +235,13 @@ export default function ReviewStep() {
   }
 
   return (
-    <Box sx={{ height: "calc(100vh - 300px)", width: '100%' }}>
+    <Box sx={{ 
+      height: "calc(100vh - 300px)", 
+      width: '100%',
+      '.MuiDataGrid-root': {
+        color: theme === 'dark' ? '#FFFFFF' : undefined,
+      }
+    }}>
       <MaterialReactTable table={table} />
     </Box>
   );
