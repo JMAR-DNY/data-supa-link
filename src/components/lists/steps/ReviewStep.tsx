@@ -1,3 +1,4 @@
+
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -13,6 +14,7 @@ export default function ReviewStep() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { theme } = useTheme();
+  const [density, setDensity] = useState<'compact' | 'comfortable' | 'spacious'>('compact');
 
   useEffect(() => {
     if (contactData.length > 0) {
@@ -42,6 +44,14 @@ export default function ReviewStep() {
     }));
   }, [contactData]);
 
+  // Define cell styling based on density
+  const getCellStyling = (currentDensity: string) => {
+    const padding = currentDensity === 'compact' ? '2px 4px' : '8px 16px';
+    const height = currentDensity === 'compact' ? '2rem' : 'auto';
+    
+    return { padding, height };
+  };
+
   const table = useMaterialReactTable({
     columns,
     data: contactData,
@@ -60,7 +70,9 @@ export default function ReviewStep() {
     },
     state: {
       globalFilter,
+      density,
     },
+    onDensityChange: setDensity,
     onGlobalFilterChange: setGlobalFilter,
     positionGlobalFilter: "right",
     muiSearchTextFieldProps: {
@@ -109,10 +121,8 @@ export default function ReviewStep() {
         "& .MuiTableRow-root": {
           backgroundColor: theme === "dark" ? "#23293D" : undefined,
           "& .MuiTableCell-root": {
-            padding: theme === "dark" 
-              ? (table.getState().density === 'compact' ? '2px 4px' : '8px 16px') 
-              : (table.getState().density === 'compact' ? '2px 4px' : '8px 16px'),
-            height: table.getState().density === 'compact' ? '2rem' : 'auto',
+            padding: density === 'compact' ? '2px 4px' : '8px 16px',
+            height: density === 'compact' ? '2rem' : 'auto',
           },
         },
         "& .MuiTableCell-root": {
