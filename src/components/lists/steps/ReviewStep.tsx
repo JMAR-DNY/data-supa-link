@@ -63,7 +63,7 @@ export default function ReviewStep() {
       globalFilter,
     },
     onGlobalFilterChange: setGlobalFilter,
-    positionGlobalFilter: "center",
+    positionGlobalFilter: "right",
     muiSearchTextFieldProps: {
       variant: 'outlined',
       placeholder: 'Search contacts',
@@ -71,9 +71,6 @@ export default function ReviewStep() {
       sx: { 
         width: '300px', 
         marginBlock: '0.5rem',
-        display: 'flex',
-        justifyContent: 'center',
-        margin: '0 auto'
       },
     },
     muiTablePaperProps: {
