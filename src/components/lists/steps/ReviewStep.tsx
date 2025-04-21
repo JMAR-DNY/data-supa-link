@@ -1,4 +1,3 @@
-
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -28,7 +27,6 @@ export default function ReviewStep() {
     }
   }, [contactData, setIsComplete]);
 
-  // Create columns definition from contact data with necessary id property
   const columns = useMemo(() => {
     if (contactData.length === 0) return [];
     
@@ -40,7 +38,7 @@ export default function ReviewStep() {
     return Array.from(allKeys).map((key) => ({
       accessorKey: key,
       header: key,
-      id: key, // Add the id property matching the accessorKey
+      id: key,
       size: 150,
     }));
   }, [contactData]);
@@ -49,7 +47,7 @@ export default function ReviewStep() {
     columns,
     data: contactData,
     enableRowSelection: true,
-    enableColumnOrdering: false, // Disable column ordering to avoid potential issues
+    enableColumnOrdering: false,
     enableGlobalFilter: true,
     enableColumnFilters: true,
     enablePagination: true,
@@ -65,12 +63,18 @@ export default function ReviewStep() {
       globalFilter,
     },
     onGlobalFilterChange: setGlobalFilter,
-    positionGlobalFilter: "left",
+    positionGlobalFilter: "center",
     muiSearchTextFieldProps: {
       variant: 'outlined',
       placeholder: 'Search contacts',
       size: 'small',
-      sx: { width: '300px', marginBlock: '0.5rem' },
+      sx: { 
+        width: '300px', 
+        marginBlock: '0.5rem',
+        display: 'flex',
+        justifyContent: 'center',
+        margin: '0 auto'
+      },
     },
     muiTablePaperProps: {
       sx: {
@@ -78,7 +82,6 @@ export default function ReviewStep() {
       },
     },
     enableRowVirtualization: true,
-    // Style the table based on the current theme
     muiTableProps: {
       sx: {
         tableLayout: 'fixed',
