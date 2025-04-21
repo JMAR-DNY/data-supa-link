@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -120,12 +119,14 @@ export default function ReviewStep() {
               {contactData.length > 0 ? (
                 <div
                   className={clsx(
-                    "rounded-md mx-auto",
+                    "rounded-md w-full", // remove mx-auto, add w-full for wide layout
                     scheme.container
                   )}
                   style={{
-                    maxWidth: TABLE_MAX_WIDTH,
-                    margin: "0 auto",
+                    // No maxWidth, let it fill parent
+                    // margin: "0 auto", // Remove this line to cancel centered layout
+                    paddingLeft: 8, // much smaller padding, adjust as needed for appearance
+                    paddingRight: 8,
                   }}
                 >
                   {/* Table container with both horizontal and vertical scrolling */}
