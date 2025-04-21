@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -124,18 +123,21 @@ export default function ReviewStep() {
                     scheme.container
                   )}
                   style={{
-                    maxWidth: TABLE_MAX_WIDTH,
+                    maxWidth: "100%",
                     paddingLeft: CONTAINER_PADDING,
                     paddingRight: CONTAINER_PADDING,
                   }}
                 >
-                  {/* Table Scroll: native scrollbars for both directions, header and checkbox sticky */}
+                  {/* Use both vertical and horizontal scrollbars */}
                   <div
                     className="w-full"
                     style={{
                       maxHeight: TABLE_MAX_HEIGHT,
-                      overflow: "auto",
-                      borderRadius: "0.5rem"
+                      maxWidth: "100%",
+                      overflowX: "auto",
+                      overflowY: "auto",
+                      borderRadius: "0.5rem",
+                      minWidth: "500px",
                     }}
                   >
                     <Table>
