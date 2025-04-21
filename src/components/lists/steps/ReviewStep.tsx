@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +12,6 @@ import clsx from "clsx";
 import { useTheme } from "@/hooks/use-theme";
 
 const PAGE_SIZE = 10;
-const TABLE_MAX_WIDTH = 800; // px, similar width to CSV upload
 const TABLE_MAX_HEIGHT = 350; // px (CSVUpload window constraint)
 const CONTAINER_PADDING = 16; // px
 
@@ -119,14 +119,11 @@ export default function ReviewStep() {
               {contactData.length > 0 ? (
                 <div
                   className={clsx(
-                    "rounded-md w-full", // remove mx-auto, add w-full for wide layout
+                    "rounded-md w-full",
                     scheme.container
                   )}
                   style={{
-                    // No maxWidth, let it fill parent
-                    // margin: "0 auto", // Remove this line to cancel centered layout
-                    paddingLeft: 8, // much smaller padding, adjust as needed for appearance
-                    paddingRight: 8,
+                    padding: "8px",
                   }}
                 >
                   {/* Table container with both horizontal and vertical scrolling */}
