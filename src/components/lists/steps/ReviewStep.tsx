@@ -14,6 +14,7 @@ import { useTheme } from "@/hooks/use-theme";
 const PAGE_SIZE = 10;
 const TABLE_MAX_WIDTH = 800; // px, similar width to CSV upload
 const TABLE_MAX_HEIGHT = 350; // px (CSVUpload window constraint)
+const CONTAINER_PADDING = 16; // px
 
 export default function ReviewStep() {
   const { fileMetadata, contactData, setIsComplete } = useListCreation();
@@ -125,11 +126,9 @@ export default function ReviewStep() {
                   style={{
                     maxWidth: TABLE_MAX_WIDTH,
                     margin: "0 auto",
-                    paddingLeft: 8,  // reduced horizontal padding - left
-                    paddingRight: 8, // reduced horizontal padding - right
                   }}
                 >
-                  {/* Table container with scrolling */}
+                  {/* Table container with both horizontal and vertical scrolling */}
                   <div
                     style={{
                       maxHeight: TABLE_MAX_HEIGHT,
@@ -305,4 +304,3 @@ export default function ReviewStep() {
 }
 
 // This file is getting long. You should consider refactoring it into smaller focused components!
-
