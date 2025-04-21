@@ -28,6 +28,7 @@ export default function ReviewStep() {
     }
   }, [contactData, setIsComplete]);
 
+  // Create columns definition from contact data
   const columns = useMemo(() => {
     if (contactData.length === 0) return [];
     
@@ -39,7 +40,6 @@ export default function ReviewStep() {
     return Array.from(allKeys).map((key) => ({
       accessorKey: key,
       header: key,
-      id: key, // Add an id property that matches the key
       size: 150,
     }));
   }, [contactData]);
@@ -48,7 +48,7 @@ export default function ReviewStep() {
     columns,
     data: contactData,
     enableRowSelection: true,
-    enableColumnOrdering: false, // Explicitly disable column ordering
+    enableColumnOrdering: true,
     enableGlobalFilter: true,
     enableColumnFilters: true,
     enablePagination: true,
@@ -64,16 +64,12 @@ export default function ReviewStep() {
       globalFilter,
     },
     onGlobalFilterChange: setGlobalFilter,
-    positionGlobalFilter: "right",
+    positionGlobalFilter: "left",
     muiSearchTextFieldProps: {
       variant: 'outlined',
       placeholder: 'Search contacts',
       size: 'small',
-      sx: { 
-        width: '300px', 
-        marginBlock: '0.5rem',
-        marginLeft: 'auto'
-      },
+      sx: { width: '300px', marginBlock: '0.5rem' },
     },
     muiTablePaperProps: {
       sx: {
@@ -81,6 +77,7 @@ export default function ReviewStep() {
       },
     },
     enableRowVirtualization: true,
+    // Style the table based on the current theme
     muiTableProps: {
       sx: {
         tableLayout: 'fixed',
