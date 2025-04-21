@@ -1,3 +1,4 @@
+
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -38,6 +39,7 @@ export default function ReviewStep() {
     return Array.from(allKeys).map((key) => ({
       accessorKey: key,
       header: key,
+      id: key, // Add an explicit ID for each column
       size: 150,
     }));
   }, [contactData]);
@@ -46,7 +48,7 @@ export default function ReviewStep() {
     columns,
     data: contactData,
     enableRowSelection: true,
-    enableColumnOrdering: false,
+    enableColumnOrdering: false, // Explicitly disable column ordering
     enableGlobalFilter: true,
     enableColumnFilters: true,
     enablePagination: true,
