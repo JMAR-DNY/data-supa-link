@@ -5,6 +5,7 @@ import { AlertCircle } from "lucide-react";
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import { Box } from "@mui/material";
 import { useTheme } from "@/hooks/use-theme";
+import { useSidebar } from "@/components/ui/sidebar";
 
 const PAGE_SIZE = 10;
 
@@ -14,6 +15,7 @@ export default function ReviewStep() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { theme } = useTheme();
+  const { state } = useSidebar();
 
   useEffect(() => {
     if (contactData.length > 0) {
@@ -76,12 +78,19 @@ export default function ReviewStep() {
     muiTablePaperProps: {
       sx: {
         boxShadow: '0 0 2px rgba(0,0,0,0.1)',
+        maxWidth: '100%',
       },
     },
     enableRowVirtualization: true,
+    muiTableContainerProps: {
+      sx: {
+        maxWidth: '100%',
+      }
+    },
     muiTableProps: {
       sx: {
         tableLayout: 'fixed',
+        width: '100%',
         "& .MuiTableRow-root": {
           backgroundColor: theme === "dark" ? "#23293D" : undefined,
         },
@@ -129,7 +138,14 @@ export default function ReviewStep() {
   }
 
   return (
-    <Box sx={{ height: "calc(100vh - 300px)", width: '100%' }}>
+    <Box 
+      sx={{ 
+        height: "calc(100vh - 300px)", 
+        width: '100%',
+        transition: 'all 0.2s ease-in-out',
+        overflow: 'hidden',
+      }}
+    >
       <MaterialReactTable table={table} />
     </Box>
   );
