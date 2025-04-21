@@ -28,7 +28,7 @@ export default function ReviewStep() {
     }
   }, [contactData, setIsComplete]);
 
-  // Create columns definition from contact data
+  // Create columns definition from contact data with necessary id property
   const columns = useMemo(() => {
     if (contactData.length === 0) return [];
     
@@ -40,6 +40,7 @@ export default function ReviewStep() {
     return Array.from(allKeys).map((key) => ({
       accessorKey: key,
       header: key,
+      id: key, // Add the id property matching the accessorKey
       size: 150,
     }));
   }, [contactData]);
@@ -48,7 +49,7 @@ export default function ReviewStep() {
     columns,
     data: contactData,
     enableRowSelection: true,
-    enableColumnOrdering: true,
+    enableColumnOrdering: false, // Disable column ordering to avoid potential issues
     enableGlobalFilter: true,
     enableColumnFilters: true,
     enablePagination: true,
