@@ -1,3 +1,4 @@
+
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -76,6 +77,7 @@ export default function ReviewStep() {
     muiTablePaperProps: {
       sx: {
         boxShadow: '0 0 2px rgba(0,0,0,0.1)',
+        backgroundColor: theme === "dark" ? "#1A1F2C" : undefined,
       },
     },
     enableRowVirtualization: true,
@@ -86,7 +88,7 @@ export default function ReviewStep() {
           backgroundColor: theme === "dark" ? "#23293D" : undefined,
         },
         "& .MuiTableCell-root": {
-          color: theme === "dark" ? "white" : undefined,
+          color: theme === "dark" ? "#FFFFFF" : undefined,
         },
       },
     },
@@ -95,13 +97,50 @@ export default function ReviewStep() {
         "& .MuiTableRow-root:nth-of-type(odd)": {
           backgroundColor: theme === "dark" ? "#181D29" : undefined,
         },
+        "& .MuiTableRow-root:hover": {
+          backgroundColor: theme === "dark" ? "#2A3041" : undefined,
+        },
       },
     },
     muiTableHeadProps: {
       sx: {
         "& .MuiTableCell-root": {
           backgroundColor: theme === "dark" ? "#23293D" : "#f3f4f6",
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+          fontWeight: "bold",
         },
+      },
+    },
+    muiTableFooterProps: {
+      sx: {
+        backgroundColor: theme === "dark" ? "#23293D" : undefined,
+      }
+    },
+    muiPaginationProps: {
+      sx: {
+        color: theme === "dark" ? "#FFFFFF" : undefined,
+      }
+    },
+    // Style the table's toolbar in dark mode
+    muiTopToolbarProps: {
+      sx: {
+        backgroundColor: theme === "dark" ? "#23293D" : undefined,
+        "& .MuiInputBase-root": {
+          backgroundColor: theme === "dark" ? "#1A1F2C" : undefined,
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
+        "& .MuiSvgIcon-root": {
+          color: theme === "dark" ? "#C8C8C9" : undefined,
+        },
+        "& .MuiButtonBase-root": {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
+      },
+    },
+    muiBottomToolbarProps: {
+      sx: {
+        backgroundColor: theme === "dark" ? "#23293D" : undefined,
+        color: theme === "dark" ? "#FFFFFF" : undefined,
       },
     },
   });
