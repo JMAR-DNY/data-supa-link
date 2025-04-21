@@ -76,18 +76,13 @@ export default function ReviewStep() {
     muiTablePaperProps: {
       elevation: 0,
       sx: {
-        height: 'auto',
-        maxHeight: 'calc(100vh - 460px)',
-        display: 'flex',
-        flexDirection: 'column',
+        height: '100%',
       },
     },
     enableRowVirtualization: true,
     muiTableContainerProps: {
       sx: {
-        maxHeight: 'unset',
-        flex: '1 1 auto',
-        overflow: 'auto',
+        maxHeight: '100%',
       },
     },
     muiTableHeadProps: {
@@ -104,14 +99,6 @@ export default function ReviewStep() {
       sx: {
         position: 'sticky',
         top: 0,
-        zIndex: 2,
-        backgroundColor: theme === "dark" ? "#181D29" : "white",
-      },
-    },
-    muiBottomToolbarProps: {
-      sx: {
-        position: 'sticky',
-        bottom: 0,
         zIndex: 2,
         backgroundColor: theme === "dark" ? "#181D29" : "white",
       },
@@ -160,7 +147,7 @@ export default function ReviewStep() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-grow overflow-hidden mb-6" style={{ maxHeight: 'calc(100vh - 460px)' }}>
+      <div style={{ height: "calc(100vh - 400px)", width: '100%', marginBottom: '2rem' }}>
         <MaterialReactTable table={table} />
       </div>
     </div>
