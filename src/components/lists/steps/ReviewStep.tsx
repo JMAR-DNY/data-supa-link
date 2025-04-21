@@ -131,9 +131,9 @@ export default function ReviewStep() {
 
   return (
     <div className="flex flex-col h-full">
-      <Box sx={{ height: "calc(100vh - 350px)", width: '100%', mb: 3 }}>
+      <div style={{ height: "calc(100vh - 400px)", width: '100%', marginBottom: '2rem' }}>
         <MaterialReactTable table={table} />
-      </Box>
+      </div>
     </div>
   );
 }

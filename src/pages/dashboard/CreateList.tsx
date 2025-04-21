@@ -5,7 +5,6 @@ import StepIndicator from "@/components/lists/StepIndicator";
 import StepNavigation from "@/components/lists/StepNavigation";
 import ConfigureListStep from "@/components/lists/steps/ConfigureListStep";
 import GetDataStep from "@/components/lists/steps/GetDataStep";
-import ProcessStep from "@/components/lists/steps/ProcessStep";
 import ReviewStep from "@/components/lists/steps/ReviewStep";
 import PageHeader from "@/components/dashboard/PageHeader";
 import { toast } from "sonner";
@@ -79,13 +78,13 @@ function CreateListContent() {
         </div>
       </div>
       
-      <div className="py-4 flex-grow">
+      <div className="py-4 flex-grow overflow-auto">
         {currentStep === 1 && <ConfigureListStep />}
         {currentStep === 2 && <GetDataStep />}
         {currentStep === 3 && <ReviewStep />}
       </div>
       
-      <div className="mt-auto pt-4">
+      <div className="mt-6 mb-2">
         <StepNavigation 
           currentStep={currentStep} 
           totalSteps={TOTAL_STEPS} 
