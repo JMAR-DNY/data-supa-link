@@ -4,7 +4,6 @@ import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
-import { Box } from "@mui/material";
 import { useTheme } from "@/hooks/use-theme";
 
 const PAGE_SIZE = 10;
@@ -75,11 +74,35 @@ export default function ReviewStep() {
       },
     },
     muiTablePaperProps: {
+      elevation: 0,
       sx: {
-        boxShadow: '0 0 2px rgba(0,0,0,0.1)',
+        height: '100%',
       },
     },
     enableRowVirtualization: true,
+    muiTableContainerProps: {
+      sx: {
+        maxHeight: '100%',
+      },
+    },
+    muiTableHeadProps: {
+      sx: {
+        position: 'sticky',
+        top: 0,
+        zIndex: 1,
+        "& .MuiTableCell-root": {
+          backgroundColor: theme === "dark" ? "#23293D" : "#f3f4f6",
+        },
+      },
+    },
+    muiToolbarProps: {
+      sx: {
+        position: 'sticky',
+        top: 0,
+        zIndex: 2,
+        backgroundColor: theme === "dark" ? "#181D29" : "white",
+      },
+    },
     muiTableProps: {
       sx: {
         tableLayout: 'fixed',
@@ -95,13 +118,6 @@ export default function ReviewStep() {
       sx: {
         "& .MuiTableRow-root:nth-of-type(odd)": {
           backgroundColor: theme === "dark" ? "#181D29" : undefined,
-        },
-      },
-    },
-    muiTableHeadProps: {
-      sx: {
-        "& .MuiTableCell-root": {
-          backgroundColor: theme === "dark" ? "#23293D" : "#f3f4f6",
         },
       },
     },
