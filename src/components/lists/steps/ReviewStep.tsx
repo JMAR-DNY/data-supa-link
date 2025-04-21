@@ -95,7 +95,7 @@ export default function ReviewStep() {
         },
       },
     },
-    muiToolbarProps: {
+    muiTopToolbarProps: {
       sx: {
         position: 'sticky',
         top: 0,
