@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +12,7 @@ import clsx from "clsx";
 import { useTheme } from "@/hooks/use-theme";
 
 const PAGE_SIZE = 10;
-const TABLE_MAX_WIDTH = 1200; // px, larger than original
+const TABLE_MAX_WIDTH = 800; // px, similar width to CSV upload
 const TABLE_MAX_HEIGHT = 350; // px (CSVUpload window constraint)
 const CONTAINER_PADDING = 16; // px
 
@@ -123,131 +124,132 @@ export default function ReviewStep() {
                     scheme.container
                   )}
                   style={{
-                    maxWidth: "100%",
-                    paddingLeft: CONTAINER_PADDING,
-                    paddingRight: CONTAINER_PADDING,
+                    maxWidth: TABLE_MAX_WIDTH,
+                    margin: "0 auto",
                   }}
                 >
-                  {/* Use both vertical and horizontal scrollbars */}
+                  {/* Table container with both horizontal and vertical scrolling */}
                   <div
-                    className="w-full"
                     style={{
                       maxHeight: TABLE_MAX_HEIGHT,
-                      maxWidth: "100%",
-                      overflowX: "auto",
                       overflowY: "auto",
-                      borderRadius: "0.5rem",
-                      minWidth: "500px",
+                      position: "relative",
                     }}
                   >
-                    <Table>
-                      <TableHeader>
-                        <TableRow
-                          className={clsx(
-                            scheme.head,
-                            "sticky top-0 z-20 select-none"
-                          )}
-                          style={{
-                            boxShadow: theme === "dark"
-                              ? "0 2px 4px #16192390"
-                              : "0 2px 4px #d1d5db90"
-                          }}
-                        >
-                          <TableHead
-                            style={{
-                              background: theme === "dark" ? "#23293D" : "#f3f4f6",
-                              left: 0,
-                              zIndex: 30,
-                              position: "sticky",
-                              minWidth: 48,
-                              maxWidth: 48,
-                              width: 48,
-                            }}
-                            className={clsx(scheme.head)}
-                          >
-                            <Checkbox
-                              checked={checkedRows.length === getCurrentPageData().length && checkedRows.length > 0}
-                              onCheckedChange={val => handleSelectAll(val === true)}
-                              aria-label="Select all rows"
-                              className="border-white data-[state=checked]:bg-[#8B5CF6]"
-                            />
-                          </TableHead>
-                          {headers.map((header) => (
-                            <TableHead
-                              key={header}
-                              style={{
-                                background: theme === "dark" ? "#23293D" : "#f3f4f6",
-                                minWidth: 120,
-                                textAlign: "left",
-                                position: "sticky",
-                                top: 0,
-                                zIndex: 10,
-                                left: undefined,
-                                color: theme === "dark" ? "#fff" : "#2d3748",
-                                fontWeight: 600
-                              }}
-                              className="truncate"
-                            >
-                              {header}
-                            </TableHead>
-                          ))}
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {getCurrentPageData().map((row, index) => (
+                    <div
+                      style={{
+                        overflowX: "auto",
+                        width: "100%",
+                      }}
+                    >
+                      <Table>
+                        <TableHeader>
                           <TableRow
-                            key={index}
                             className={clsx(
-                              index % 2 === 0 ? scheme.rowEven : scheme.rowOdd,
-                              "hover:bg-accent transition-colors"
+                              scheme.head,
+                              "sticky top-0 z-20 select-none"
                             )}
                             style={{
-                              borderBottom: theme === "dark"
-                                ? "1px solid #23273A"
-                                : "1px solid #e5e7eb"
+                              boxShadow: theme === "dark"
+                                ? "0 2px 4px #16192390"
+                                : "0 2px 4px #d1d5db90",
                             }}
                           >
-                            <TableCell
+                            <TableHead
                               style={{
-                                position: "sticky",
+                                background: theme === "dark" ? "#23293D" : "#f3f4f6",
                                 left: 0,
-                                background: index % 2 === 0
-                                  ? (theme === "dark" ? "#181D29" : "#fff")
-                                  : (theme === "dark" ? "#23293D" : "#f9fafb"),
-                                zIndex: 25,
+                                zIndex: 30,
+                                position: "sticky",
                                 minWidth: 48,
                                 maxWidth: 48,
                                 width: 48,
                               }}
-                              className="!bg-opacity-100"
+                              className={clsx(scheme.head)}
                             >
                               <Checkbox
-                                checked={checkedRows.includes(index)}
-                                onCheckedChange={val => handleSelectRow(index, val === true)}
-                                aria-label={`Select row ${index + 1}`}
+                                checked={checkedRows.length === getCurrentPageData().length && checkedRows.length > 0}
+                                onCheckedChange={val => handleSelectAll(val === true)}
+                                aria-label="Select all rows"
                                 className="border-white data-[state=checked]:bg-[#8B5CF6]"
                               />
-                            </TableCell>
+                            </TableHead>
                             {headers.map((header) => (
-                              <TableCell
-                                key={`${index}-${header}`}
+                              <TableHead
+                                key={header}
                                 style={{
+                                  background: theme === "dark" ? "#23293D" : "#f3f4f6",
                                   minWidth: 120,
-                                  color: scheme.cell,
-                                  background: "inherit",
-                                  borderRight: theme === "dark"
-                                    ? "1px solid #23273A"
-                                    : "1px solid #e5e7eb"
+                                  textAlign: "left",
+                                  position: "sticky",
+                                  top: 0,
+                                  zIndex: 10,
+                                  color: theme === "dark" ? "#fff" : "#2d3748",
+                                  fontWeight: 600
                                 }}
                                 className="truncate"
                               >
-                                {row[header] !== undefined ? String(row[header]) : ''}
-                              </TableCell>
+                                {header}
+                              </TableHead>
                             ))}
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                        </TableHeader>
+                        <TableBody>
+                          {getCurrentPageData().map((row, index) => (
+                            <TableRow
+                              key={index}
+                              className={clsx(
+                                index % 2 === 0 ? scheme.rowEven : scheme.rowOdd,
+                                "hover:bg-accent transition-colors"
+                              )}
+                              style={{
+                                borderBottom: theme === "dark"
+                                  ? "1px solid #23273A"
+                                  : "1px solid #e5e7eb"
+                              }}
+                            >
+                              <TableCell
+                                style={{
+                                  position: "sticky",
+                                  left: 0,
+                                  background: index % 2 === 0
+                                    ? (theme === "dark" ? "#181D29" : "#fff")
+                                    : (theme === "dark" ? "#23293D" : "#f9fafb"),
+                                  zIndex: 25,
+                                  minWidth: 48,
+                                  maxWidth: 48,
+                                  width: 48,
+                                }}
+                                className="!bg-opacity-100"
+                              >
+                                <Checkbox
+                                  checked={checkedRows.includes(index)}
+                                  onCheckedChange={val => handleSelectRow(index, val === true)}
+                                  aria-label={`Select row ${index + 1}`}
+                                  className="border-white data-[state=checked]:bg-[#8B5CF6]"
+                                />
+                              </TableCell>
+                              {headers.map((header) => (
+                                <TableCell
+                                  key={`${index}-${header}`}
+                                  style={{
+                                    minWidth: 120,
+                                    color: scheme.cell,
+                                    background: "inherit",
+                                    borderRight: theme === "dark"
+                                      ? "1px solid #23273A"
+                                      : "1px solid #e5e7eb"
+                                  }}
+                                  className="truncate"
+                                >
+                                  {row[header] !== undefined ? String(row[header]) : ''}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
                   </div>
                   <div className="flex justify-between items-center pt-2 text-xs text-muted-foreground px-2">
                     <span>
