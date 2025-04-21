@@ -1,70 +1,109 @@
 
-import { useEffect, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
-import { Table } from "@/components/ui/table";
-import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
+import { Box } from "@mui/material";
 import { useTheme } from "@/hooks/use-theme";
-import { ReviewTableHeader } from "./review/TableHeader";
-import { ReviewTableBody } from "./review/TableBody";
-import { TablePagination } from "./review/TablePagination";
 
 const PAGE_SIZE = 10;
 
 export default function ReviewStep() {
   const { fileMetadata, contactData, setIsComplete } = useListCreation();
-  const [headers, setHeaders] = useState<string[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [globalFilter, setGlobalFilter] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [checkedRows, setCheckedRows] = useState<number[]>([]);
   const { theme } = useTheme();
 
   useEffect(() => {
     if (contactData.length > 0) {
       setIsComplete(true);
-    } else {
-      setIsComplete(false);
-    }
-  }, [contactData, setIsComplete]);
-
-  useEffect(() => {
-    if (contactData.length > 0) {
-      const allHeaders = new Set<string>();
-      contactData.forEach(item => {
-        Object.keys(item).forEach(key => allHeaders.add(key));
-      });
-      setHeaders(Array.from(allHeaders));
-      setTotalPages(Math.ceil(contactData.length / PAGE_SIZE));
       setIsLoading(false);
       setError(null);
     } else {
+      setIsComplete(false);
       setIsLoading(true);
       setError("No data available to review");
     }
-    setCheckedRows([]); // reset selection on data change/page change
+  }, [contactData, setIsComplete]);
+
+  // Create columns definition from contact data
+  const columns = useMemo(() => {
+    if (contactData.length === 0) return [];
+    
+    const allKeys = new Set<string>();
+    contactData.forEach(item => {
+      Object.keys(item).forEach(key => allKeys.add(key));
+    });
+    
+    return Array.from(allKeys).map((key) => ({
+      accessorKey: key,
+      header: key,
+      size: 150,
+    }));
   }, [contactData]);
 
-  function getCurrentPageData() {
-    const start = (currentPage - 1) * PAGE_SIZE;
-    return contactData.slice(start, start + PAGE_SIZE);
-  }
-
-  const handleSelectAll = (checked: boolean) => {
-    if (!checked) {
-      setCheckedRows([]);
-    } else {
-      setCheckedRows(getCurrentPageData().map((_, i) => i));
-    }
-  };
-
-  const handleSelectRow = (rowIdx: number, checked: boolean) => {
-    setCheckedRows(prev => {
-      if (checked) return Array.from(new Set([...prev, rowIdx]));
-      return prev.filter(idx => idx !== rowIdx);
-    });
-  };
+  const table = useMaterialReactTable({
+    columns,
+    data: contactData,
+    enableRowSelection: true,
+    enableColumnOrdering: true,
+    enableGlobalFilter: true,
+    enableColumnFilters: true,
+    enablePagination: true,
+    enableColumnPinning: true,
+    enableColumnResizing: true,
+    enableDensityToggle: true,
+    initialState: {
+      density: 'compact',
+      pagination: { pageSize: PAGE_SIZE, pageIndex: 0 },
+      showGlobalFilter: true,
+    },
+    state: {
+      globalFilter,
+    },
+    onGlobalFilterChange: setGlobalFilter,
+    positionGlobalFilter: "left",
+    muiSearchTextFieldProps: {
+      variant: 'outlined',
+      placeholder: 'Search contacts',
+      size: 'small',
+      sx: { width: '300px', marginBlock: '0.5rem' },
+    },
+    muiTablePaperProps: {
+      sx: {
+        boxShadow: '0 0 2px rgba(0,0,0,0.1)',
+      },
+    },
+    enableRowVirtualization: true,
+    // Style the table based on the current theme
+    muiTableProps: {
+      sx: {
+        tableLayout: 'fixed',
+        "& .MuiTableRow-root": {
+          backgroundColor: theme === "dark" ? "#23293D" : undefined,
+        },
+        "& .MuiTableCell-root": {
+          color: theme === "dark" ? "white" : undefined,
+        },
+      },
+    },
+    muiTableBodyProps: {
+      sx: {
+        "& .MuiTableRow-root:nth-of-type(odd)": {
+          backgroundColor: theme === "dark" ? "#181D29" : undefined,
+        },
+      },
+    },
+    muiTableHeadProps: {
+      sx: {
+        "& .MuiTableCell-root": {
+          backgroundColor: theme === "dark" ? "#23293D" : "#f3f4f6",
+        },
+      },
+    },
+  });
 
   if (error && contactData.length === 0) {
     return (
@@ -88,35 +127,9 @@ export default function ReviewStep() {
     );
   }
 
-  const currentPageData = getCurrentPageData();
-
   return (
-    <div className="flex flex-col grow w-full h-full overflow-hidden p-0">
-      <div className="w-full h-full overflow-auto">
-        <Table className="min-w-max border rounded-lg text-sm">
-          <ReviewTableHeader
-            headers={headers}
-            onSelectAll={handleSelectAll}
-            hasCheckedRows={checkedRows.length === currentPageData.length && checkedRows.length > 0}
-            hasRows={currentPageData.length > 0}
-            theme={theme}
-          />
-          <ReviewTableBody
-            currentPageData={currentPageData}
-            headers={headers}
-            checkedRows={checkedRows}
-            onSelectRow={handleSelectRow}
-            theme={theme}
-          />
-        </Table>
-      </div>
-      <TablePagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-        totalRows={contactData.length}
-        currentPageSize={currentPageData.length}
-      />
-    </div>
+    <Box sx={{ height: "calc(100vh - 300px)", width: '100%' }}>
+      <MaterialReactTable table={table} />
+    </Box>
   );
 }
