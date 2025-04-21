@@ -1,3 +1,4 @@
+
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -40,6 +41,7 @@ export default function ReviewStep() {
     return Array.from(allKeys).map((key) => ({
       accessorKey: key,
       header: key,
+      id: key, // Add the id property here, using the key as a unique identifier
       size: 150,
       Cell: ({ cell }) => (
         <span style={{ color: theme === "dark" ? "white" : "inherit" }}>
