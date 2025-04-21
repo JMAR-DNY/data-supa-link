@@ -69,7 +69,7 @@ function CreateListContent() {
   
   return (
     <div className="container p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 items-center">
         <PageHeader title={getHeaderTitle()} className="mb-0" />
         <div className="flex justify-center">
           <StepIndicator currentStep={currentStep} totalSteps={TOTAL_STEPS} />
