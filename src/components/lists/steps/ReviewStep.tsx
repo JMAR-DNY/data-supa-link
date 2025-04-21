@@ -40,8 +40,13 @@ export default function ReviewStep() {
       accessorKey: key,
       header: key,
       size: 150,
+      Cell: ({ cell }) => (
+        <span style={{ color: theme === "dark" ? "white" : "inherit" }}>
+          {cell.getValue<any>()}
+        </span>
+      ),
     }));
-  }, [contactData]);
+  }, [contactData, theme]);
 
   const table = useMaterialReactTable({
     columns,
@@ -101,6 +106,7 @@ export default function ReviewStep() {
         "& .MuiTableCell-root": {
           color: theme === "dark" ? "#FFFFFF" : undefined,
           borderBottom: theme === "dark" ? "1px solid #2A3041" : undefined,
+          backgroundColor: theme === "dark" ? "#23293D" : undefined,
         },
       },
     },
@@ -113,6 +119,15 @@ export default function ReviewStep() {
           backgroundColor: theme === "dark" ? "#2A3041" : undefined,
         },
         "& .MuiTableRow-root": {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
+        "& .MuiTableCell-root": {
+          backgroundColor: theme === "dark" ? "#23293D" : undefined,
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+          borderColor: theme === "dark" ? "#2A3041" : undefined,
+        },
+        "& .MuiTableRow-root:nth-of-type(odd) .MuiTableCell-root": {
+          backgroundColor: theme === "dark" ? "#181D29" : undefined,
           color: theme === "dark" ? "#FFFFFF" : undefined,
         },
       },
@@ -180,7 +195,7 @@ export default function ReviewStep() {
     // Apply styles to all table cells to ensure text is visible in dark mode
     muiTableBodyCellProps: {
       sx: {
-        backgroundColor: theme === "dark" ? "inherit" : undefined,
+        backgroundColor: theme === "dark" ? "inherit !important" : undefined,
         color: theme === "dark" ? "#FFFFFF !important" : undefined,
         "& .MuiTypography-root": {
           color: theme === "dark" ? "#FFFFFF" : undefined,
@@ -235,13 +250,22 @@ export default function ReviewStep() {
   }
 
   return (
-    <Box sx={{ 
-      height: "calc(100vh - 300px)", 
-      width: '100%',
-      '.MuiDataGrid-root': {
-        color: theme === 'dark' ? '#FFFFFF' : undefined,
-      }
-    }}>
+    <Box 
+      sx={{ 
+        height: "calc(100vh - 300px)", 
+        width: '100%',
+        '.MuiDataGrid-root': {
+          color: theme === 'dark' ? '#FFFFFF' : undefined,
+        },
+        '& .MuiTableCell-body': {
+          backgroundColor: theme === 'dark' ? '#23293D !important' : undefined,
+          color: theme === 'dark' ? '#FFFFFF !important' : undefined,
+        },
+        '& .MuiTableCell-body:nth-of-type(odd)': {
+          backgroundColor: theme === 'dark' ? '#181D29 !important' : undefined,
+        },
+      }}
+    >
       <MaterialReactTable table={table} />
     </Box>
   );
