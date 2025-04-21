@@ -70,7 +70,7 @@ function CreateListContent() {
   return (
     <div className="container p-6 flex flex-col min-h-[calc(100vh-64px)]">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 items-center">
-        <div className="flex justify-center md:justify-center items-center">
+        <div className="flex justify-start md:justify-start items-center">
           <PageHeader title={getHeaderTitle()} className="mb-0" />
         </div>
         <div className="flex justify-center">
@@ -105,3 +105,4 @@ export default function CreateList() {
     </ListCreationProvider>
   );
 }
+
