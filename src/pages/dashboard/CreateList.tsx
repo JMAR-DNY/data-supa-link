@@ -71,7 +71,7 @@ function CreateListContent() {
   return (
     <div className="container p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 items-center">
-        <div className="flex justify-start items-center">
+        <div className="flex justify-center md:justify-center items-center">
           <PageHeader title={getHeaderTitle()} className="mb-0" />
         </div>
         <div className="flex justify-center">
