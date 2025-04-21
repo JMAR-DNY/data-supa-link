@@ -55,7 +55,7 @@ export default function ReviewStep() {
     enableColumnResizing: true,
     enableDensityToggle: true,
     initialState: {
-      density: 'compact',
+      density: 'comfortable', // Changed from 'compact' to 'comfortable'
       pagination: { pageSize: PAGE_SIZE, pageIndex: 0 },
       showGlobalFilter: true,
     },
@@ -109,10 +109,10 @@ export default function ReviewStep() {
         tableLayout: 'fixed',
         "& .MuiTableRow-root": {
           backgroundColor: theme === "dark" ? "#23293D" : undefined,
-          // Increase row height by 50%
+          // Adjust row height to be more appropriate for the comfortable density
           "& .MuiTableCell-root": {
-            padding: '12px 16px', // Increase vertical padding to make rows taller
-            height: '4.5rem', // Set a fixed height for rows that's 50% taller
+            padding: '8px 16px', // Reduced padding for better default display
+            height: 'auto', // Let the content determine the height by default
           },
         },
         "& .MuiTableCell-root": {
@@ -137,7 +137,7 @@ export default function ReviewStep() {
       },
     },
     muiPaginationProps: {
-      rowsPerPageOptions: [5, 10, 25, 50],
+      rowsPerPageOptions: [10, 20, 30, 50],
       showFirstButton: true,
       showLastButton: true,
     },
@@ -167,7 +167,7 @@ export default function ReviewStep() {
 
   return (
     <div className="flex flex-col h-full">
-      <div style={{ height: "calc(100vh - 240px)", width: '100%', marginBottom: '1rem' }}>
+      <div style={{ height: "calc(100vh - 180px)", width: '100%', marginBottom: '1rem' }}>
         <MaterialReactTable table={table} />
       </div>
     </div>
