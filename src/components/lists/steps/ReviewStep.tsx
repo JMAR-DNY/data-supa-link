@@ -1,4 +1,3 @@
-
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -55,7 +54,7 @@ export default function ReviewStep() {
     enableColumnResizing: true,
     enableDensityToggle: true,
     initialState: {
-      density: 'comfortable', // Changed from 'compact' to 'comfortable'
+      density: 'compact',
       pagination: { pageSize: PAGE_SIZE, pageIndex: 0 },
       showGlobalFilter: true,
     },
@@ -82,7 +81,7 @@ export default function ReviewStep() {
     enableRowVirtualization: true,
     muiTableContainerProps: {
       sx: {
-        maxHeight: 'calc(100% - 120px)', // Adjusted to ensure pagination is visible
+        maxHeight: 'calc(100% - 120px)',
         height: '100%',
       },
     },
@@ -109,10 +108,13 @@ export default function ReviewStep() {
         tableLayout: 'fixed',
         "& .MuiTableRow-root": {
           backgroundColor: theme === "dark" ? "#23293D" : undefined,
-          // Adjust row height to be more appropriate for the comfortable density
           "& .MuiTableCell-root": {
-            padding: '8px 16px', // Reduced padding for better default display
-            height: 'auto', // Let the content determine the height by default
+            padding: theme.currentDensity === 'compact' ? '4px 8px' : 
+                     theme.currentDensity === 'comfortable' ? '8px 16px' : 
+                     '12px 24px',
+            height: theme.currentDensity === 'compact' ? 'auto' : 
+                    theme.currentDensity === 'comfortable' ? 'auto' : 
+                    '4.5rem',
           },
         },
         "& .MuiTableCell-root": {
@@ -127,7 +129,6 @@ export default function ReviewStep() {
         },
       },
     },
-    // Ensure pagination controls are visible and properly styled
     muiBottomToolbarProps: {
       sx: {
         position: 'relative',
