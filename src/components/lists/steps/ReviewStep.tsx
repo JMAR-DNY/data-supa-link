@@ -1,4 +1,3 @@
-
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -135,6 +134,15 @@ export default function ReviewStep() {
     muiPaginationProps: {
       sx: {
         color: theme === "dark" ? "#FFFFFF" : undefined,
+        "& .MuiSelect-icon": {
+          color: theme === "dark" ? "#C8C8C9" : undefined,
+        },
+        "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows": {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
+        "& .MuiTablePagination-select": {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
       }
     },
     muiTopToolbarProps: {
@@ -167,20 +175,7 @@ export default function ReviewStep() {
         },
       },
     },
-    muiTablePaginationProps: {
-      sx: {
-        color: theme === "dark" ? "#FFFFFF" : undefined,
-        "& .MuiSelect-icon": {
-          color: theme === "dark" ? "#C8C8C9" : undefined,
-        },
-        "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows": {
-          color: theme === "dark" ? "#FFFFFF" : undefined,
-        },
-        "& .MuiTablePagination-select": {
-          color: theme === "dark" ? "#FFFFFF" : undefined,
-        },
-      }
-    },
+    
   });
 
   if (error && contactData.length === 0) {
