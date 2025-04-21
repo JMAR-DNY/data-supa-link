@@ -124,6 +124,8 @@ export default function ReviewStep() {
                   )}
                   style={{
                     padding: "8px",
+                    maxWidth: "100%", // Constrain to not overflow parent
+                    overflowX: "hidden" // Prevent container from causing horizontal scroll
                   }}
                 >
                   {/* Table container with both horizontal and vertical scrolling */}
@@ -132,12 +134,13 @@ export default function ReviewStep() {
                       maxHeight: TABLE_MAX_HEIGHT,
                       overflowY: "auto",
                       position: "relative",
+                      width: "100%"
                     }}
                   >
                     <div
                       style={{
-                        overflowX: "auto",
-                        width: "100%",
+                        overflowX: "auto", // Allow horizontal scrolling inside this div
+                        width: "100%"
                       }}
                     >
                       <Table>
@@ -300,5 +303,3 @@ export default function ReviewStep() {
     </Card>
   );
 }
-
-// This file is getting long. You should consider refactoring it into smaller focused components!
