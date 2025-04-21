@@ -4,16 +4,15 @@ import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { FileText, AlertCircle } from "lucide-react";
+import { FileText, AlertCircle, ChevronRight } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import clsx from "clsx";
 import { useTheme } from "@/hooks/use-theme";
 
 const PAGE_SIZE = 10;
-const TABLE_MAX_HEIGHT = 350; // px (CSVUpload window constraint)
-const CONTAINER_PADDING = 16; // px
+const MAX_VISIBLE_COLUMNS = 12;
 
 export default function ReviewStep() {
   const { fileMetadata, contactData, setIsComplete } = useListCreation();
@@ -22,6 +21,7 @@ export default function ReviewStep() {
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showMoreColumns, setShowMoreColumns] = useState(false);
 
   // Selection state for checkboxes:
   const [checkedRows, setCheckedRows] = useState<number[]>([]);
@@ -77,20 +77,23 @@ export default function ReviewStep() {
   const colors = {
     dark: {
       container: "bg-[#181D29] border border-[#23293D]",
+      tableHead: "bg-[#23293D] text-white",
       rowEven: "bg-[#181D29]",
       rowOdd: "bg-[#23293D]",
-      head: "bg-[#23293D] text-white",
       cell: "text-white"
     },
     light: {
       container: "bg-white border border-gray-200",
+      tableHead: "bg-gray-100 text-gray-800",
       rowEven: "bg-white",
       rowOdd: "bg-gray-50",
-      head: "bg-gray-100 text-gray-800",
       cell: "text-gray-900"
     }
   };
   const scheme = theme === "dark" ? colors.dark : colors.light;
+
+  // Function to render visible headers
+  const visibleHeaders = showMoreColumns ? headers : headers.slice(0, MAX_VISIBLE_COLUMNS);
 
   if (error && contactData.length === 0) {
     return (
@@ -103,70 +106,39 @@ export default function ReviewStep() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <FileText className="h-5 w-5" />
-          Review Data
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {isLoading && contactData.length === 0 ? (
-            <div className="text-center py-8">Loading data...</div>
-          ) : (
-            <>
-              {contactData.length > 0 ? (
-                <div
-                  className={clsx(
-                    "rounded-md w-full",
-                    scheme.container
-                  )}
-                  style={{
-                    padding: "8px",
-                    maxWidth: "100%", // Constrain to not overflow parent
-                    overflowX: "hidden" // Prevent container from causing horizontal scroll
-                  }}
-                >
-                  {/* Table container with both horizontal and vertical scrolling */}
-                  <div
-                    style={{
-                      maxHeight: TABLE_MAX_HEIGHT,
-                      overflowY: "auto",
-                      position: "relative",
-                      width: "100%"
-                    }}
-                  >
-                    <div
-                      style={{
-                        overflowX: "auto", // Allow horizontal scrolling inside this div
-                        width: "100%"
-                      }}
-                    >
-                      <Table>
+    <TooltipProvider>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Review Data
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {isLoading && contactData.length === 0 ? (
+              <div className="text-center py-8">Loading data...</div>
+            ) : (
+              <>
+                {contactData.length > 0 ? (
+                  <div className="rounded-lg overflow-hidden">
+                    {/* Table with fixed height and scrollable container */}
+                    <div className="max-h-[60vh] max-w-full overflow-x-auto overflow-y-auto rounded-lg border">
+                      <Table className="table-fixed min-w-full">
                         <TableHeader>
-                          <TableRow
-                            className={clsx(
-                              scheme.head,
-                              "sticky top-0 z-20 select-none"
-                            )}
-                            style={{
-                              boxShadow: theme === "dark"
-                                ? "0 2px 4px #16192390"
-                                : "0 2px 4px #d1d5db90",
-                            }}
-                          >
+                          <TableRow className={clsx(
+                            scheme.tableHead,
+                            "sticky top-0 z-10"
+                          )}>
                             <TableHead
+                              className={clsx(
+                                "sticky left-0 z-20 whitespace-nowrap text-ellipsis",
+                                scheme.tableHead
+                              )}
                               style={{
-                                background: theme === "dark" ? "#23293D" : "#f3f4f6",
-                                left: 0,
-                                zIndex: 30,
-                                position: "sticky",
-                                minWidth: 48,
-                                maxWidth: 48,
-                                width: 48,
+                                minWidth: "50px",
+                                width: "50px",
                               }}
-                              className={clsx(scheme.head)}
                             >
                               <Checkbox
                                 checked={checkedRows.length === getCurrentPageData().length && checkedRows.length > 0}
@@ -175,24 +147,35 @@ export default function ReviewStep() {
                                 className="border-white data-[state=checked]:bg-[#8B5CF6]"
                               />
                             </TableHead>
-                            {headers.map((header) => (
+                            {visibleHeaders.map((header) => (
                               <TableHead
                                 key={header}
+                                className={clsx(
+                                  "whitespace-nowrap text-ellipsis",
+                                  scheme.tableHead
+                                )}
                                 style={{
-                                  background: theme === "dark" ? "#23293D" : "#f3f4f6",
-                                  minWidth: 120,
-                                  textAlign: "left",
-                                  position: "sticky",
-                                  top: 0,
-                                  zIndex: 10,
-                                  color: theme === "dark" ? "#fff" : "#2d3748",
-                                  fontWeight: 600
+                                  minWidth: "150px",
+                                  maxWidth: "250px",
                                 }}
-                                className="truncate"
                               >
                                 {header}
                               </TableHead>
                             ))}
+                            {headers.length > MAX_VISIBLE_COLUMNS && !showMoreColumns && (
+                              <TableHead
+                                className={clsx("text-center", scheme.tableHead)}
+                                style={{
+                                  minWidth: "50px",
+                                  width: "50px",
+                                }}
+                                onClick={() => setShowMoreColumns(true)}
+                              >
+                                <span className="flex items-center justify-center cursor-pointer text-primary hover:text-primary/80 transition-colors">
+                                  <ChevronRight className="h-5 w-5" />
+                                </span>
+                              </TableHead>
+                            )}
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -203,25 +186,16 @@ export default function ReviewStep() {
                                 index % 2 === 0 ? scheme.rowEven : scheme.rowOdd,
                                 "hover:bg-accent transition-colors"
                               )}
-                              style={{
-                                borderBottom: theme === "dark"
-                                  ? "1px solid #23273A"
-                                  : "1px solid #e5e7eb"
-                              }}
                             >
                               <TableCell
+                                className={clsx(
+                                  "sticky left-0 z-10 whitespace-nowrap text-ellipsis",
+                                  index % 2 === 0 ? scheme.rowEven : scheme.rowOdd
+                                )}
                                 style={{
-                                  position: "sticky",
-                                  left: 0,
-                                  background: index % 2 === 0
-                                    ? (theme === "dark" ? "#181D29" : "#fff")
-                                    : (theme === "dark" ? "#23293D" : "#f9fafb"),
-                                  zIndex: 25,
-                                  minWidth: 48,
-                                  maxWidth: 48,
-                                  width: 48,
+                                  minWidth: "50px",
+                                  width: "50px",
                                 }}
-                                className="!bg-opacity-100"
                               >
                                 <Checkbox
                                   checked={checkedRows.includes(index)}
@@ -230,76 +204,89 @@ export default function ReviewStep() {
                                   className="border-white data-[state=checked]:bg-[#8B5CF6]"
                                 />
                               </TableCell>
-                              {headers.map((header) => (
-                                <TableCell
-                                  key={`${index}-${header}`}
-                                  style={{
-                                    minWidth: 120,
-                                    color: scheme.cell,
-                                    background: "inherit",
-                                    borderRight: theme === "dark"
-                                      ? "1px solid #23273A"
-                                      : "1px solid #e5e7eb"
-                                  }}
-                                  className="truncate"
-                                >
-                                  {row[header] !== undefined ? String(row[header]) : ''}
-                                </TableCell>
-                              ))}
+                              {visibleHeaders.map((header) => {
+                                const cellContent = row[header] !== undefined ? String(row[header]) : '';
+                                return (
+                                  <Tooltip key={`${index}-${header}`}>
+                                    <TooltipTrigger asChild>
+                                      <TableCell
+                                        className={clsx(
+                                          "whitespace-nowrap text-ellipsis overflow-hidden",
+                                          scheme.cell
+                                        )}
+                                        style={{
+                                          minWidth: "150px",
+                                          maxWidth: "250px",
+                                        }}
+                                      >
+                                        {cellContent}
+                                      </TableCell>
+                                    </TooltipTrigger>
+                                    {cellContent && (
+                                      <TooltipContent>
+                                        <p>{cellContent}</p>
+                                      </TooltipContent>
+                                    )}
+                                  </Tooltip>
+                                );
+                              })}
+                              {headers.length > MAX_VISIBLE_COLUMNS && !showMoreColumns && (
+                                <TableCell className="text-center">...</TableCell>
+                              )}
                             </TableRow>
                           ))}
                         </TableBody>
                       </Table>
                     </div>
+                    <div className="flex justify-between items-center mt-4 text-xs text-muted-foreground px-2">
+                      <span>
+                        Showing {getCurrentPageData().length} of {contactData.length} rows
+                      </span>
+                      <Pagination>
+                        <PaginationContent>
+                          <PaginationItem>
+                            {currentPage > 1 ? (
+                              <PaginationPrevious
+                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                              />
+                            ) : (
+                              <PaginationPrevious
+                                onClick={() => { }}
+                                className="pointer-events-none opacity-50"
+                              />
+                            )}
+                          </PaginationItem>
+                          <PaginationItem>
+                            <PaginationLink>
+                              Page {currentPage} of {totalPages}
+                            </PaginationLink>
+                          </PaginationItem>
+                          <PaginationItem>
+                            {currentPage < totalPages ? (
+                              <PaginationNext
+                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                              />
+                            ) : (
+                              <PaginationNext
+                                onClick={() => { }}
+                                className="pointer-events-none opacity-50"
+                              />
+                            )}
+                          </PaginationItem>
+                        </PaginationContent>
+                      </Pagination>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center pt-2 text-xs text-muted-foreground px-2">
-                    <span>
-                      Showing {getCurrentPageData().length} of {contactData.length} rows
-                    </span>
-                    <Pagination>
-                      <PaginationContent>
-                        <PaginationItem>
-                          {currentPage > 1 ? (
-                            <PaginationPrevious
-                              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                            />
-                          ) : (
-                            <PaginationPrevious
-                              onClick={() => { }}
-                              className="pointer-events-none opacity-50"
-                            />
-                          )}
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink>
-                            Page {currentPage} of {totalPages}
-                          </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          {currentPage < totalPages ? (
-                            <PaginationNext
-                              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                            />
-                          ) : (
-                            <PaginationNext
-                              onClick={() => { }}
-                              className="pointer-events-none opacity-50"
-                            />
-                          )}
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
+                ) : (
+                  <div className="text-center py-8">
+                    No data available. Please go back and upload a CSV file.
                   </div>
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  No data available. Please go back and upload a CSV file.
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+                )}
+              </>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </TooltipProvider>
   );
 }
