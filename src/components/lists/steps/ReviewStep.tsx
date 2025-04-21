@@ -5,11 +5,13 @@ import { AlertCircle } from "lucide-react";
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import { Box } from "@mui/material";
 import { useTheme } from "@/hooks/use-theme";
+import { useSidebar } from "@/components/ui/sidebar";
 
 const PAGE_SIZE = 10;
 
 export default function ReviewStep() {
   const { fileMetadata, contactData, setIsComplete } = useListCreation();
+  const { state } = useSidebar();
   const [globalFilter, setGlobalFilter] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -93,6 +95,14 @@ export default function ReviewStep() {
         boxShadow: '0 0 2px rgba(0,0,0,0.1)',
         backgroundColor: theme === "dark" ? "#1A1F2C" : "white",
         border: theme === "dark" ? "1px solid #2A3041" : undefined,
+        width: '100%',
+        maxWidth: '100%',
+        overflowX: 'hidden',
+      },
+    },
+    muiTableContainerProps: {
+      sx: {
+        maxWidth: '100%',
       },
     },
     enableRowVirtualization: true,
@@ -249,8 +259,10 @@ export default function ReviewStep() {
   return (
     <Box 
       sx={{ 
-        height: "calc(100vh - 300px)", 
+        height: "calc(100vh - 300px)",
         width: '100%',
+        transition: 'width 0.2s ease-out',
+        overflowX: 'hidden',
         '.MuiDataGrid-root': {
           color: theme === 'dark' ? '#FFFFFF' : undefined,
         },
@@ -262,6 +274,7 @@ export default function ReviewStep() {
           backgroundColor: theme === 'dark' ? '#181D29 !important' : undefined,
         },
       }}
+      className={`${state === "collapsed" ? "pr-0" : "pr-4"}`}
     >
       <MaterialReactTable table={table} />
     </Box>
