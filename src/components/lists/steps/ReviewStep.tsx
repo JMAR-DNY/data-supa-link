@@ -1,4 +1,3 @@
-
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -42,7 +41,7 @@ export default function ReviewStep() {
       size: 150,
       Cell: ({ cell }) => (
         <span style={{ color: theme === "dark" ? "white" : "inherit" }}>
-          {cell.getValue<any>()}
+          {cell.getValue()}
         </span>
       ),
     }));
@@ -122,13 +121,13 @@ export default function ReviewStep() {
           color: theme === "dark" ? "#FFFFFF" : undefined,
         },
         "& .MuiTableCell-root": {
-          backgroundColor: theme === "dark" ? "#23293D" : undefined,
-          color: theme === "dark" ? "#FFFFFF" : undefined,
+          backgroundColor: theme === "dark" ? "#23293D !important" : undefined,
+          color: theme === "dark" ? "#FFFFFF !important" : undefined,
           borderColor: theme === "dark" ? "#2A3041" : undefined,
         },
         "& .MuiTableRow-root:nth-of-type(odd) .MuiTableCell-root": {
-          backgroundColor: theme === "dark" ? "#181D29" : undefined,
-          color: theme === "dark" ? "#FFFFFF" : undefined,
+          backgroundColor: theme === "dark" ? "#181D29 !important" : undefined,
+          color: theme === "dark" ? "#FFFFFF !important" : undefined,
         },
       },
     },
@@ -192,7 +191,6 @@ export default function ReviewStep() {
         },
       },
     },
-    // Apply styles to all table cells to ensure text is visible in dark mode
     muiTableBodyCellProps: {
       sx: {
         backgroundColor: theme === "dark" ? "inherit !important" : undefined,
@@ -208,7 +206,6 @@ export default function ReviewStep() {
         },
       },
     },
-    // Style for the checkbox column in dark mode
     muiSelectAllCheckboxProps: {
       sx: {
         color: theme === "dark" ? "#C8C8C9" : undefined,
