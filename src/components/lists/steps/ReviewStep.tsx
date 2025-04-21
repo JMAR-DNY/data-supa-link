@@ -1,20 +1,18 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
-import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
-import { useTheme } from "@/hooks/use-theme";
-
-const PAGE_SIZE = 10;
+import { Button } from "@/components/ui/button";
+import { Table } from "lucide-react";
+import { MaterialTableView } from "./review/MaterialTableView";
+import { ReviewTable } from "./review/ReviewTable";
+import { ErrorDisplay } from "./review/ErrorDisplay";
+import { LoadingDisplay } from "./review/LoadingDisplay";
 
 export default function ReviewStep() {
   const { fileMetadata, contactData, setIsComplete } = useListCreation();
-  const [globalFilter, setGlobalFilter] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { theme } = useTheme();
-  const [density, setDensity] = useState<'compact' | 'comfortable' | 'spacious'>('compact');
+  const [viewMode, setViewMode] = useState<'material' | 'custom'>('material');
 
   useEffect(() => {
     if (contactData.length > 0) {
@@ -44,126 +42,12 @@ export default function ReviewStep() {
     }));
   }, [contactData]);
 
-  // Define cell styling based on density
-  const getCellStyling = (currentDensity: string) => {
-    const padding = currentDensity === 'compact' ? '2px 4px' : '8px 16px';
-    const height = currentDensity === 'compact' ? '2rem' : 'auto';
-    
-    return { padding, height };
-  };
-
-  const table = useMaterialReactTable({
-    columns,
-    data: contactData,
-    enableRowSelection: true,
-    enableColumnOrdering: false,
-    enableGlobalFilter: true,
-    enableColumnFilters: true,
-    enablePagination: true,
-    enableColumnPinning: true,
-    enableColumnResizing: true,
-    enableDensityToggle: true,
-    initialState: {
-      density: 'compact',
-      pagination: { pageSize: PAGE_SIZE, pageIndex: 0 },
-      showGlobalFilter: true,
-    },
-    state: {
-      globalFilter,
-      density,
-    },
-    onDensityChange: setDensity,
-    onGlobalFilterChange: setGlobalFilter,
-    positionGlobalFilter: "right",
-    muiSearchTextFieldProps: {
-      variant: 'outlined',
-      placeholder: 'Search contacts',
-      size: 'small',
-      sx: { 
-        width: '300px', 
-        marginBlock: '0.5rem',
-      },
-    },
-    muiTablePaperProps: {
-      elevation: 0,
-      sx: {
-        height: '100%',
-      },
-    },
-    enableRowVirtualization: true,
-    muiTableContainerProps: {
-      sx: {
-        maxHeight: 'calc(100% - 120px)',
-        height: '100%',
-      },
-    },
-    muiTableHeadProps: {
-      sx: {
-        position: 'sticky',
-        top: 0,
-        zIndex: 1,
-        "& .MuiTableCell-root": {
-          backgroundColor: theme === "dark" ? "#23293D" : "#f3f4f6",
-        },
-      },
-    },
-    muiTopToolbarProps: {
-      sx: {
-        position: 'sticky',
-        top: 0,
-        zIndex: 2,
-        backgroundColor: theme === "dark" ? "#181D29" : "white",
-      },
-    },
-    muiTableProps: {
-      sx: {
-        tableLayout: 'fixed',
-        "& .MuiTableRow-root": {
-          backgroundColor: theme === "dark" ? "#23293D" : undefined,
-          "& .MuiTableCell-root": {
-            padding: density === 'compact' ? '2px 4px' : '8px 16px',
-            height: density === 'compact' ? '2rem' : 'auto',
-          },
-        },
-        "& .MuiTableCell-root": {
-          color: theme === "dark" ? "white" : undefined,
-        },
-      },
-    },
-    muiTableBodyProps: {
-      sx: {
-        "& .MuiTableRow-root:nth-of-type(odd)": {
-          backgroundColor: theme === "dark" ? "#181D29" : undefined,
-        },
-      },
-    },
-    muiBottomToolbarProps: {
-      sx: {
-        position: 'relative',
-        bottom: 0,
-        zIndex: 2,
-        backgroundColor: theme === "dark" ? "#181D29" : "white",
-      },
-    },
-    muiPaginationProps: {
-      rowsPerPageOptions: [10, 20, 30, 50],
-      showFirstButton: true,
-      showLastButton: true,
-    },
-  });
-
   if (error && contactData.length === 0) {
-    return (
-      <Alert variant="destructive">
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription>{error}</AlertDescription>
-      </Alert>
-    );
+    return <ErrorDisplay message={error} />;
   }
 
   if (isLoading && contactData.length === 0) {
-    return <div className="text-center py-8">Loading data...</div>;
+    return <LoadingDisplay />;
   }
 
   if (contactData.length === 0) {
@@ -176,8 +60,22 @@ export default function ReviewStep() {
 
   return (
     <div className="flex flex-col h-full">
+      <div className="flex justify-end mb-4">
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => setViewMode(viewMode === 'material' ? 'custom' : 'material')}
+        >
+          <Table className="h-4 w-4 mr-2" />
+          {viewMode === 'material' ? 'Simple View' : 'Advanced View'}
+        </Button>
+      </div>
       <div style={{ height: "calc(100vh - 180px)", width: '100%', marginBottom: '1rem' }}>
-        <MaterialReactTable table={table} />
+        {viewMode === 'material' ? (
+          <MaterialTableView contactData={contactData} columns={columns} />
+        ) : (
+          <ReviewTable contactData={contactData} />
+        )}
       </div>
     </div>
   );
