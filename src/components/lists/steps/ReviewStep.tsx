@@ -46,7 +46,7 @@ export default function ReviewStep() {
     columns,
     data: contactData,
     enableRowSelection: true,
-    enableColumnOrdering: false,
+    enableColumnOrdering: true,
     enableGlobalFilter: true,
     enableColumnFilters: true,
     enablePagination: true,
