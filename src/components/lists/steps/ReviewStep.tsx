@@ -1,4 +1,3 @@
-
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -82,7 +81,8 @@ export default function ReviewStep() {
     enableRowVirtualization: true,
     muiTableContainerProps: {
       sx: {
-        maxHeight: '100%',
+        maxHeight: 'calc(100% - 52px)',
+        height: '100%',
       },
     },
     muiTableHeadProps: {
@@ -147,7 +147,7 @@ export default function ReviewStep() {
 
   return (
     <div className="flex flex-col h-full">
-      <div style={{ height: "calc(100vh - 400px)", width: '100%', marginBottom: '2rem' }}>
+      <div style={{ height: "calc(100vh - 300px)", width: '100%', marginBottom: '2rem' }}>
         <MaterialReactTable table={table} />
       </div>
     </div>
