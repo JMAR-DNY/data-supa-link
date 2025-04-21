@@ -71,13 +71,24 @@ export default function ReviewStep() {
       sx: { 
         width: '300px', 
         marginBlock: '0.5rem',
-        marginLeft: 'auto'
+        marginLeft: 'auto',
+        backgroundColor: theme === "dark" ? "#2A3041" : "white",
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderColor: theme === "dark" ? "#3F4458" : undefined,
+        },
+        "&:hover .MuiOutlinedInput-notchedOutline": {
+          borderColor: theme === "dark" ? "#5A617A" : undefined,
+        },
+        "& .MuiInputBase-input": {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        }
       },
     },
     muiTablePaperProps: {
       sx: {
         boxShadow: '0 0 2px rgba(0,0,0,0.1)',
         backgroundColor: theme === "dark" ? "#1A1F2C" : undefined,
+        border: theme === "dark" ? "1px solid #2A3041" : undefined,
       },
     },
     enableRowVirtualization: true,
@@ -89,6 +100,7 @@ export default function ReviewStep() {
         },
         "& .MuiTableCell-root": {
           color: theme === "dark" ? "#FFFFFF" : undefined,
+          borderBottom: theme === "dark" ? "1px solid #2A3041" : undefined,
         },
       },
     },
@@ -100,6 +112,9 @@ export default function ReviewStep() {
         "& .MuiTableRow-root:hover": {
           backgroundColor: theme === "dark" ? "#2A3041" : undefined,
         },
+        "& .MuiTableRow-root": {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
       },
     },
     muiTableHeadProps: {
@@ -108,6 +123,7 @@ export default function ReviewStep() {
           backgroundColor: theme === "dark" ? "#23293D" : "#f3f4f6",
           color: theme === "dark" ? "#FFFFFF" : undefined,
           fontWeight: "bold",
+          borderBottom: theme === "dark" ? "2px solid #2A3041" : undefined,
         },
       },
     },
@@ -121,7 +137,6 @@ export default function ReviewStep() {
         color: theme === "dark" ? "#FFFFFF" : undefined,
       }
     },
-    // Style the table's toolbar in dark mode
     muiTopToolbarProps: {
       sx: {
         backgroundColor: theme === "dark" ? "#23293D" : undefined,
@@ -141,7 +156,30 @@ export default function ReviewStep() {
       sx: {
         backgroundColor: theme === "dark" ? "#23293D" : undefined,
         color: theme === "dark" ? "#FFFFFF" : undefined,
+        "& .MuiTypography-root": {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
+        "& .MuiSvgIcon-root": {
+          color: theme === "dark" ? "#C8C8C9" : undefined,
+        },
+        "& .MuiButtonBase-root": {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
       },
+    },
+    muiTablePaginationProps: {
+      sx: {
+        color: theme === "dark" ? "#FFFFFF" : undefined,
+        "& .MuiSelect-icon": {
+          color: theme === "dark" ? "#C8C8C9" : undefined,
+        },
+        "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows": {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
+        "& .MuiTablePagination-select": {
+          color: theme === "dark" ? "#FFFFFF" : undefined,
+        },
+      }
     },
   });
 
