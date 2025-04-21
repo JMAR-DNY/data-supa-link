@@ -1,3 +1,4 @@
+
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -81,7 +82,7 @@ export default function ReviewStep() {
     enableRowVirtualization: true,
     muiTableContainerProps: {
       sx: {
-        maxHeight: 'calc(100% - 52px)',
+        maxHeight: 'calc(100% - 120px)', // Adjusted to ensure pagination is visible
         height: '100%',
       },
     },
@@ -108,6 +109,11 @@ export default function ReviewStep() {
         tableLayout: 'fixed',
         "& .MuiTableRow-root": {
           backgroundColor: theme === "dark" ? "#23293D" : undefined,
+          // Increase row height by 50%
+          "& .MuiTableCell-root": {
+            padding: '12px 16px', // Increase vertical padding to make rows taller
+            height: '4.5rem', // Set a fixed height for rows that's 50% taller
+          },
         },
         "& .MuiTableCell-root": {
           color: theme === "dark" ? "white" : undefined,
@@ -120,6 +126,20 @@ export default function ReviewStep() {
           backgroundColor: theme === "dark" ? "#181D29" : undefined,
         },
       },
+    },
+    // Ensure pagination controls are visible and properly styled
+    muiBottomToolbarProps: {
+      sx: {
+        position: 'relative',
+        bottom: 0,
+        zIndex: 2,
+        backgroundColor: theme === "dark" ? "#181D29" : "white",
+      },
+    },
+    muiPaginationProps: {
+      rowsPerPageOptions: [5, 10, 25, 50],
+      showFirstButton: true,
+      showLastButton: true,
     },
   });
 
@@ -147,7 +167,7 @@ export default function ReviewStep() {
 
   return (
     <div className="flex flex-col h-full">
-      <div style={{ height: "calc(100vh - 300px)", width: '100%', marginBottom: '2rem' }}>
+      <div style={{ height: "calc(100vh - 240px)", width: '100%', marginBottom: '1rem' }}>
         <MaterialReactTable table={table} />
       </div>
     </div>
