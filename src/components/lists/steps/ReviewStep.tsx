@@ -109,12 +109,10 @@ export default function ReviewStep() {
         "& .MuiTableRow-root": {
           backgroundColor: theme === "dark" ? "#23293D" : undefined,
           "& .MuiTableCell-root": {
-            padding: theme.currentDensity === 'compact' ? '4px 8px' : 
-                     theme.currentDensity === 'comfortable' ? '8px 16px' : 
-                     '12px 24px',
-            height: theme.currentDensity === 'compact' ? 'auto' : 
-                    theme.currentDensity === 'comfortable' ? 'auto' : 
-                    '4.5rem',
+            padding: theme === "dark" 
+              ? (table.getState().density === 'compact' ? '2px 4px' : '8px 16px') 
+              : (table.getState().density === 'compact' ? '2px 4px' : '8px 16px'),
+            height: table.getState().density === 'compact' ? '2rem' : 'auto',
           },
         },
         "& .MuiTableCell-root": {
