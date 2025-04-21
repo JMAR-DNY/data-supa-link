@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { useListCreation, ListCreationProvider } from "@/contexts/ListCreationContext";
 import StepIndicator from "@/components/lists/StepIndicator";
@@ -70,9 +69,9 @@ function CreateListContent() {
   
   return (
     <div className="container p-6">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <PageHeader title={getHeaderTitle()} className="mb-0" />
-        <div className="w-full md:w-auto">
+        <div className="flex justify-center">
           <StepIndicator currentStep={currentStep} totalSteps={TOTAL_STEPS} />
         </div>
       </div>
