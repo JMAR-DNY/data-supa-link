@@ -27,7 +27,6 @@ export default function StepNavigation({
           Previous
         </Button>
       ) : (
-        // Empty div to maintain spacing with flex justify-between
         <div />
       )}
       
@@ -35,7 +34,7 @@ export default function StepNavigation({
         onClick={onNext} 
         disabled={isNextDisabled}
         variant="default"
-        className={!isNextDisabled ? "bg-primary hover:bg-primary/90 animate-pulse" : ""}
+        className={!isNextDisabled && currentStep === totalSteps ? "bg-primary hover:bg-primary/90 animate-pulse" : ""}
       >
         {nextLabel}
         {currentStep < totalSteps && <ChevronRight className="ml-2 h-4 w-4" />}

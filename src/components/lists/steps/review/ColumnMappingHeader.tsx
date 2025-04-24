@@ -23,7 +23,7 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
   const { data: fieldMappings, isLoading } = useFieldMappings();
   const { toast: uiToast } = useToast();
   const { user } = useAuth();
-  const { contactData, fileMetadata, listData } = useListCreation();
+  const { contactData, fileMetadata, listData, setIsComplete } = useListCreation();
 
   const handleMappingChange = (header: string, value: string) => {
     const newMappings = { ...mappings };
@@ -36,6 +36,9 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
     
     setMappings(newMappings);
     onMappingChange(newMappings);
+    
+    // Enable completion when at least one field is mapped
+    setIsComplete(Object.keys(newMappings).length > 0);
   };
 
   const handleSaveMapping = async () => {
@@ -85,6 +88,7 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
 
       if (data.success) {
         toast.success(`Successfully processed ${data.rowsProcessed} records from CSV`);
+        setIsComplete(true);
       } else {
         throw new Error(data.error || 'Failed to process CSV data');
       }
@@ -155,7 +159,7 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
           disabled={isIngesting || Object.keys(mappings).length === 0}
         >
           <Save className="h-4 w-4" />
-          <span>{isIngesting ? "Saving..." : "Save"}</span>
+          <span>{isIngesting ? "Processing..." : "Process Data"}</span>
         </Button>
       </TableCell>
     </TableRow>
