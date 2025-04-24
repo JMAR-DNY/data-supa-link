@@ -21,7 +21,7 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
   const [mappings, setMappings] = useState<Record<string, string>>({});
   const [isIngesting, setIsIngesting] = useState(false);
   const { data: fieldMappings, isLoading } = useFieldMappings();
-  const { toast } = useToast();
+  const { toast: uiToast } = useToast();
   const { user } = useAuth();
   const { contactData, fileMetadata, listData } = useListCreation();
 
@@ -40,7 +40,7 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
 
   const handleSaveMapping = async () => {
     if (!fileMetadata?.name) {
-      toast({
+      uiToast({
         title: "Error",
         description: "No file selected",
         variant: "destructive"
@@ -49,7 +49,7 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
     }
 
     if (Object.keys(mappings).length === 0) {
-      toast({
+      uiToast({
         title: "Warning",
         description: "No fields are mapped. Please map at least one field.",
         variant: "destructive"
@@ -90,7 +90,7 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
       }
     } catch (error) {
       console.error('CSV ingestion error:', error);
-      toast({
+      uiToast({
         title: "Error",
         description: "An error occurred during data ingestion",
         variant: "destructive"
