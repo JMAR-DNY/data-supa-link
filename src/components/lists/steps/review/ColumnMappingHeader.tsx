@@ -15,7 +15,14 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
   const { data: fieldMappings, isLoading } = useFieldMappings();
 
   const handleMappingChange = (header: string, value: string) => {
-    const newMappings = { ...mappings, [header]: value };
+    const newMappings = { ...mappings };
+    
+    if (value === "unmap") {
+      delete newMappings[header];
+    } else {
+      newMappings[header] = value;
+    }
+    
     setMappings(newMappings);
     onMappingChange(newMappings);
   };
@@ -54,6 +61,9 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
               <SelectValue placeholder="Map to field..." />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="unmap" className="text-gray-500">
+                Clear mapping
+              </SelectItem>
               {fieldMappings?.map((field) => (
                 <SelectItem key={field.field_path} value={field.field_path}>
                   {field.label}
