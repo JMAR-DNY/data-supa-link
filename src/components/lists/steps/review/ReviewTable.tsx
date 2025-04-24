@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { Table } from "@/components/ui/table";
 import { useTheme } from "@/hooks/use-theme";
@@ -71,8 +72,8 @@ export function ReviewTable({ contactData }: ReviewTableProps) {
     currentPageData.every((_, idx) => checkedRows.includes(startIndex + idx));
 
   const tableContainerClasses = useMemo(() => {
-    return `w-full transition-all duration-200 ease-in-out ${
-      state === "expanded" ? "pr-0" : "pr-0"
+    return `transition-all duration-200 ease-in-out ${
+      state === "expanded" ? "w-[75vw]" : "w-[95vw]"
     }`;
   }, [state]);
 
