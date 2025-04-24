@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { Table } from "@/components/ui/table";
 import { useTheme } from "@/hooks/use-theme";
@@ -72,8 +71,8 @@ export function ReviewTable({ contactData }: ReviewTableProps) {
   }
 
   return (
-    <div className="flex flex-col border rounded-md overflow-hidden">
-      <div className="overflow-x-auto">
+    <div className="flex flex-col h-full border rounded-md overflow-hidden">
+      <div className="flex-1 overflow-auto">
         <Table>
           <ReviewTableHeader 
             headers={headers}

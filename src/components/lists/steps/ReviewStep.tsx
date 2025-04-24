@@ -59,7 +59,7 @@ export default function ReviewStep() {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col min-h-0 h-full">
       <div className="flex justify-end mb-4">
         <Button 
           variant="outline" 
@@ -70,7 +70,7 @@ export default function ReviewStep() {
           {viewMode === 'material' ? 'Simple View' : 'Advanced View'}
         </Button>
       </div>
-      <div style={{ height: "calc(100vh - 180px)", width: '100%', marginBottom: '1rem' }}>
+      <div className="flex-1 overflow-hidden flex flex-col">
         {viewMode === 'material' ? (
           <MaterialTableView contactData={contactData} columns={columns} />
         ) : (
