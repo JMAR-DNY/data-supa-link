@@ -799,6 +799,33 @@ export type Database = {
         }
         Relationships: []
       }
+      field_mappings: {
+        Row: {
+          active: boolean | null
+          category: string
+          display_order: number
+          field_path: string
+          id: number
+          label: string
+        }
+        Insert: {
+          active?: boolean | null
+          category: string
+          display_order: number
+          field_path: string
+          id?: number
+          label: string
+        }
+        Update: {
+          active?: boolean | null
+          category?: string
+          display_order?: number
+          field_path?: string
+          id?: number
+          label?: string
+        }
+        Relationships: []
+      }
       functions: {
         Row: {
           active: boolean | null
