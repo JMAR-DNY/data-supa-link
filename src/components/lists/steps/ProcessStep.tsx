@@ -3,10 +3,17 @@ import { useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, AlertTriangle } from "lucide-react";
 
 export default function ProcessStep() {
-  const { listData, dataSource, isProcessing, setIsProcessing, isComplete, setIsComplete } = useListCreation();
+  const { 
+    listData, 
+    dataSource, 
+    isProcessing, 
+    setIsProcessing, 
+    isComplete, 
+    setIsComplete 
+  } = useListCreation();
 
   useEffect(() => {
     if (!isProcessing && !isComplete) {
@@ -54,7 +61,17 @@ export default function ProcessStep() {
               </div>
             </div>
           ) : (
-            <p>Preparing to process...</p>
+            <div className="py-8 text-center space-y-4">
+              <div className="flex justify-center">
+                <AlertTriangle className="h-16 w-16 text-yellow-500" />
+              </div>
+              <div>
+                <h3 className="text-xl font-medium">Action Required</h3>
+                <p className="text-muted-foreground mt-2">
+                  Please go back to the previous step and map your CSV columns to database fields.
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </CardContent>

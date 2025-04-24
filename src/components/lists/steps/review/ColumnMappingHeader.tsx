@@ -1,8 +1,15 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFieldMappings } from "@/hooks/use-field-mappings";
+import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { useListCreation } from "@/contexts/ListCreationContext";
+import { ingestCsvData } from "@/utils/dataIngestion";
+import { Button } from "@/components/ui/button";
+import { Save } from "lucide-react";
 
 interface ColumnMappingHeaderProps {
   headers: string[];
@@ -12,7 +19,11 @@ interface ColumnMappingHeaderProps {
 
 export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnMappingHeaderProps) {
   const [mappings, setMappings] = useState<Record<string, string>>({});
+  const [isIngesting, setIsIngesting] = useState(false);
   const { data: fieldMappings, isLoading } = useFieldMappings();
+  const { toast } = useToast();
+  const { user } = useAuth();
+  const { contactData, fileMetadata, listData } = useListCreation();
 
   const handleMappingChange = (header: string, value: string) => {
     const newMappings = { ...mappings };
@@ -25,6 +36,62 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
     
     setMappings(newMappings);
     onMappingChange(newMappings);
+  };
+
+  const handleSaveMapping = async () => {
+    if (!fileMetadata?.name) {
+      toast({
+        title: "Error",
+        description: "No file selected",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Ensure we have at least one mapping
+    if (Object.keys(mappings).length === 0) {
+      toast({
+        title: "Warning",
+        description: "No fields are mapped. Please map at least one field.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsIngesting(true);
+
+    try {
+      const result = await ingestCsvData(
+        fileMetadata.name,
+        contactData,
+        mappings,
+        listData.team_id || 1, // Default to team 1 if not set
+        undefined, // TODO: Get the profile ID from the user context
+        undefined  // TODO: Set the list ID if available
+      );
+
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: `Imported ${result.rowsProcessed} records from CSV`,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: `Failed to import data: ${result.errors?.join(", ")}`,
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error("CSV ingestion error:", error);
+      toast({
+        title: "Error",
+        description: "An error occurred during data ingestion",
+        variant: "destructive"
+      });
+    } finally {
+      setIsIngesting(false);
+    }
   };
 
   if (isLoading) {
@@ -73,6 +140,18 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
           </Select>
         </TableCell>
       ))}
+      <TableCell>
+        <Button 
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-1"
+          onClick={handleSaveMapping}
+          disabled={isIngesting || Object.keys(mappings).length === 0}
+        >
+          <Save className="h-4 w-4" />
+          <span>{isIngesting ? "Saving..." : "Save"}</span>
+        </Button>
+      </TableCell>
     </TableRow>
   );
 }
