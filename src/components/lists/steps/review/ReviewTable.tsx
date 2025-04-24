@@ -5,6 +5,8 @@ import { ContactDataItem } from "@/contexts/ListCreationContext";
 import { ReviewTableHeader } from "./TableHeader";
 import { ReviewTableBody } from "./TableBody";
 import { TablePagination } from "./TablePagination";
+import { ColumnMappingHeader } from "./ColumnMappingHeader";
+import { toast } from "sonner";
 
 interface ReviewTableProps {
   contactData: ContactDataItem[];
@@ -66,6 +68,12 @@ export function ReviewTable({ contactData }: ReviewTableProps) {
     currentPageData.length > 0 &&
     currentPageData.every((_, idx) => checkedRows.includes(startIndex + idx));
 
+  const handleMappingChange = (mappings: Record<string, string>) => {
+    // Here you'll handle the column mappings
+    console.log("Column mappings updated:", mappings);
+    toast.success("Column mapping updated");
+  };
+
   if (contactData.length === 0) {
     return null;
   }
@@ -81,6 +89,13 @@ export function ReviewTable({ contactData }: ReviewTableProps) {
             hasRows={currentPageData.length > 0}
             theme={theme}
           />
+          <tbody>
+            <ColumnMappingHeader 
+              headers={headers}
+              onMappingChange={handleMappingChange}
+              theme={theme}
+            />
+          </tbody>
           <ReviewTableBody 
             currentPageData={currentPageData}
             headers={headers}
