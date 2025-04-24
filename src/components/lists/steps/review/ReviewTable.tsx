@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Table } from "@/components/ui/table";
 import { useTheme } from "@/hooks/use-theme";
+import { useSidebar } from "@/components/ui/sidebar";
 import { ContactDataItem } from "@/contexts/ListCreationContext";
 import { ReviewTableHeader } from "./TableHeader";
 import { ReviewTableBody } from "./TableBody";
@@ -17,6 +18,7 @@ export function ReviewTable({ contactData }: ReviewTableProps) {
   const [pageSize, setPageSize] = useState(10);
   const [checkedRows, setCheckedRows] = useState<number[]>([]);
   const { theme } = useTheme();
+  const { state } = useSidebar();
 
   const headers = useMemo(() => {
     if (contactData.length === 0) return [];
@@ -68,6 +70,12 @@ export function ReviewTable({ contactData }: ReviewTableProps) {
     currentPageData.length > 0 &&
     currentPageData.every((_, idx) => checkedRows.includes(startIndex + idx));
 
+  const tableContainerClasses = useMemo(() => {
+    return `w-full transition-all duration-200 ease-in-out ${
+      state === "expanded" ? "pr-0" : "pr-0"
+    }`;
+  }, [state]);
+
   const handleMappingChange = (mappings: Record<string, string>) => {
     // Here you'll handle the column mappings
     console.log("Column mappings updated:", mappings);
@@ -79,40 +87,42 @@ export function ReviewTable({ contactData }: ReviewTableProps) {
   }
 
   return (
-    <div className="flex flex-col h-full border rounded-md overflow-hidden">
-      <div className="flex-1 overflow-auto">
-        <Table>
-          <ReviewTableHeader 
-            headers={headers}
-            onSelectAll={handleSelectAll}
-            hasCheckedRows={allCurrentPageRowsChecked}
-            hasRows={currentPageData.length > 0}
-            theme={theme}
-          />
-          <tbody>
-            <ColumnMappingHeader 
+    <div className={tableContainerClasses}>
+      <div className="border rounded-md overflow-hidden flex flex-col h-full">
+        <div className="overflow-x-auto">
+          <Table>
+            <ReviewTableHeader 
               headers={headers}
-              onMappingChange={handleMappingChange}
+              onSelectAll={handleSelectAll}
+              hasCheckedRows={allCurrentPageRowsChecked}
+              hasRows={currentPageData.length > 0}
               theme={theme}
             />
-          </tbody>
-          <ReviewTableBody 
-            currentPageData={currentPageData}
-            headers={headers}
-            checkedRows={checkedRows}
-            onSelectRow={(rowIdx, checked) => handleSelectRow(startIndex + rowIdx, checked)}
-            theme={theme}
-          />
-        </Table>
+            <tbody>
+              <ColumnMappingHeader 
+                headers={headers}
+                onMappingChange={handleMappingChange}
+                theme={theme}
+              />
+            </tbody>
+            <ReviewTableBody 
+              currentPageData={currentPageData}
+              headers={headers}
+              checkedRows={checkedRows}
+              onSelectRow={(rowIdx, checked) => handleSelectRow(startIndex + rowIdx, checked)}
+              theme={theme}
+            />
+          </Table>
+        </div>
+        <TablePagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalRows={contactData.length}
+          currentPageSize={pageSize}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+        />
       </div>
-      <TablePagination
-        currentPage={page}
-        totalPages={totalPages}
-        totalRows={contactData.length}
-        currentPageSize={pageSize}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handlePageSizeChange}
-      />
     </div>
   );
 }

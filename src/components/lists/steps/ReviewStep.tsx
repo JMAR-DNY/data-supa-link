@@ -1,18 +1,14 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { useListCreation } from "@/contexts/ListCreationContext";
-import { Button } from "@/components/ui/button";
-import { Table } from "lucide-react";
-import { MaterialTableView } from "./review/MaterialTableView";
-import { ReviewTable } from "./review/ReviewTable";
 import { ErrorDisplay } from "./review/ErrorDisplay";
 import { LoadingDisplay } from "./review/LoadingDisplay";
+import { ReviewTable } from "./review/ReviewTable";
 
 export default function ReviewStep() {
   const { fileMetadata, contactData, setIsComplete } = useListCreation();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'material' | 'custom'>('material');
 
   useEffect(() => {
     if (contactData.length > 0) {
@@ -60,22 +56,10 @@ export default function ReviewStep() {
 
   return (
     <div className="flex flex-col min-h-0 h-full">
-      <div className="flex justify-end mb-4">
-        <Button 
-          variant="outline" 
-          size="sm"
-          onClick={() => setViewMode(viewMode === 'material' ? 'custom' : 'material')}
-        >
-          <Table className="h-4 w-4 mr-2" />
-          {viewMode === 'material' ? 'Simple View' : 'Advanced View'}
-        </Button>
-      </div>
-      <div className="flex-1 overflow-hidden flex flex-col">
-        {viewMode === 'material' ? (
-          <MaterialTableView contactData={contactData} columns={columns} />
-        ) : (
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full w-full overflow-x-auto">
           <ReviewTable contactData={contactData} />
-        )}
+        </div>
       </div>
     </div>
   );
