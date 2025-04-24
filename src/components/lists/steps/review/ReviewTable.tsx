@@ -17,7 +17,6 @@ interface ReviewTableProps {
 export function ReviewTable({ contactData }: ReviewTableProps) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [checkedRows, setCheckedRows] = useState<number[]>([]);
   const { theme } = useTheme();
   const { state } = useSidebar();
 
@@ -46,42 +45,16 @@ export function ReviewTable({ contactData }: ReviewTableProps) {
     setPage(1); // Reset to first page when changing page size
   };
 
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      // Select all rows on current page
-      const currentPageIndices = Array.from(
-        { length: currentPageData.length },
-        (_, i) => startIndex + i
-      );
-      setCheckedRows(currentPageIndices);
-    } else {
-      setCheckedRows([]);
-    }
+  const handleMappingChange = (mappings: Record<string, string>) => {
+    console.log("Column mappings updated:", mappings);
+    toast.success("Column mapping updated");
   };
-
-  const handleSelectRow = (rowIdx: number, checked: boolean) => {
-    if (checked) {
-      setCheckedRows((prev) => [...prev, rowIdx]);
-    } else {
-      setCheckedRows((prev) => prev.filter((idx) => idx !== rowIdx));
-    }
-  };
-
-  const allCurrentPageRowsChecked =
-    currentPageData.length > 0 &&
-    currentPageData.every((_, idx) => checkedRows.includes(startIndex + idx));
 
   const tableContainerClasses = useMemo(() => {
     return `transition-all duration-200 ease-in-out ${
       state === "expanded" ? "w-[75vw]" : "w-[95vw]"
     }`;
   }, [state]);
-
-  const handleMappingChange = (mappings: Record<string, string>) => {
-    // Here you'll handle the column mappings
-    console.log("Column mappings updated:", mappings);
-    toast.success("Column mapping updated");
-  };
 
   if (contactData.length === 0) {
     return null;
@@ -94,9 +67,6 @@ export function ReviewTable({ contactData }: ReviewTableProps) {
           <Table>
             <ReviewTableHeader 
               headers={headers}
-              onSelectAll={handleSelectAll}
-              hasCheckedRows={allCurrentPageRowsChecked}
-              hasRows={currentPageData.length > 0}
               theme={theme}
             />
             <tbody>
@@ -109,8 +79,6 @@ export function ReviewTable({ contactData }: ReviewTableProps) {
             <ReviewTableBody 
               currentPageData={currentPageData}
               headers={headers}
-              checkedRows={checkedRows}
-              onSelectRow={(rowIdx, checked) => handleSelectRow(startIndex + rowIdx, checked)}
               theme={theme}
             />
           </Table>

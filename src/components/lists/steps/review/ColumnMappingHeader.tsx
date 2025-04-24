@@ -39,7 +39,6 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
         borderBottom: theme === "dark" ? "1px solid #374151" : "1px solid #E5E7EB"
       }}
     >
-      <TableCell className="w-[48px]" /> {/* Checkbox column spacer */}
       {headers.map((header) => (
         <TableCell key={header} className="p-2">
           <Select
