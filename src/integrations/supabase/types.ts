@@ -1355,6 +1355,19 @@ export type Database = {
         Args: { team_id: number; user_uuid: string }
         Returns: boolean
       }
+      process_csv_mapping: {
+        Args: {
+          source_id: number
+          mapping_json: Json
+          profile_id?: number
+          list_id?: number
+        }
+        Returns: {
+          success: boolean
+          rows_processed: number
+          error: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

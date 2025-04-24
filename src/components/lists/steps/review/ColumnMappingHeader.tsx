@@ -1,15 +1,15 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useFieldMappings } from "@/hooks/use-field-mappings";
 import { useToast } from "@/hooks/use-toast";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useListCreation } from "@/contexts/ListCreationContext";
-import { ingestCsvData } from "@/utils/dataIngestion";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ColumnMappingHeaderProps {
   headers: string[];
@@ -48,7 +48,6 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
       return;
     }
 
-    // Ensure we have at least one mapping
     if (Object.keys(mappings).length === 0) {
       toast({
         title: "Warning",
@@ -61,29 +60,36 @@ export function ColumnMappingHeader({ headers, onMappingChange, theme }: ColumnM
     setIsIngesting(true);
 
     try {
-      const result = await ingestCsvData(
-        fileMetadata.name,
-        contactData,
-        mappings,
-        listData.team_id || 1, // Default to team 1 if not set
-        undefined, // TODO: Get the profile ID from the user context
-        undefined  // TODO: Set the list ID if available
-      );
+      const { data: { user: { id: userId } } } = await supabase.auth.getUser();
+      
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_uuid', userId)
+        .single();
 
-      if (result.success) {
-        toast({
-          title: "Success",
-          description: `Imported ${result.rowsProcessed} records from CSV`,
-        });
+      if (profileError) throw profileError;
+
+      const { data, error } = await supabase.functions.invoke('process-csv', {
+        body: {
+          fileName: fileMetadata.name,
+          data: contactData,
+          mappings,
+          teamId: listData.team_id || 1,
+          profileId: profileData?.id,
+          listId: undefined // TODO: Get list ID if available
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast.success(`Successfully processed ${data.rowsProcessed} records from CSV`);
       } else {
-        toast({
-          title: "Error",
-          description: `Failed to import data: ${result.errors?.join(", ")}`,
-          variant: "destructive"
-        });
+        throw new Error(data.error || 'Failed to process CSV data');
       }
     } catch (error) {
-      console.error("CSV ingestion error:", error);
+      console.error('CSV ingestion error:', error);
       toast({
         title: "Error",
         description: "An error occurred during data ingestion",
